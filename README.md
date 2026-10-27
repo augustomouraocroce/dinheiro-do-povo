@@ -52,6 +52,12 @@ Rotina semanal (o sábado é a data do relatório; a semana coberta vai do sába
 .venv/bin/python -m dp.site.build --semana 2026-10-24 --artefato  # versão para artefato do claude.ai
 ```
 
+Site publicado: **https://dinheiro-do-povo.netlify.app**. Para publicar uma nova versão (com a conta Netlify logada):
+
+```bash
+npx -y netlify-cli@27.14.3 deploy --prod --no-build --dir public
+```
+
 Para ver o site localmente:
 
 ```bash
@@ -101,7 +107,7 @@ Ficam fora do repositório: `data/` (banco e downloads), `public/`, `artefato/` 
 
 - Senado: ainda sem subsídio, verba de gabinete e benefícios (não publicados num formato coletável); o custo do Senado é só a cota.
 - Republicanos, Novo e Missão não têm logo com licença livre no Wikimedia Commons e aparecem com o selo da sigla.
-- O site ainda não tem hospedagem; roda localmente ou como artefato privado do claude.ai.
+- O site está no Netlify, mas a atualização ainda é manual: rodar a coleta, o build e o deploy.
 
 ## Próximos passos
 
@@ -109,7 +115,7 @@ Ficam fora do repositório: `data/` (banco e downloads), `public/`, `artefato/` 
 - Emendas parlamentares (Portal da Transparência).
 - Monitor de redes sociais dos parlamentares (contas públicas, APIs oficiais).
 - Cards prontos para Instagram, TikTok e Kwai a partir do relatório de sábado.
-- Hospedagem e coleta automática semanal.
+- Coleta e publicação automáticas toda semana.
 - Nova legislatura em fevereiro de 2027: a filiação com data já preserva o histórico.
 
 ## Créditos e licenças
