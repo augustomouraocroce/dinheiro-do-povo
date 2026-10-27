@@ -359,7 +359,18 @@ a.prateleira:hover { background: var(--papel-2); }
 .p-dado .marca-v svg { width: 18px; height: 18px; }
 .prateleira .seta { position: absolute; right: 14px; top: 16px; width: 20px; height: 20px; }
 @media (min-width: 760px) {
-  .prateleira { grid-template-columns: 230px 1fr 24px; align-items: center; gap: 18px; padding: 16px 20px; }
+  .prateleira { grid-template-columns: minmax(310px, 1.15fr) minmax(0, 2fr) 24px; align-items: center; column-gap: 28px; row-gap: 10px; padding: 16px 20px; }
+  .prateleira .p-conta { white-space: nowrap; }
   .prateleira .seta { position: static; }
   .heroi-cabeca { grid-template-columns: 150px 1fr; gap: 20px; }
+}
+
+/* Gôndola no celular: cada dado numa linha, rótulo à esquerda e valor à direita */
+@media (max-width: 480px) {
+  .prateleira .p-dados { grid-template-columns: 1fr; gap: 10px; padding-top: 2px; }
+  .p-dado { grid-template-columns: 1fr auto; column-gap: 12px; row-gap: 2px; align-items: center;
+    border-top: 1px solid var(--linha); padding-top: 8px; }
+  .p-dado .k { grid-row: span 2; font-size: .95rem; }
+  .p-dado .tag, .p-dado .v { justify-self: end; }
+  .p-dado .sm { justify-self: end; text-align: right; }
 }
