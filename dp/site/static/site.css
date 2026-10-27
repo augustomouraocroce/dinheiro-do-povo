@@ -123,7 +123,8 @@ p { margin: 0; max-width: 68ch; text-wrap: pretty; }
 body { padding-bottom: calc(var(--altura-nav) + env(safe-area-inset-bottom)); }
 
 /* ---------- Estrutura ---------- */
-main { max-width: var(--largura); margin: 0 auto; padding: 16px 16px 40px; display: grid; gap: 18px; }
+main { max-width: var(--largura); margin: 0 auto; padding-block: 16px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; }
 main > * { min-width: 0; }
 .secao { display: grid; gap: 12px; margin-top: 18px; }
 .secao > h2 { padding-top: 4px; }
@@ -311,7 +312,7 @@ details.tabela-dados[open] summary .chev { transform: rotate(90deg); }
   .nav-topo { display: flex; gap: 20px; }
   .nav-topo a { color: var(--papel); text-decoration: none; font-weight: 700; font-size: 1rem; }
   .nav-topo a:hover, .nav-topo a[aria-current="page"] { color: var(--amarelo); }
-  main { padding: 24px 24px 56px; gap: 22px; }
+  main { padding-block: 24px 56px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); gap: 22px; }
   .ladrilho { padding: 22px; }
   .heroi { grid-template-columns: 1.15fr 1fr; align-items: stretch; }
   .heroi-tile { grid-template-columns: 200px 1fr; gap: 22px; }
@@ -374,3 +375,9 @@ a.prateleira:hover { background: var(--papel-2); }
   .p-dado .tag, .p-dado .v { justify-self: end; }
   .p-dado .sm { justify-self: end; text-align: right; }
 }
+
+/* Fotos de lista vindas do mosaico (versão artefato) */
+.foto-s { display: block; background-image: url("../fotos/mosaico.jpg"); background-color: var(--papel-2);
+  background-size: var(--mosaico-tamanho, 2000% 1500%); background-repeat: no-repeat; }
+.pessoa .foto-s { width: 100%; aspect-ratio: 3 / 4; border-radius: 6px; }
+.busca-resultados .r-foto { width: 40px; height: 52px; border-radius: 5px; border: 1.5px solid var(--tinta); }

@@ -85,7 +85,8 @@
 {# Cartão de pessoa em listas #}
 {% macro cartao_pessoa(p, raiz, valor_texto) -%}
 <a class="pessoa" href="{{ raiz }}p/{{ p.slug }}.html" data-busca="{{ (p.nome ~ ' ' ~ p.partido ~ ' ' ~ p.uf)|normalizar }}">
-  <img src="{{ raiz }}fotos/mini/{{ p.slug }}.jpg" alt="" loading="lazy" width="120" height="160">
+  {% if artefato %}<span class="foto-s" style="background-position: {{ sprite[p.slug] }}" aria-hidden="true"></span>
+  {% else %}<img src="{{ raiz }}fotos/mini/{{ p.slug }}.jpg" alt="" loading="lazy" width="120" height="160">{% endif %}
   <span class="p-nome">{{ p.nome }}</span>
   <span class="p-info">{{ p.partido }} · {{ p.uf }} · {{ "Deputado(a)" if p.casa == "camara" else "Senador(a)" }}</span>
   {% if valor_texto %}<span class="p-valor">{{ valor_texto }}</span>{% endif %}

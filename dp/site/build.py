@@ -7,6 +7,7 @@ Depois: abra public/index.html, ou sirva com `python -m http.server -d public`.
 """
 import argparse
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -68,6 +69,7 @@ def groupby_mes(dias):
 def ambiente() -> Environment:
     env = Environment(loader=FileSystemLoader(TEMPLATES), undefined=StrictUndefined,
                       autoescape=select_autoescape(["html", "j2"]), trim_blocks=True, lstrip_blocks=True)
+    env.globals.update(artefato=False, sprite={}, foto_data="")
     env.filters.update(
         brl=relatorio.brl, pct=relatorio.pct, num=relatorio.num, data=relatorio.data_br,
         dia_mes=relatorio.dia_mes, plural=relatorio.plural, brl_partes=brl_partes, qtd=qtd,
@@ -147,19 +149,90 @@ def copiar_fotos(saida: Path, d):
             alvo_mini.write_bytes(fotos.gravar_origem(alvo_mini.read_bytes(), texto))
 
 
-def construir(conn, sabado: date, saida: Path = SAIDA):
+# --- Versão para artefato do claude.ai ------------------------------------------------
+# O artefato aceita no máximo 511 arquivos: as fotos das listas viram um mosaico único,
+# a foto do topo de cada parlamentar vai embutida na página e a fonte vem do Google Fonts.
+
+MOSAICO_COLUNAS, MOSAICO_TILE = 20, (90, 120)
+
+
+def montar_mosaico(saida: Path, parlamentares) -> dict:
+    """Junta as fotos num JPEG único e devolve {slug: "x% y%"} para background-position."""
+    from PIL import Image
+    linhas = -(-len(parlamentares) // MOSAICO_COLUNAS)
+    w, h = MOSAICO_TILE
+    mosaico = Image.new("RGB", (MOSAICO_COLUNAS * w, linhas * h), (246, 245, 240))
+    posicoes = {}
+    for n, p in enumerate(parlamentares):
+        col, lin = n % MOSAICO_COLUNAS, n // MOSAICO_COLUNAS
+        foto = Image.open(fotos.baixar(p["id"])).convert("RGB")
+        escala = max(w / foto.width, h / foto.height)  # preenche o quadro e corta o excesso
+        nw, nh = round(foto.width * escala), round(foto.height * escala)
+        foto = foto.resize((nw, nh)).crop(((nw - w) // 2, 0, (nw - w) // 2 + w, h))
+        mosaico.paste(foto, (col * w, lin * h))
+        x = 100 * col / (MOSAICO_COLUNAS - 1)
+        y = 100 * lin / (linhas - 1) if linhas > 1 else 0
+        posicoes[p["slug"]] = f"{x:.4f}% {y:.4f}%"
+    (saida / "fotos").mkdir(parents=True, exist_ok=True)
+    mosaico.save(saida / "fotos" / "mosaico.jpg", quality=72, optimize=True, progressive=True)
+    return posicoes, (MOSAICO_COLUNAS, linhas)
+
+
+def foto_embutida(pid: str) -> str:
+    import base64
+    return "data:image/jpeg;base64," + base64.b64encode(fotos.baixar(pid).read_bytes()).decode()
+
+
+def estaticos_artefato(saida: Path, d, posicoes, grade):
+    destino = saida / "static"
+    (destino / "partidos" / "png").mkdir(parents=True, exist_ok=True)
+    css = (ESTATICOS / "site.css").read_text(encoding="utf-8")
+    css = re.sub(r"@font-face\s*\{[^}]*\}\s*", "", css, count=1)  # a fonte vem do Google Fonts
+    css += f"\n:root {{ --mosaico-tamanho: {grade[0] * 100}% {grade[1] * 100}%; }}\n"
+    (destino / "site.css").write_text(css, encoding="utf-8")
+    shutil.copy2(ESTATICOS / "site.js", destino / "site.js")
+    for png in (ESTATICOS / "partidos" / "png").glob("*.png"):
+        shutil.copy2(png, destino / "partidos" / "png" / png.name)
+    indice = [{"tipo": "pessoa", "nome": p["nome"], "partido": p["partido"],
+               "partido_nome": config.PARTIDOS_MONITORADOS.get(p["partido"], ""),
+               "uf": p["uf"], "cargo": p["cargo"], "url": f"p/{p['slug']}.html",
+               "sprite": posicoes[p["slug"]]} for p in d["parlamentares"]]
+    indice += [{"tipo": "partido", "nome": "", "partido": pt["sigla"], "partido_nome": pt["nome"],
+                "uf": "", "cargo": "partido", "url": f"partido/{slug(pt['sigla'])}.html"}
+               for pt in d["partidos"]]
+    (destino / "busca-indice.js").write_text(
+        "window.DP_INDICE = " + json.dumps(indice, ensure_ascii=False) + ";\n", encoding="utf-8")
+
+
+def pagina_principal(html: str) -> str:
+    """O artefato embrulha a página principal num esqueleto próprio: tira doctype/html/head/body."""
+    cabeca = re.search(r"<head>(.*?)</head>", html, re.S).group(1)
+    corpo = re.search(r"<body>(.*)</body>", html, re.S).group(1)
+    cabeca = re.sub(r'<meta charset="utf-8">\s*|<meta name="viewport"[^>]*>\s*', "", cabeca)
+    cabeca = re.sub(r"<title>.*?</title>", "<title>Dinheiro do Povo</title>", cabeca, flags=re.S)
+    return ('<meta name="claude:viewport-fit-sides" content="cover">\n' + cabeca.strip()
+            + "\n<script>document.documentElement.setAttribute('data-raiz', '');</script>\n" + corpo.strip() + "\n")
+
+
+def construir(conn, sabado: date, saida: Path = SAIDA, artefato: bool = False):
     d = dados.montar(conn, sabado)
     ctx_semana, _, corpo_semana = relatorio.renderizar(conn, sabado)
     licencas = {k: v for k, v in json.loads((ESTATICOS / "partidos" / "LICENCAS.json").read_text(encoding="utf-8")).items()
                 if not k.startswith("_")}
     logos = {sigla: l["arquivo"] for sigla, l in licencas.items()}
     env = ambiente()
+    saida.mkdir(parents=True, exist_ok=True)
+    if artefato:
+        logos = {sigla: f"png/{sigla}.png" for sigla in logos
+                 if (ESTATICOS / "partidos" / "png" / f"{sigla}.png").exists()}
+        posicoes, grade = montar_mosaico(saida, d["parlamentares"])
+        estaticos_artefato(saida, d, posicoes, grade)
+        env.globals.update(artefato=True, sprite=posicoes)
+    else:
+        copiar_estaticos(saida, d)
+        copiar_fotos(saida, d)
     base = {**d, "logos": logos, "licencas": licencas, "semana": ctx_semana,
             "refs_senado_ceaps": URL_CEAPS.format(ano=d["ano"])}
-
-    saida.mkdir(parents=True, exist_ok=True)
-    copiar_estaticos(saida, d)
-    copiar_fotos(saida, d)
 
     def escrever(caminho: str, template: str, raiz: str, ativa: str, **extra):
         alvo = saida / caminho
@@ -195,7 +268,12 @@ def construir(conn, sabado: date, saida: Path = SAIDA):
         if p["patrimonio"] and p["patrimonio"]["declaracoes"]:
             extra["grafico_patrimonio"] = Markup(graficos.colunas_patrimonio(
                 p["patrimonio"]["declaracoes"], "Patrimônio declarado ao TSE por eleição"))
+        if artefato:
+            extra["foto_data"] = foto_embutida(p["id"])
         escrever(f"p/{p['slug']}.html", "parlamentar.html.j2", "../", "", p=p, **extra)
+    if artefato:
+        principal = saida / "index.html"
+        principal.write_text(pagina_principal(principal.read_text(encoding="utf-8")), encoding="utf-8")
     return saida, d
 
 
@@ -204,9 +282,12 @@ def main(argv=None):
     ap.add_argument("--semana", type=date.fromisoformat, default=config.ultimo_sabado(),
                     help="Sábado do relatório (AAAA-MM-DD). Padrão: último sábado.")
     ap.add_argument("--db", default=None, help="Caminho alternativo do banco")
-    ap.add_argument("--saida", default=str(SAIDA), help="Pasta de saída")
+    ap.add_argument("--saida", default=None, help="Pasta de saída (padrão: public/ ou artefato/)")
+    ap.add_argument("--artefato", action="store_true",
+                    help="Gera a versão para artefato do claude.ai (menos arquivos, fonte do Google Fonts)")
     args = ap.parse_args(argv)
-    saida, d = construir(db.conectar(args.db), args.semana, Path(args.saida))
+    saida = Path(args.saida) if args.saida else (config.ROOT / "artefato" if args.artefato else SAIDA)
+    saida, d = construir(db.conectar(args.db), args.semana, saida, artefato=args.artefato)
     print(f"{saida}/index.html  ({len(d['parlamentares'])} parlamentares, {len(d['partidos'])} partidos)")
     return 0
 

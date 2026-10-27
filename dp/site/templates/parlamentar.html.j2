@@ -6,7 +6,7 @@
 <section class="heroi" aria-labelledby="t-nome">
   <div class="ladrilho pilha">
     <div class="heroi-cabeca">
-      <img class="foto" src="{{ raiz }}fotos/{{ p.slug }}.jpg" alt="Foto oficial de {{ p.nome }}" width="360" height="480">
+      <img class="foto" src="{{ foto_data if artefato else raiz ~ "fotos/" ~ p.slug ~ ".jpg" }}" alt="Foto oficial de {{ p.nome }}" width="360" height="480">
       <div class="heroi-info">
         <h1 id="t-nome">{{ p.nome }}</h1>
         <div class="linha">{{ c.partido_id(p.partido, raiz, logos) }}</div>

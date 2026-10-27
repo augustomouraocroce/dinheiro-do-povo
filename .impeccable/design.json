@@ -1,0 +1,467 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T04:06:53.159055+00:00",
+  "title": "Design System: Dinheiro do Povo",
+  "extensions": {
+    "colorMeta": {
+      "amarelo": {
+        "role": "primary",
+        "displayName": "Flyer Yellow",
+        "canonical": "#ffd60a",
+        "oklch": "oklch(88.5% 0.181 94.8)",
+        "tonalRamp": [
+          "#1a0500",
+          "#411900",
+          "#613900",
+          "#825b00",
+          "#a57d00",
+          "#c9a100",
+          "#efc600",
+          "#ffee99"
+        ]
+      },
+      "amarelo-escuro": {
+        "role": "primary",
+        "displayName": "Deep Yellow",
+        "canonical": "#f2c400",
+        "oklch": "oklch(83.7% 0.171 91.6)",
+        "tonalRamp": [
+          "#1a0500",
+          "#421700",
+          "#633800",
+          "#855900",
+          "#a87b00",
+          "#cc9f00",
+          "#f2c400",
+          "#ffed9d"
+        ]
+      },
+      "carimbo": {
+        "role": "primary",
+        "displayName": "Stamp Blue",
+        "canonical": "#1e40af",
+        "oklch": "oklch(42.4% 0.181 265.6)",
+        "tonalRamp": [
+          "#010038",
+          "#05007b",
+          "#1431a0",
+          "#2f56c6",
+          "#4e7aed",
+          "#6e9eff",
+          "#91c3ff",
+          "#cceeff"
+        ]
+      },
+      "tinta": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#111111",
+        "oklch": "oklch(17.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "tinta-2": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#3d3d3d",
+        "oklch": "oklch(36.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "tinta-amarelo": {
+        "role": "neutral",
+        "displayName": "Yellow Ink",
+        "canonical": "#4a3d00",
+        "oklch": "oklch(36.3% 0.075 95.4)",
+        "tonalRamp": [
+          "#110a00",
+          "#302400",
+          "#4e4105",
+          "#6e612b",
+          "#90824d",
+          "#b3a56f",
+          "#d8c992",
+          "#f7efcd"
+        ]
+      },
+      "papel": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "papel-2": {
+        "role": "neutral",
+        "displayName": "Shelf Paper",
+        "canonical": "#f6f5f0",
+        "oklch": "oklch(97.0% 0.007 97.4)",
+        "tonalRamp": [
+          "#0c0b09",
+          "#262521",
+          "#43423e",
+          "#62615d",
+          "#83827e",
+          "#a6a5a0",
+          "#cac9c4",
+          "#efeeeb"
+        ]
+      },
+      "linha": {
+        "role": "neutral",
+        "displayName": "Dotted Rule",
+        "canonical": "#dedbd0",
+        "oklch": "oklch(89.1% 0.015 94.2)",
+        "tonalRamp": [
+          "#0c0b07",
+          "#27251d",
+          "#444239",
+          "#646158",
+          "#858278",
+          "#a8a59b",
+          "#ccc9be",
+          "#f0eee8"
+        ]
+      },
+      "verde": {
+        "role": "mark",
+        "displayName": "Present Green",
+        "canonical": "#12803f",
+        "oklch": "oklch(52.7% 0.136 150.9)",
+        "tonalRamp": [
+          "#001300",
+          "#003400",
+          "#005414",
+          "#007635",
+          "#359956",
+          "#5dbd78",
+          "#82e29b",
+          "#c7ffd3"
+        ]
+      },
+      "vermelho": {
+        "role": "mark",
+        "displayName": "Absence Red",
+        "canonical": "#c81e1e",
+        "oklch": "oklch(53.5% 0.203 27.6)",
+        "tonalRamp": [
+          "#2e0000",
+          "#680000",
+          "#900000",
+          "#b9000c",
+          "#e23d36",
+          "#ff6659",
+          "#ff8c7d",
+          "#ffcfc1"
+        ]
+      },
+      "s-salario": {
+        "role": "chart-series",
+        "displayName": "Salário Blue",
+        "canonical": "#2348c9",
+        "oklch": "oklch(46.5% 0.204 265.9)",
+        "tonalRamp": [
+          "#02003d",
+          "#090085",
+          "#102aac",
+          "#2a51d3",
+          "#4876fa",
+          "#689bff",
+          "#8ac1ff",
+          "#c8edff"
+        ]
+      },
+      "s-cota": {
+        "role": "chart-series",
+        "displayName": "Cota Ochre",
+        "canonical": "#c08a00",
+        "oklch": "oklch(66.9% 0.138 80.8)",
+        "tonalRamp": [
+          "#1c0400",
+          "#451400",
+          "#663400",
+          "#885500",
+          "#ac7700",
+          "#d19a26",
+          "#f7bf54",
+          "#ffe9af"
+        ]
+      },
+      "s-verba": {
+        "role": "chart-series",
+        "displayName": "Verba Green",
+        "canonical": "#11845a",
+        "oklch": "oklch(54.4% 0.116 161.6)",
+        "tonalRamp": [
+          "#001303",
+          "#003411",
+          "#00532d",
+          "#00754c",
+          "#30976c",
+          "#59bb8e",
+          "#7ee1b1",
+          "#c6fee0"
+        ]
+      },
+      "s-auxilio": {
+        "role": "chart-series",
+        "displayName": "Auxílio Violet",
+        "canonical": "#8a3fb0",
+        "oklch": "oklch(51.6% 0.179 312.4)",
+        "tonalRamp": [
+          "#1a002a",
+          "#410061",
+          "#610c84",
+          "#8337a8",
+          "#a65bce",
+          "#cb7ff5",
+          "#f1a4ff",
+          "#ffdaff"
+        ]
+      },
+      "s-referencia": {
+        "role": "chart-series",
+        "displayName": "Reference Gray",
+        "canonical": "#8a8a8a",
+        "oklch": "oklch(63.3% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page H1, condensed 68%."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section H2."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Tile H3."
+      },
+      "price": {
+        "displayName": "Price",
+        "purpose": "Price tag numerals, condensed 62%, container-query sized; superscript currency .46em and cents .38em."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text at 100% width, max 68ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Price captions, object names, stamps, table headers (70–75% width)."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Evidence states, minimum-wage lines, chart labels."
+      }
+    },
+    "shadows": [
+      {
+        "name": "overlay-lift",
+        "value": "0 10px 28px rgba(0,0,0,.28)",
+        "purpose": "Search results dropdown only; tiles, tags and stamps stay flat."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Hero stamp landing and disclosure chevron."
+      },
+      {
+        "name": "carimbar",
+        "value": "scale(1.22) rotate(-7deg) -> scale(1) rotate(-2deg), .5s, .25s delay",
+        "purpose": "One-time stamp landing on the hero source stamp; disabled under prefers-reduced-motion."
+      },
+      {
+        "name": "state-fast",
+        "value": ".12s–.15s ease",
+        "purpose": "Stamp hover fill, tooltip fade."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone-narrow",
+        "value": "max-width: 480px"
+      },
+      {
+        "name": "tablet",
+        "value": "min-width: 760px"
+      },
+      {
+        "name": "wide",
+        "value": "min-width: 1100px"
+      }
+    ],
+    "fonts": [
+      {
+        "family": "Archivo",
+        "src": "dp/site/static/fontes/archivo-var.woff2",
+        "axes": {
+          "wght": "100 900",
+          "wdth": "62% 125%"
+        },
+        "license": "SIL OFL"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Price Tag (etiqueta)",
+      "kind": "custom",
+      "refersTo": "etiqueta",
+      "description": "Cost as a shelf price tag with superscript currency and cents; the largest object in its frame, sized by container query inside the price block.",
+      "html": "<div class=\"ds-preco-bloco\"><span class=\"ds-etiqueta\" aria-label=\"R$ 233.591,45\"><span class=\"ds-moeda\">R$</span><span>233.591</span><span class=\"ds-cent\">,45</span></span><span class=\"ds-sob\">por mês</span><span class=\"ds-sm\">= 144 salários mínimos</span></div>",
+      "css": ":host{--amarelo:#ffd60a;--tinta:#111111;--tinta-2:#3d3d3d;--papel:#ffffff;--papel-2:#f6f5f0;--linha:#dedbd0;--carimbo:#1e40af;--verde:#12803f;--vermelho:#c81e1e;font-family:Archivo,system-ui,sans-serif;}.ds-preco-bloco{container-type:inline-size;display:grid;gap:6px;justify-items:start;background:var(--papel);padding:16px;border:2px solid var(--tinta);border-radius:10px;max-width:420px}.ds-etiqueta{display:inline-flex;align-items:flex-start;width:100%;background:var(--amarelo);border:3px solid var(--tinta);border-radius:9px;padding:8px 14px 6px 12px;font-stretch:62%;font-weight:900;line-height:.86;letter-spacing:-.015em;white-space:nowrap;font-size:clamp(3rem,21cqi,6.6rem);color:var(--tinta)}.ds-moeda{font-size:.46em;margin:.1em .12em 0 0}.ds-cent{font-size:.38em;margin:.08em 0 0 .04em}.ds-sob{font-stretch:70%;font-weight:800;font-size:1.35rem;line-height:1.1}.ds-sm{font-size:.875rem;font-weight:650;color:var(--tinta-2)}"
+    },
+    {
+      "name": "Source Stamp (carimbo)",
+      "kind": "custom",
+      "refersTo": "carimbo",
+      "description": "Blue rubber-stamp link to the official source of a number.",
+      "html": "<a class=\"ds-carimbo\" href=\"#\">Fonte: Câmara dos Deputados<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 4h6v6M20 4l-9 9\"/><path d=\"M18 14v5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V7.5A1.5 1.5 0 0 1 5.5 6H10\"/></g></svg></a>",
+      "css": ":host{--amarelo:#ffd60a;--tinta:#111111;--tinta-2:#3d3d3d;--papel:#ffffff;--papel-2:#f6f5f0;--linha:#dedbd0;--carimbo:#1e40af;--verde:#12803f;--vermelho:#c81e1e;font-family:Archivo,system-ui,sans-serif;}.ds-carimbo{display:inline-flex;align-items:center;gap:6px;color:var(--carimbo);border:2.5px solid var(--carimbo);border-radius:7px;padding:3px 10px;font-stretch:75%;font-weight:750;font-size:.95rem;line-height:1.25;text-decoration:none;transform:rotate(-2deg);background:rgba(255,255,255,.6);transition:background-color .15s ease,color .15s ease}.ds-carimbo:hover{background:var(--carimbo);color:var(--papel)}.ds-carimbo:focus-visible{outline:3px solid var(--carimbo);outline-offset:2px}.ds-carimbo svg{width:15px;height:15px}"
+    },
+    {
+      "name": "Tile (ladrilho)",
+      "kind": "card",
+      "refersTo": "ladrilho",
+      "description": "White content tile outlined in 2px ink on the yellow field.",
+      "html": "<div class=\"ds-campo\"><section class=\"ds-ladrilho\"><h3>De onde vem esse custo</h3><p>O salário bruto é só uma parte. A maior parte é a verba de gabinete.</p><span class=\"ds-ev\">média calculada a partir das páginas oficiais</span></section></div>",
+      "css": ":host{--amarelo:#ffd60a;--tinta:#111111;--tinta-2:#3d3d3d;--papel:#ffffff;--papel-2:#f6f5f0;--linha:#dedbd0;--carimbo:#1e40af;--verde:#12803f;--vermelho:#c81e1e;font-family:Archivo,system-ui,sans-serif;}.ds-campo{background:var(--amarelo);padding:16px}.ds-ladrilho{background:var(--papel);border:2px solid var(--tinta);border-radius:10px;padding:22px;display:grid;gap:12px;color:var(--tinta)}.ds-ladrilho h3{margin:0;font-stretch:68%;font-weight:850;font-size:1.35rem;line-height:1.02}.ds-ladrilho p{margin:0;font-size:17px;line-height:1.5;max-width:68ch}.ds-ev{font-size:.875rem;font-weight:650;color:#5b4a00}"
+    },
+    {
+      "name": "Shelf Tag (tag)",
+      "kind": "chip",
+      "refersTo": "tag-prateleira",
+      "description": "Small yellow price tag used for party cost on the gondola shelf.",
+      "html": "<span class=\"ds-tag\">R$ 234 mil</span><span class=\"ds-sm\">= 144 sal. mínimos</span>",
+      "css": ":host{--amarelo:#ffd60a;--tinta:#111111;--tinta-2:#3d3d3d;--papel:#ffffff;--papel-2:#f6f5f0;--linha:#dedbd0;--carimbo:#1e40af;--verde:#12803f;--vermelho:#c81e1e;font-family:Archivo,system-ui,sans-serif;}.ds-tag{display:inline-block;background:var(--amarelo);border:2px solid var(--tinta);border-radius:6px;padding:3px 7px 2px;font-stretch:62%;font-weight:900;font-size:1.45rem;line-height:1;white-space:nowrap;color:var(--tinta)}.ds-sm{display:block;font-size:.875rem;font-weight:650;color:var(--tinta-2);margin-top:4px}"
+    },
+    {
+      "name": "Presence Marks",
+      "kind": "custom",
+      "refersTo": "verde",
+      "description": "State by mark shape: ✓ present, J justified, ✕ unjustified (the only use of red).",
+      "html": "<div class=\"ds-marcas\"><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"11\" fill=\"#12803f\"/><path d=\"M6.8 12.4l3.4 3.4 7-7.4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"11\" fill=\"#1e40af\"/><path d=\"M13.6 6.5v7.2c0 2.2-1.2 3.5-3.1 3.5-1.2 0-2.1-.5-2.7-1.4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.6\" stroke-linecap=\"round\"/></svg><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"11\" fill=\"#c81e1e\"/><path d=\"M8 8l8 8M16 8l-8 8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.8\" stroke-linecap=\"round\"/></svg></div>",
+      "css": ".ds-marcas{display:flex;gap:3px}.ds-marcas svg{width:22px;height:22px}"
+    },
+    {
+      "name": "Search Combobox",
+      "kind": "input",
+      "refersTo": "busca",
+      "description": "White search field in the black top band; border turns yellow on focus.",
+      "html": "<div class=\"ds-topo\"><label class=\"ds-busca\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\"><circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"M15.5 15.5 21 21\"/></g></svg><input type=\"search\" placeholder=\"Busque um nome ou partido\"></label></div>",
+      "css": ":host{--amarelo:#ffd60a;--tinta:#111111;--tinta-2:#3d3d3d;--papel:#ffffff;--papel-2:#f6f5f0;--linha:#dedbd0;--carimbo:#1e40af;--verde:#12803f;--vermelho:#c81e1e;font-family:Archivo,system-ui,sans-serif;}.ds-topo{background:var(--tinta);padding:14px 24px}.ds-busca{display:flex;align-items:center;gap:10px;background:var(--papel);color:var(--tinta);border-radius:9px;padding:0 14px;height:50px;border:2px solid var(--papel)}.ds-busca:focus-within{border-color:var(--amarelo)}.ds-busca svg{width:1.2em;height:1.2em}.ds-busca input{border:0;outline:0;background:transparent;font:inherit;font-size:1.05rem;width:100%}"
+    },
+    {
+      "name": "Mobile Bottom Nav",
+      "kind": "nav",
+      "refersTo": "nav-baixo",
+      "description": "Fixed black four-cell bar on phones; current item turns yellow.",
+      "html": "<nav class=\"ds-nav\"><a aria-current=\"page\" href=\"#\"><svg viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"><path d=\"M3 11 12 3.5 21 11\"/><path d=\"M5.5 9.5V20h5v-6h3v6h5V9.5\"/></g></svg>Início</a><a href=\"#\"><svg viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\"><circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"M15.5 15.5 21 21\"/></g></svg>Buscar</a><a href=\"#\"><svg viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><circle cx=\"8\" cy=\"8\" r=\"3.2\"/><circle cx=\"16.5\" cy=\"9\" r=\"2.6\"/><path d=\"M2.5 20c.6-3.6 2.8-5.6 5.5-5.6s4.9 2 5.5 5.6\"/><path d=\"M14.2 14.6c.7-.3 1.4-.5 2.3-.5 2.3 0 4.2 1.7 4.8 5\"/></g></svg>Partidos</a><a href=\"#\"><svg viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"17\" height=\"15.5\" rx=\"2\"/><path d=\"M3.5 10h17M8 3v4M16 3v4\" stroke-linecap=\"round\"/></g></svg>Semana</a></nav>",
+      "css": ":host{--amarelo:#ffd60a;--tinta:#111111;--tinta-2:#3d3d3d;--papel:#ffffff;--papel-2:#f6f5f0;--linha:#dedbd0;--carimbo:#1e40af;--verde:#12803f;--vermelho:#c81e1e;font-family:Archivo,system-ui,sans-serif;}.ds-nav{background:var(--tinta);display:grid;grid-template-columns:repeat(4,1fr);height:64px}.ds-nav a{color:var(--papel);text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.82rem;font-weight:600}.ds-nav a svg{width:24px;height:24px}.ds-nav a[aria-current=page],.ds-nav a:hover{color:var(--amarelo)}.ds-nav a:focus-visible{outline:3px solid var(--amarelo);outline-offset:-3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Encarte do Povo",
+    "overview": "**Creative North Star: \"Encarte do Povo\"**\n\nThe site is a Brazilian supermarket flyer turned into a transparency portal. Every page sits on a flat flyer-yellow field; content lives on white tiles outlined in 2px ink; the cost of a parliamentarian is printed as a shelf price tag with superscript cents, beside the everyday things that money buys (minimum wages, food baskets, plane tickets, square metres). Every number carries a blue rubber stamp that links to the official source it came from.\n\nThe flyer gives the material, not the voice. The tag, the stamp, the shelf and the flat clip-art objects are borrowed; the promo grammar (starbursts, \"OFERTA\", \"IMPERDÍVEL\", exclamation copy) is excluded, and the copy reads as neutral portal text. The system refuses both the blue government data table and the red protest poster: red appears only inside the ✕ presence mark.\n\nDensity is mobile-first and generous: one column of tiles on a phone, a two-column hero and multi-column shelves on desktop, body text always at reading size, charts built in HTML so their labels never shrink.",
+    "keyCharacteristics": [
+      "Flat yellow field, white tiles, 2px ink outlines, no decorative shadows.",
+      "One variable family (Archivo) on two axes: condensed 62–75% width for display, prices and labels; 100% width for body.",
+      "Price tag as the largest object in its frame; cents superscript.",
+      "A source stamp on every number; every R$ value also stated in minimum wages.",
+      "State shown by mark shape (✓ J ✕), not by color alone."
+    ],
+    "rules": [
+      {
+        "name": "The Red Is a Mark Rule",
+        "body": "Red (#c81e1e) exists only as the fill of the ✕ \"absence without justification\" mark. Never use it for text, alerts, emphasis, headlines, or chart series.",
+        "section": "colors"
+      },
+      {
+        "name": "The Series Stay in Charts Rule",
+        "body": "The five series colors encode the four cost components and the reference, consistently on every page (salário, cota, verba, auxílio, salário mínimo). Do not reuse them as UI accents, and do not swap their order or meaning.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Labels Rule",
+        "body": "Chart text is always ink, never the series color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Widths Rule",
+        "body": "Condensed width (62–75%) is for display, prices, numerals and labels; running text is always 100% width. Never set a paragraph condensed.",
+        "section": "typography"
+      },
+      {
+        "name": "The Superscript Cents Rule",
+        "body": "A price shown as a tag splits into R$ / integer / cents, with currency and cents raised and reduced. Inline prices in prose stay plain `R$ 46.366,19`.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Every numeric column, chart value and table cell uses tabular numerals.",
+        "section": "typography"
+      },
+      {
+        "name": "The Outline Not Shadow Rule",
+        "body": "A surface is separated by a 2px ink border on yellow. Tiles, cards, tags and stamps carry no shadow; only true floating overlays may.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** put content on white tiles with a 2px ink border and 10px radius over the yellow field.",
+      "**Do** show a cost as a yellow price tag with superscript cents, and make it the largest object in its frame.",
+      "**Do** link every number to its official source with a blue stamp or a \"fonte\" link, and label its evidence state.",
+      "**Do** state every R$ value also in minimum wages.",
+      "**Do** encode state by mark shape (✓ J ✕) with color only as reinforcement.",
+      "**Do** use the five series colors for cost components and the reference, with ink labels, and pair every chart with an equivalent table.",
+      "**Do** keep copy neutral, in the voice of a transparency portal."
+    ],
+    "donts": [
+      "**Don't** use the flyer's promo grammar: no starbursts, \"OFERTA\", \"IMPERDÍVEL\", or sale exclamations.",
+      "**Don't** use red for anything but the ✕ mark.",
+      "**Don't** add shadows to tiles, tags or stamps; outline instead.",
+      "**Don't** set running text in condensed width.",
+      "**Don't** drift toward a blue government data table or a red protest poster.",
+      "**Don't** generate paid images (Magnific or similar) without the user's explicit request; objects and icons are hand-authored SVG."
+    ]
+  }
+}

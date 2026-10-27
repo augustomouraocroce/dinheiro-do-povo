@@ -6,7 +6,9 @@
 <meta name="theme-color" content="#111111">
 <title>{% block titulo %}Dinheiro do Povo{% endblock %}</title>
 <meta name="description" content="{% block descricao %}Quanto custam e como trabalham deputados e senadores, com dados oficiais e a fonte de cada número.{% endblock %}">
-<link rel="preload" href="{{ raiz }}static/fontes/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+{% if artefato %}<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+{% else %}<link rel="preload" href="{{ raiz }}static/fontes/archivo-var.woff2" as="font" type="font/woff2" crossorigin>{% endif %}
 <link rel="stylesheet" href="{{ raiz }}static/site.css">
 </head>
 <body>

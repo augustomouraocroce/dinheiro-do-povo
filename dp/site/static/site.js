@@ -34,8 +34,10 @@
         a.innerHTML = '<span class="selo">' + i.partido + "</span><span><span class=\"r-nome\"></span><br><span class=\"r-info\">Partido</span></span><span></span>";
         a.querySelector(".r-nome").textContent = i.partido_nome;
       } else {
-        a.innerHTML = '<img alt="" loading="lazy"><span><span class="r-nome"></span><br><span class="r-info"></span></span><span class="r-partido"></span>';
-        a.querySelector("img").src = raiz + i.foto;
+        a.innerHTML = (i.sprite ? '<span class="foto-s r-foto" aria-hidden="true"></span>' : '<img alt="" loading="lazy">') +
+          '<span><span class="r-nome"></span><br><span class="r-info"></span></span><span class="r-partido"></span>';
+        if (i.sprite) a.querySelector(".foto-s").style.backgroundPosition = i.sprite;
+        else a.querySelector("img").src = raiz + i.foto;
         a.querySelector(".r-nome").textContent = i.nome;
         a.querySelector(".r-info").textContent = i.cargo + " · " + i.uf;
         a.querySelector(".r-partido").textContent = i.partido;
