@@ -183,4 +183,8 @@ def test_gerar_relatorio(conn, tmp_path):
     assert "Davi (PL-BA)" in texto                       # não compareceu no Senado
     assert "R$ 46.366,19" in texto
     pagina = html.read_text(encoding="utf-8")
-    assert "<table>" in pagina and "DINHEIRO DO POVO" in pagina
+    assert "DINHEIRO DO POVO" in pagina
+    # Toda tabela do Markdown precisa virar <table> (uma linha em branco faltando quebra isso):
+    # presença semana e ano, 1 votação Câmara, custos, 1 votação Senado,
+    # participação no ano, CEAPS e despesas novas do Senado.
+    assert texto.count("| Partido |") == pagina.count("<table>") == 8

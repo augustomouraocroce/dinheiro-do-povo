@@ -132,7 +132,7 @@ O limite da cota muda conforme o estado do deputado, então comparamos o **perce
 ### Votações nominais no Plenário
 
 {% for v in vs.votacoes %}
-**{{ v.data|data }}: {{ v.descricao }}** ({{ resultado(v) }}; Sim: {{ v.placar.get("Sim", 0) }}, Não: {{ v.placar.get("Não", 0) }}){% if v.url %} · [matéria]({{ v.url }}){% endif %}
+**{{ v.data|data }}: {{ v.descricao }}** ({{ resultado(v) }}; Sim: {{ v.placar.get("Sim", 0) }}, Não: {{ v.placar.get("Não", 0) }}){{ (" · [matéria](" ~ v.url ~ ")") if v.url else "" }}
 
 | Partido | Sim | Não | Outros votos | Presente sem votar | Ausência justificada | Não compareceu |
 |---|---:|---:|---:|---:|---:|---:|
