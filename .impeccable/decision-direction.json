@@ -1,0 +1,225 @@
+{
+  "title": "Escolha o mundo visual do Dinheiro do Povo",
+  "question": "O sorteio escolheu o Encarte do Povo. Atenção: os créditos de geração de imagem (Magnific) acabaram, então não consigo gerar imagens para as outras opções nem a rodada de 3 imagens do caminho 'imagem antes'. A imagem do Encarte vira a referência de qualidade e a construção segue direto no código. Escolha a direção: fique com o Encarte, escolha uma alternativa ou sorteie de novo.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Encarte do Povo",
+      "kicker": "THE ROLL",
+      "lineage": "encarte de supermercado brasileiro, o folheto de preços da semana",
+      "thesis": "O custo de cada parlamentar etiquetado como preço de gôndola, ao lado do que esse dinheiro compra.",
+      "palette": [
+        "#FFD60A",
+        "#111111",
+        "#FFFFFF",
+        "#1E40AF",
+        "#E2231A"
+      ],
+      "materials": [
+        "papel de folheto",
+        "etiqueta de preço com centavos sobrescritos",
+        "carimbo azul de fonte"
+      ],
+      "viewport": "Celular: foto oficial num ladrilho branco, etiqueta amarela gigante com o salário, e logo abaixo os itens do dia a dia que esse valor compra.",
+      "risk": "A linguagem de folheto pode soar como sátira; exige texto 100% neutro, sem 'oferta' nem explosões.",
+      "raised": [
+        {
+          "from": "challenger-bancada",
+          "raise": "Estado é marca, não cor: presente, justificada e não justificada têm símbolo próprio, legível sem cor."
+        },
+        {
+          "from": "challenger-regua",
+          "raise": "Uma régua única: todo valor da página também aparece em salários mínimos."
+        },
+        {
+          "from": "challenger-pedreira",
+          "raise": "Custo como massa contável: valores viram pilhas de itens (cestas, carros), não barras abstratas."
+        },
+        {
+          "from": "challenger-fita",
+          "raise": "Cada número traz seu estado de evidência: oficial, calculado por nós ou com atraso da fonte."
+        },
+        {
+          "from": "challenger-gazeta",
+          "raise": "Errata à vista: correções ficam publicadas e datadas, nunca apagadas em silêncio."
+        }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.png"
+    },
+    {
+      "id": "model-pick",
+      "label": "Holerite Público",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "contracheque impresso em formulário contínuo",
+      "thesis": "Cada parlamentar ganha um holerite, linha a linha, com o holerite de um salário mínimo ao lado na mesma escala.",
+      "palette": [
+        "#F4F6F2",
+        "#1A1A1A",
+        "#DDEBDD",
+        "#0B5D3B"
+      ],
+      "materials": [
+        "formulário contínuo com faixas verdes",
+        "números de impressora matricial",
+        "colunas descrição e valor"
+      ],
+      "viewport": "Celular: cabeçalho de holerite com foto, cargo e partido; linhas de salário, cota e verba; abaixo, o holerite de um salário mínimo como uma tira fina.",
+      "risk": "Familiar para quem tem carteira assinada; jovens que nunca viram um holerite podem não reconhecer o formato."
+    },
+    {
+      "id": "challenger-civic",
+      "label": "Prospecto Cívico",
+      "verdict": "competitive",
+      "lineage": "prospectos cívicos corporativos tardo-modernos",
+      "thesis": "Portal calmo: quase tudo branco, uma fita de cor e números em duas espessuras de uma só fonte.",
+      "palette": [
+        "#F7F7FA",
+        "#1B1547",
+        "#6B5CE7",
+        "#7FD8D0"
+      ],
+      "materials": [
+        "fita renderizada teal a violeta",
+        "réguas de 1px"
+      ],
+      "viewport": "Celular: título grande 'Quanto custa o seu deputado?', busca em destaque, fita de cor na lateral e cartões de parlamentares.",
+      "case": "Funde bem e é claro; perde em identificação: parece produto de tecnologia, não algo do dia a dia de quem vai ler.",
+      "risk": "Pode parecer site de startup e esfriar a mensagem.",
+      "hero": "https://impeccable.style/worlds/cards/civic-bureau-prospectus-late-modern-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/civic-bureau-prospectus-late-modern.webp"
+    },
+    {
+      "id": "challenger-bancada",
+      "label": "Bancada de Montagem",
+      "verdict": "declined",
+      "lineage": "mesa de corte de filme",
+      "thesis": "As semanas como quadros de filme presos num trilho perfurado.",
+      "palette": [
+        "#FF6A13",
+        "#0A0A0A",
+        "#FFFFFF"
+      ],
+      "materials": [
+        "película",
+        "fita laranja"
+      ],
+      "viewport": "Trilho de quadros semanais atravessando a tela.",
+      "case": "Funde mal: o público não se identifica com uma mesa de edição de filme.",
+      "risk": "Ilegível para leigos.",
+      "kept": "Estado é marca, não cor.",
+      "hero": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail-hero.webp"
+    },
+    {
+      "id": "challenger-regua",
+      "label": "Régua de Espectro",
+      "verdict": "declined",
+      "lineage": "placa de espectrógrafo",
+      "thesis": "Tudo medido contra uma régua calibrada única.",
+      "palette": [
+        "#2B2B2E",
+        "#E8E2D4",
+        "#F5C518"
+      ],
+      "materials": [
+        "linhas finas",
+        "fundo carvão"
+      ],
+      "viewport": "Valores como linhas numa régua horizontal.",
+      "case": "Funde mal: abstrato demais para explicar dinheiro a um adolescente.",
+      "risk": "Frio e técnico.",
+      "kept": "Uma régua única para todos os valores.",
+      "hero": "https://impeccable.style/worlds/cards/operate-c-emission-line-rail-hero.webp"
+    },
+    {
+      "id": "challenger-pedreira",
+      "label": "Pedreira de Nuvens",
+      "verdict": "declined",
+      "lineage": "mundo surreal de blocos de nuvem",
+      "thesis": "Custos cortados como blocos de nuvem empilhados.",
+      "palette": [
+        "#FFFFFF",
+        "#5AA9E6",
+        "#8A8F98",
+        "#C0C0C0"
+      ],
+      "materials": [
+        "nuvem volumétrica",
+        "corte prateado"
+      ],
+      "viewport": "Blocos de nuvem empilhados por partido.",
+      "case": "Funde mal: o surrealismo atrapalha a leitura de valores exatos.",
+      "risk": "Parece arte, não informação.",
+      "kept": "Custo como massa contável.",
+      "hero": "https://impeccable.style/worlds/cards/dream-surreal-impossible-worlds-cloud-quarry-hero.webp"
+    },
+    {
+      "id": "challenger-fita",
+      "label": "Fita de Procedência",
+      "verdict": "declined",
+      "lineage": "procedência de acervo de museu",
+      "thesis": "O caminho do dinheiro como uma fita de custódia datada.",
+      "palette": [
+        "#E9DFC7",
+        "#B22222",
+        "#9A9A9A"
+      ],
+      "materials": [
+        "fita de seda",
+        "carimbos de arquivo"
+      ],
+      "viewport": "Uma fita vertical ligando salário, cota e verba.",
+      "case": "Funde razoável, mas perde nos dois eixos para o folheto.",
+      "risk": "Parece museu, não utilidade pública.",
+      "kept": "Estado de evidência em cada número.",
+      "hero": "https://impeccable.style/worlds/cards/exhibition-museum-curation-provenance-ribbon-hero.webp"
+    },
+    {
+      "id": "challenger-gazeta",
+      "label": "Gazeta do Gelo",
+      "verdict": "declined",
+      "lineage": "jornal impresso à mão numa expedição polar",
+      "thesis": "Cada semana como uma edição impressa à mão, com erros à vista.",
+      "palette": [
+        "#1A1A1A",
+        "#E8E1D1"
+      ],
+      "materials": [
+        "litografia",
+        "papel de trapo"
+      ],
+      "viewport": "Uma edição semanal em coluna estreita.",
+      "case": "Funde mal: estética de jornal antigo afasta o público jovem.",
+      "risk": "Nostálgico e pesado.",
+      "kept": "Errata à vista, nunca apagada.",
+      "hero": "https://impeccable.style/worlds/cards/graphic-worlds-publishing-expedition-ice-press-hero.webp"
+    }
+  ],
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "buildPath": {
+    "value": "code",
+    "toggle": false
+  },
+  "canon": true,
+  "canonCard": {
+    "label": "Portal de transparência padrão",
+    "thesis": "O que portais públicos de transparência fazem, executado com capricho.",
+    "palette": [
+      "#FFFFFF",
+      "#1351B4",
+      "#071D41",
+      "#F8F8F8"
+    ],
+    "materials": [
+      "grade limpa",
+      "cartões e tabelas filtráveis"
+    ],
+    "viewport": "Barra azul, busca, cartões com totais e tabela por partido.",
+    "risk": "Igual a qualquer portal do governo, pode ser confundido com site oficial."
+  },
+  "steer": true
+}

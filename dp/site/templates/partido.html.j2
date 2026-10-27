@@ -1,0 +1,53 @@
+{% extends "base.html.j2" %}
+{% import "componentes.html.j2" as c with context %}
+{% block titulo %}{{ pt.nome }} ({{ pt.sigla }}) · Dinheiro do Povo{% endblock %}
+{% block descricao %}Quanto custam e como trabalham os parlamentares do {{ pt.sigla }}, com dados oficiais.{% endblock %}
+{% block conteudo %}
+<section class="ladrilho pilha" aria-labelledby="t-partido">
+  <div class="linha">{{ c.partido_id(pt.sigla, raiz, logos, grande=True, com_link=False) }}</div>
+  <h1 id="t-partido">{{ pt.nome }}</h1>
+  <p>{{ pt.deputados }} {{ pt.deputados|plural("deputado federal", "deputados federais") }} e {{ pt.senadores }} {{ pt.senadores|plural("senador", "senadores") }} em exercício na data da coleta.</p>
+  {% if pt.custo_medio %}
+  <div>
+    <p class="rotulo-preco">Custo médio de cada deputado do {{ pt.sigla }}</p>
+    <div style="margin-top:8px">{{ c.preco(pt.custo_medio.total, "m") }}</div>
+    <p class="sob-preco">por mês · média da Câmara: {{ camara.media_custo.total|brl }}</p>
+  </div>
+  <div class="linha">{{ c.ev("calculo", "média calculada a partir das páginas oficiais") }}</div>
+  {% endif %}
+</section>
+
+{% if pt.custo_medio %}
+<section class="secao" aria-labelledby="t-comp">
+  <div class="ladrilho pilha">
+    <h2 id="t-comp">Composição do custo, ao lado da Câmara inteira</h2>
+    {{ c.legenda_custo(partes_custo) }}
+    {{ grafico_custo|safe }}
+    {{ c.tabela_custo(linhas_custo) }}
+  </div>
+  <div class="grade-2" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr))">
+    <div class="ladrilho pilha">
+      <h3>Presença no Plenário em {{ ano }}</h3>
+      {{ grafico_presenca|safe }}
+    </div>
+    <div class="ladrilho pilha">
+      <h3>Ausências sem justificativa em {{ ano }}</h3>
+      {{ grafico_ausencias|safe }}
+      <p class="secundario">Parte dos dias de sessão em que o deputado faltou sem justificativa.</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="secao" aria-labelledby="t-membros">
+  <h2 id="t-membros">Parlamentares do {{ pt.sigla }}</h2>
+  <label class="filtro"><svg class="ic" aria-hidden="true"><use href="#i-busca"/></svg><span class="visivel-leitor">Filtrar por nome ou estado</span>
+    <input type="search" placeholder="Filtrar por nome ou estado" data-filtro="lista-membros" data-contador="n-membros"></label>
+  <p class="secundario no-amarelo"><span id="n-membros">{{ pt.membros|length }}</span> parlamentares. Valor de cada cartão: custo médio do mandato por mês (deputados) ou cota média por mês (senadores).</p>
+  <div class="lista-pessoas" id="lista-membros">
+    {% for p in pt.membros %}
+      {{ c.cartao_pessoa(p, raiz, (p.custo.total if p.casa == "camara" and p.custo else p.ceaps_media)|compacto ~ "/mês") }}
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

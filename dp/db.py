@@ -118,6 +118,27 @@ CREATE TABLE IF NOT EXISTS recurso_oficial (
     PRIMARY KEY (parlamentar_id, ano, item)
 );
 
+-- Bens declarados ao TSE em cada candidatura (valor declarado, não de mercado).
+CREATE TABLE IF NOT EXISTS patrimonio (
+    parlamentar_id TEXT NOT NULL,
+    ano_eleicao    INTEGER NOT NULL,
+    cargo          TEXT,                     -- cargo disputado naquela eleição
+    situacao       TEXT,                     -- resultado (ELEITO, SUPLENTE...)
+    partido        TEXT,                     -- partido na candidatura
+    total          REAL NOT NULL,
+    metodo         TEXT NOT NULL,            -- como o vínculo foi feito: 'cpf' | 'nome+uf'
+    url_fonte      TEXT NOT NULL,
+    PRIMARY KEY (parlamentar_id, ano_eleicao)
+);
+
+CREATE TABLE IF NOT EXISTS patrimonio_tipo (
+    parlamentar_id TEXT NOT NULL,
+    ano_eleicao    INTEGER NOT NULL,
+    tipo           TEXT NOT NULL,
+    valor          REAL NOT NULL,
+    PRIMARY KEY (parlamentar_id, ano_eleicao, tipo)
+);
+
 CREATE TABLE IF NOT EXISTS coleta_log (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     etapa       TEXT NOT NULL,

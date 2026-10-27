@@ -1,0 +1,54 @@
+{% extends "base.html.j2" %}
+{% block titulo %}Como ler · Dinheiro do Povo{% endblock %}
+{% block conteudo %}
+<article class="texto">
+<h1>Como ler este site</h1>
+<p>Todo número vem de uma fonte oficial e tem link para conferência. Quando fazemos uma conta (média, percentual, equivalência), a conta é explicada aqui e marcada no número com o símbolo de cálculo.</p>
+
+<h2 id="custo">Custo médio do mandato por mês (deputados)</h2>
+<p>É a soma de quatro partes, todas tiradas da página oficial de cada deputado no site da Câmara:</p>
+<ul>
+  <li><strong>Salário bruto</strong>: o valor mensal publicado, antes dos descontos (ausências sem justificativa são descontadas do salário).</li>
+  <li><strong>Cota parlamentar</strong>: média mensal dos meses de janeiro a {{ meses[mes_corte - 1] }}. Os meses mais recentes ficam de fora da média porque o deputado tem até 90 dias para apresentar as notas.</li>
+  <li><strong>Verba de gabinete</strong>: paga os funcionários do gabinete. Mesma regra da cota.</li>
+  <li><strong>Auxílio-moradia</strong>: o total recebido no ano dividido pelos meses já passados ({{ mes_atual }}).</li>
+</ul>
+<p>Os totais anuais da cota vêm da página do deputado, e não do arquivo de notas fiscais, porque o arquivo não traz as passagens aéreas emitidas pelo sistema da Câmara.</p>
+
+<h2 id="presenca">Presença</h2>
+<p><strong>Câmara</strong>: cada dia de sessão deliberativa, como publicado na página "Presença em Plenário" do deputado. A Câmara publica o motivo de cada ausência justificada (missão autorizada, licença médica etc.); só a ausência sem motivo é "sem justificativa".</p>
+<p><strong>Senado</strong>: participação nas votações nominais do Plenário, com o código oficial de cada senador (votou, presente sem votar, ausência justificada, não compareceu). Não é a presença na sessão inteira.</p>
+
+<h2 id="patrimonio">Patrimônio declarado</h2>
+<p>É o total de bens que o próprio candidato declarou ao TSE ao registrar a candidatura (2018, 2022 ou 2026). É o valor declarado à Receita, não o preço de mercado. Mostramos o total e a soma por tipo de bem, nunca a descrição de cada bem. Deputados são ligados à candidatura pelo CPF (usado só na hora da ligação, nunca guardado nem exibido); senadores, pelo nome completo e estado, e conferimos que cada um foi candidato ao Senado no próprio estado.</p>
+
+<h2 id="referencias">Referências do dia a dia</h2>
+<p>Usadas para traduzir valores em coisas do cotidiano. Dividimos o valor pelo preço da referência.</p>
+<div class="rolagem"><table>
+  <thead><tr><th>Referência</th><th>Valor</th><th>Quando</th><th>Fonte</th></tr></thead>
+  <tbody>
+  {% for chave, r in refs.items() %}
+    <tr><td>{{ r.descricao }}</td><td>{{ r.valor|brl }}</td><td>{{ r.referencia }}</td><td><a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.fonte }}</a></td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+<p>"Em 12 meses" é 12 vezes a média mensal, uma projeção simples, e está sempre marcado como cálculo.</p>
+
+<h2 id="partido">Partido</h2>
+<p>É o partido do parlamentar na data da coleta. Quem trocou de partido aparece no partido atual; o histórico das trocas fica guardado.</p>
+
+<h2 id="correcoes">Correções</h2>
+{% if errata %}
+<ul>{% for e in errata %}<li><strong>{{ e.data|data }}</strong>: {{ e.texto }}</li>{% endfor %}</ul>
+{% else %}
+<p>Nenhuma correção registrada até agora. Quando houver, ela aparece aqui, com data, e nunca é apagada.</p>
+{% endif %}
+
+<h2 id="licencas">Fotos, logos e fonte</h2>
+<ul>
+  <li>Fotos oficiais publicadas pela Câmara dos Deputados e pelo Senado Federal.</li>
+  <li>Logos de PL, Progressistas, MDB e Podemos: Wikimedia Commons, domínio público ({% for sigla, l in licencas.items() %}<a href="{{ l.pagina }}" target="_blank" rel="noopener">{{ sigla }}</a>{% if not loop.last %}, {% endif %}{% endfor %}). Republicanos, Novo e Missão não têm logo com licença livre no Commons e aparecem com a sigla.</li>
+  <li>Fonte tipográfica Archivo, SIL Open Font License.</li>
+</ul>
+</article>
+{% endblock %}

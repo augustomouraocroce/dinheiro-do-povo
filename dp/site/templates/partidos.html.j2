@@ -1,0 +1,23 @@
+{% extends "base.html.j2" %}
+{% import "componentes.html.j2" as c with context %}
+{% block titulo %}Partidos acompanhados · Dinheiro do Povo{% endblock %}
+{% block conteudo %}
+<section class="pilha no-amarelo" aria-labelledby="t-partidos">
+  <h1 id="t-partidos">Partidos acompanhados</h1>
+  <p class="secundario">PL, Progressistas, Republicanos, MDB, Podemos, Novo e Missão. A Câmara e o Senado inteiros entram só como comparação.</p>
+</section>
+<div class="partidos">
+{% for pt in partidos %}
+  <a class="partido" href="{{ raiz }}partido/{{ pt.sigla|slug }}.html">
+    <div class="cab">{{ c.partido_id(pt.sigla, raiz, logos, com_link=False) }}<span class="secundario">{{ pt.deputados }} dep. · {{ pt.senadores }} sen.</span></div>
+    <strong>{{ pt.nome }}</strong>
+    <dl>
+      {% if pt.custo_medio %}<dt>Custo médio por deputado, por mês</dt><dd>{{ pt.custo_medio.total|compacto }}</dd>{% endif %}
+      {% if pt.presenca.total %}<dt>Presença no Plenário em {{ ano }}</dt><dd>{{ pt.presenca.pct_presente|pct }}</dd>{% endif %}
+      {% if pt.ceaps_media %}<dt>Cota média por senador, por mês</dt><dd>{{ pt.ceaps_media|compacto }}</dd>{% endif %}
+      {% if pt.patrimonio.media %}<dt>Patrimônio médio declarado</dt><dd>{{ pt.patrimonio.media|compacto }}</dd>{% endif %}
+    </dl>
+  </a>
+{% endfor %}
+</div>
+{% endblock %}

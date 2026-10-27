@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR" data-raiz="{{ raiz }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<title>{% block titulo %}Dinheiro do Povo{% endblock %}</title>
+<meta name="description" content="{% block descricao %}Quanto custam e como trabalham deputados e senadores, com dados oficiais e a fonte de cada número.{% endblock %}">
+<link rel="preload" href="{{ raiz }}static/fontes/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ raiz }}static/site.css">
+</head>
+<body>
+{% include "icones.svg.j2" %}
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topo">
+  <div class="topo-dentro">
+    <a class="marca" href="{{ raiz }}index.html">Dinheiro do Povo</a>
+    <div class="busca" role="search">
+      <label>
+        <svg class="ic" aria-hidden="true"><use href="#i-busca"/></svg>
+        <span class="visivel-leitor">Buscar deputado, senador ou partido</span>
+        <input id="busca-campo" type="search" placeholder="Busque um nome ou partido" autocomplete="off"
+               role="combobox" aria-controls="busca-resultados" aria-expanded="false" aria-autocomplete="list">
+      </label>
+      <div id="busca-resultados" class="busca-resultados" role="listbox" aria-label="Resultados da busca"></div>
+    </div>
+    <nav class="nav-topo" aria-label="Principal">
+      <a href="{{ raiz }}index.html" {% if ativa == "inicio" %}aria-current="page"{% endif %}>Início</a>
+      <a href="{{ raiz }}partidos.html" {% if ativa == "partidos" %}aria-current="page"{% endif %}>Partidos</a>
+      <a href="{{ raiz }}semana/{{ sabado.isoformat() }}.html" {% if ativa == "semana" %}aria-current="page"{% endif %}>Semana</a>
+      <a href="{{ raiz }}metodologia.html" {% if ativa == "metodologia" %}aria-current="page"{% endif %}>Como ler</a>
+    </nav>
+  </div>
+</header>
+
+<main id="conteudo">
+{% block conteudo %}{% endblock %}
+</main>
+
+<footer class="rodape">
+  <p><strong>Só dados oficiais.</strong> Câmara dos Deputados, Senado Federal e TSE, com o link de cada número. Referências do dia a dia: Planalto, DIEESE/Conab, ANAC, FipeZAP e Renault, com a data de cada valor.</p>
+  <p class="secundario">Dados da semana de {{ inicio|data }} a {{ fim|data }}. Encontrou um erro? Toda correção é publicada em <a href="{{ raiz }}metodologia.html#correcoes">Correções</a>, com data.</p>
+  <p class="secundario">Fotos: oficiais da Câmara e do Senado. Logos de PL, PP, MDB e Podemos: Wikimedia Commons, domínio público; os demais partidos aparecem com a sigla. Fonte tipográfica Archivo (SIL Open Font License).</p>
+</footer>
+
+<nav class="nav-baixo" aria-label="Atalhos">
+  <a href="{{ raiz }}index.html" {% if ativa == "inicio" %}aria-current="page"{% endif %}><svg aria-hidden="true"><use href="#i-inicio"/></svg>Início</a>
+  <a href="#busca-campo" data-focar-busca><svg aria-hidden="true"><use href="#i-busca"/></svg>Buscar</a>
+  <a href="{{ raiz }}partidos.html" {% if ativa == "partidos" %}aria-current="page"{% endif %}><svg aria-hidden="true"><use href="#i-partidos"/></svg>Partidos</a>
+  <a href="{{ raiz }}semana/{{ sabado.isoformat() }}.html" {% if ativa == "semana" %}aria-current="page"{% endif %}><svg aria-hidden="true"><use href="#i-semana"/></svg>Semana</a>
+</nav>
+<script src="{{ raiz }}static/busca-indice.js"></script>
+<script src="{{ raiz }}static/site.js"></script>
+</body>
+</html>

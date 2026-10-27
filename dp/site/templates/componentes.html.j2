@@ -1,0 +1,93 @@
+{# Etiqueta de preço com centavos sobrescritos #}
+{% macro preco(valor, tamanho="g") -%}
+{%- set partes = valor|brl_partes -%}
+<span class="etiqueta preco-{{ tamanho }}" aria-label="{{ valor|brl }}"><span class="moeda" aria-hidden="true">R$</span><span class="inteiro" aria-hidden="true">{{ partes[0] }}</span><span class="centavos" aria-hidden="true">,{{ partes[1] }}</span></span>
+{%- endmacro %}
+
+{# Carimbo de fonte (sempre um link para a origem do número) #}
+{% macro carimbo(texto, url, hero=False) -%}
+<a class="carimbo{% if hero %} carimbo-hero{% endif %}" href="{{ url }}" target="_blank" rel="noopener">{{ texto }}<svg aria-hidden="true"><use href="#i-fonte"/></svg></a>
+{%- endmacro %}
+
+{# Estado da evidência do número: oficial, cálculo nosso ou com atraso da fonte #}
+{% macro ev(tipo, texto) -%}
+{%- if tipo == "calculo" -%}<span class="ev ev-calculo"><svg aria-hidden="true"><use href="#i-calculo"/></svg>{{ texto }}</span>
+{%- elif tipo == "atraso" -%}<span class="ev"><svg aria-hidden="true"><use href="#i-atraso"/></svg>{{ texto }}</span>
+{%- else -%}<span class="ev">{{ texto }}</span>{%- endif -%}
+{%- endmacro %}
+
+{# Logo do partido (domínio público) ou selo com a sigla #}
+{% macro partido_id(sigla, raiz, logos, grande=False, com_link=True) -%}
+{%- set conteudo -%}
+{%- if sigla in logos -%}<img class="logo-partido{% if grande %} logo-partido-g{% endif %}" src="{{ raiz }}static/partidos/{{ logos[sigla] }}" alt="{{ sigla }}">
+{%- else -%}<span class="selo{% if grande %} selo-g{% endif %}">{{ sigla }}</span>{%- endif -%}
+{%- endset -%}
+{%- if com_link -%}<a class="partido-id" href="{{ raiz }}partido/{{ sigla|slug }}.html" aria-label="Partido {{ sigla }}">{{ conteudo }}</a>
+{%- else -%}<span class="partido-id">{{ conteudo }}</span>{%- endif -%}
+{%- endmacro %}
+
+{# Quadros "equivale a" #}
+{% macro equivalencias(valor, refs, chaves, classe="") -%}
+<div class="equivale {{ classe }}">
+{%- for chave in chaves %}{% set r = refs[chave] %}{% set q = valor / r.valor %}
+  <div class="eq">
+    <svg class="x" aria-hidden="true"><use href="#x-{{ chave }}"/></svg>
+    <span class="qtd">{{ q|qtd }}</span>
+    <span class="oque">{{ r.nome if q|qtd == "1" else r.plural }}</span>
+    <span class="cada"><span>{{ r.valor|brl }} cada · {{ r.referencia }}</span><a href="{{ r.url }}" target="_blank" rel="noopener">fonte</a></span>
+  </div>
+{%- endfor %}
+</div>
+{%- endmacro %}
+
+{# Pilha contável de um item (custo como massa) #}
+{% macro pilha(qtd, chave, limite=60) -%}
+{%- set n = qtd|round(0, "floor")|int -%}
+<div class="pilha-itens" aria-label="{{ qtd|qtd }} vezes">
+{%- for _ in range(n if n < limite else limite) %}<svg aria-hidden="true"><use href="#x-{{ chave }}"/></svg>{% endfor -%}
+{%- if n > limite %}<span class="mais">+ {{ (n - limite)|num }}</span>{% endif -%}
+</div>
+{%- endmacro %}
+
+{# Legenda das partes do custo #}
+{% macro legenda_custo(partes_custo, com_referencia=True) -%}
+<div class="legenda" aria-hidden="true">
+{%- for chave, nome in partes_custo %}<span><i style="background: var(--s-{{ chave }})"></i>{{ nome }}</span>{% endfor -%}
+{%- if com_referencia %}<span><i style="background: var(--s-referencia)"></i>Salário mínimo</span>{% endif -%}
+</div>
+{%- endmacro %}
+
+{# Tabela equivalente a um gráfico de custo #}
+{% macro tabela_custo(linhas) -%}
+<details class="tabela-dados"><summary>Ver em tabela</summary>
+<div class="rolagem"><table class="tabela"><thead><tr><th></th>{% for p in linhas[0].partes %}<th class="n">{{ p.nome }}</th>{% endfor %}<th class="n">Total por mês</th></tr></thead><tbody>
+{%- for l in linhas %}<tr><th scope="row">{{ l.rotulo }}</th>{% for p in l.partes %}<td class="n">{{ p.valor|brl }}</td>{% endfor %}{% for _ in range(linhas[0].partes|length - l.partes|length) %}<td class="n">—</td>{% endfor %}<td class="n"><strong>{{ l.total|brl }}</strong></td></tr>{% endfor -%}
+</tbody></table></div></details>
+{%- endmacro %}
+
+{# Presença em marcas, dia a dia #}
+{% macro marcas_presenca(presenca, meses) -%}
+{%- set c = presenca.contagem -%}
+<div class="marcas-legenda">
+  <span><svg aria-hidden="true"><use href="#m-presente"/></svg><b>{{ c.presente }}</b> presente</span>
+  <span><svg aria-hidden="true"><use href="#m-justificada"/></svg><b>{{ c.ausencia_justificada }}</b> ausência justificada</span>
+  <span><svg aria-hidden="true"><use href="#m-nao-justificada"/></svg><b>{{ c.ausencia_nao_justificada }}</b> sem justificativa</span>
+</div>
+<div class="marcas-meses">
+{%- for mes, dias in presenca.dias|groupby_mes %}
+  <div class="marcas-mes"><span>{{ meses[mes - 1] }}</span><div class="marcas-dias">
+  {%- for d in dias %}{% set id = {"presente": "m-presente", "ausencia_justificada": "m-justificada", "ausencia_nao_justificada": "m-nao-justificada"}[d.categoria] %}<svg role="img" tabindex="0" data-tip="{{ d.data|data }}: {{ d.status }}"><title>{{ d.data|data }}: {{ d.status }}</title><use href="#{{ id }}"/></svg>{% endfor -%}
+  </div></div>
+{%- endfor %}
+</div>
+{%- endmacro %}
+
+{# Cartão de pessoa em listas #}
+{% macro cartao_pessoa(p, raiz, valor_texto) -%}
+<a class="pessoa" href="{{ raiz }}p/{{ p.slug }}.html" data-busca="{{ (p.nome ~ ' ' ~ p.partido ~ ' ' ~ p.uf)|normalizar }}">
+  <img src="{{ raiz }}fotos/mini/{{ p.slug }}.jpg" alt="" loading="lazy" width="120" height="160">
+  <span class="p-nome">{{ p.nome }}</span>
+  <span class="p-info">{{ p.partido }} · {{ p.uf }} · {{ "Deputado(a)" if p.casa == "camara" else "Senador(a)" }}</span>
+  {% if valor_texto %}<span class="p-valor">{{ valor_texto }}</span>{% endif %}
+</a>
+{%- endmacro %}

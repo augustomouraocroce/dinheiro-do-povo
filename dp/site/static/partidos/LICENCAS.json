@@ -1,0 +1,49 @@
+{
+  "PL": {
+    "arquivo": "PL.svg",
+    "titulo_commons": "File:Partido Liberal (Brazil) logo.svg",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Partido_Liberal_(Brazil)_logo.svg",
+    "url_original": "https://upload.wikimedia.org/wikipedia/commons/1/12/Partido_Liberal_%28Brazil%29_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "licenca": "Public domain",
+    "autor": "Partido Liberal",
+    "sha1": "71ead59564f154592976aeb82622680f2a91ea59",
+    "baixado_em": "2026-10-27"
+  },
+  "PP": {
+    "arquivo": "PP.svg",
+    "titulo_commons": "File:Progressistas (Brazil) logo.svg",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Progressistas_(Brazil)_logo.svg",
+    "url_original": "https://upload.wikimedia.org/wikipedia/commons/8/87/Progressistas_%28Brazil%29_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "licenca": "Public domain",
+    "autor": "Progressistas",
+    "sha1": "f941f2bd3e2525d3fb9053d6de8e76f0ee3bfda3",
+    "baixado_em": "2026-10-27"
+  },
+  "MDB": {
+    "arquivo": "MDB.svg",
+    "titulo_commons": "File:Movimento Democrático Brasileiro (2017).svg",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Movimento_Democr%C3%A1tico_Brasileiro_(2017).svg",
+    "url_original": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Movimento_Democr%C3%A1tico_Brasileiro_%282017%29.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "licenca": "Public domain",
+    "autor": "Movimento Democrático Brasileiro",
+    "sha1": "a8e6b5dc57ed4f94bed164b86a9efc64dcc55b38",
+    "baixado_em": "2026-10-27"
+  },
+  "PODE": {
+    "arquivo": "PODE.svg",
+    "titulo_commons": "File:Podemos (Brasil) logo.svg",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Podemos_(Brasil)_logo.svg",
+    "url_original": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Podemos_%28Brasil%29_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "licenca": "Public domain",
+    "autor": "Podemos (Brasil)",
+    "sha1": "37f60c9387618f40051dcf347e5ac0cb63b204ad",
+    "baixado_em": "2026-10-27"
+  },
+  "_sem_logo_livre": [
+    "REPUBLICANOS",
+    "NOVO",
+    "MISSÃO",
+    "PSC",
+    "UDN"
+  ]
+}

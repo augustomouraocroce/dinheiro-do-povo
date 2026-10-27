@@ -1,0 +1,64 @@
+{
+  "_como_atualizar": "Atualize valor, referencia, url e conferido_em todo mês. Nenhum valor entra sem fonte oficial ou da própria fabricante.",
+  "salario_minimo": {
+    "valor": 1621.00,
+    "nome": "salário mínimo",
+    "plural": "salários mínimos",
+    "descricao": "Salário mínimo nacional",
+    "referencia": "desde jan/2026",
+    "fonte": "Decreto nº 12.797, de 23/12/2025 (Planalto)",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/D12797.htm",
+    "conferido_em": "2026-10-27"
+  },
+  "cesta_basica": {
+    "valor": 922.51,
+    "nome": "cesta básica",
+    "plural": "cestas básicas",
+    "descricao": "Cesta básica de alimentos em São Paulo",
+    "referencia": "set/2026",
+    "fonte": "DIEESE/Conab, Pesquisa Nacional da Cesta Básica, publicada em 09/10/2026",
+    "url": "https://www.dieese.org.br/analisecestabasica/2026/202609cestabasica.pdf",
+    "conferido_em": "2026-10-27"
+  },
+  "passagem_aerea": {
+    "valor": 746.62,
+    "nome": "passagem de avião",
+    "plural": "passagens de avião",
+    "descricao": "Tarifa aérea média doméstica, por trecho, sem taxas",
+    "referencia": "set/2026",
+    "fonte": "ANAC, dados de tarifas aéreas de setembro, publicados em 21/10/2026",
+    "url": "https://www.gov.br/anac/pt-br/noticias/2026/dados-de-tarifas-aereas-do-mes-de-setembro-estao-disponiveis-para-consulta",
+    "conferido_em": "2026-10-27"
+  },
+  "carro_0km": {
+    "valor": 82790.00,
+    "nome": "carro 0 km",
+    "plural": "carros 0 km",
+    "descricao": "Carro popular 0 km: Renault Kwid Evolution 1.0 2026/2027, preço sugerido pela fabricante (sem promoção)",
+    "referencia": "out/2026",
+    "fonte": "Renault do Brasil, página do Kwid",
+    "url": "https://www.renault.com.br/veiculos-de-passeio/kwid.html",
+    "conferido_em": "2026-10-27"
+  },
+  "m2_apartamento": {
+    "valor": 10015.10,
+    "nome": "m² de apartamento",
+    "plural": "m² de apartamento",
+    "descricao": "Preço médio de venda do metro quadrado residencial (média de 56 cidades)",
+    "referencia": "set/2026",
+    "fonte": "Índice FipeZAP, séries históricas oficiais da Fipe",
+    "url": "https://downloads.fipe.org.br/indices/fipezap/fipezap-serieshistoricas.xlsx",
+    "conferido_em": "2026-10-27"
+  },
+  "apartamento_50m2": {
+    "calculo": "50 × m2_apartamento",
+    "metros": 50,
+    "nome": "apartamento de 50 m²",
+    "plural": "apartamentos de 50 m²",
+    "descricao": "Apartamento de 50 m² pelo preço médio do m² (cálculo nosso: 50 × preço médio FipeZAP)",
+    "referencia": "set/2026",
+    "fonte": "Cálculo a partir do Índice FipeZAP",
+    "url": "https://downloads.fipe.org.br/indices/fipezap/fipezap-serieshistoricas.xlsx",
+    "conferido_em": "2026-10-27"
+  }
+}

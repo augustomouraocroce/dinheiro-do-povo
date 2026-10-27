@@ -4,3 +4,6 @@ public/
 __pycache__/
 *.pyc
 relatorios/
+.impeccable/review/
+.impeccable/build/
+.impeccable/config.local.json

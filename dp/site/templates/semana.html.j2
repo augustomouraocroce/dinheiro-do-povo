@@ -1,0 +1,7 @@
+{% extends "base.html.j2" %}
+{% block titulo %}Semana de {{ inicio|data }} a {{ fim|data }} · Dinheiro do Povo{% endblock %}
+{% block conteudo %}
+<article class="texto">
+{{ corpo|safe }}
+</article>
+{% endblock %}

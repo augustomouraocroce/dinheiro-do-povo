@@ -54,12 +54,17 @@ def ambiente() -> Environment:
     return env
 
 
-def gerar(conn, sabado: date, saida: Path = SAIDA):
+def renderizar(conn, sabado: date):
+    """Devolve (contexto, texto em Markdown, corpo em HTML) do relatório da semana."""
     ctx = metricas.montar_relatorio(conn, sabado)
-    env = ambiente()
-    texto_md = env.get_template("relatorio.md.j2").render(**ctx)
+    texto_md = ambiente().get_template("relatorio.md.j2").render(**ctx)
     corpo = markdown.markdown(texto_md, extensions=["tables", "sane_lists"])
-    html = env.get_template("relatorio.html.j2").render(corpo=corpo, **ctx)
+    return ctx, texto_md, corpo
+
+
+def gerar(conn, sabado: date, saida: Path = SAIDA):
+    ctx, texto_md, corpo = renderizar(conn, sabado)
+    html = ambiente().get_template("relatorio.html.j2").render(corpo=corpo, **ctx)
 
     saida.mkdir(parents=True, exist_ok=True)
     caminho_md = saida / f"{sabado.isoformat()}.md"

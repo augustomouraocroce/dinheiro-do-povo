@@ -9,11 +9,12 @@ Uso:
 import argparse
 import json
 import sys
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
 
 from dp import config, db
-from dp.fontes import camara, senado
+from dp.fontes import camara, senado, tse
 
 
 def _agora():
@@ -293,11 +294,107 @@ def coletar_senado(conn, inicio, fim):
     conn.commit()
 
 
+ANOS_TSE = (2018, 2022, 2026)
+
+
+def vincular_candidaturas(deputados, senadores, cpfs, candidaturas):
+    """{parlamentar_id: ([candidaturas], metodo)}.
+
+    Deputados: pelo CPF do CSV da cota (o mais seguro). Sem CPF, e para
+    senadores (o Senado não publica CPF): nome completo + UF; depois nome de
+    urna + UF. Um nome que aponta para mais de uma pessoa não é vinculado.
+    """
+    por_cpf, por_nome, por_urna = defaultdict(list), defaultdict(list), defaultdict(list)
+    for c in candidaturas:
+        por_cpf[c["cpf"].zfill(11)].append(c)
+        por_nome[(senado.normalizar_nome(c["nome"]), c["uf"])].append(c)
+        por_urna[(senado.normalizar_nome(c["nome_urna"]), c["uf"])].append(c)
+
+    def por_nomes(nome_completo, nome_urna, uf):
+        for indice, nome in ((por_nome, nome_completo), (por_urna, nome_urna)):
+            if not nome:
+                continue
+            achadas = indice.get((senado.normalizar_nome(nome), uf), [])
+            if achadas and len({c["cpf"] for c in achadas}) == 1:
+                return achadas
+        return []
+
+    vinculos = {}
+    for d in deputados:
+        cpf = cpfs.get(str(d["id"]))
+        if cpf and por_cpf.get(cpf):
+            vinculos[camara.pid(d["id"])] = (por_cpf[cpf], "cpf")
+        else:
+            achadas = por_nomes(None, d["nome"], d["siglaUf"])
+            if achadas:
+                vinculos[camara.pid(d["id"])] = (achadas, "nome+uf")
+    for s in senadores:
+        ident = s["IdentificacaoParlamentar"]
+        achadas = por_nomes(ident.get("NomeCompletoParlamentar"), ident.get("NomeParlamentar"),
+                            ident.get("UfParlamentar"))
+        if achadas:
+            # o mesmo CPF pode ter outras candidaturas com nome grafado de outro jeito
+            cpf = achadas[0]["cpf"].zfill(11)
+            vinculos[senado.pid(ident["CodigoParlamentar"])] = (por_cpf[cpf], "nome+uf")
+    return vinculos
+
+
+def salvar_patrimonio(conn, vinculos, bens_por_ano):
+    n = 0
+    for pid, (candidaturas, metodo) in vinculos.items():
+        # Duas candidaturas no mesmo ano (ex.: registro substituído): vale a que tem bens.
+        por_ano = {}
+        for c in candidaturas:
+            bens = bens_por_ano[c["ano"]].get(c["sq"])
+            total = bens["total"] if bens else 0.0
+            if c["ano"] not in por_ano or total > por_ano[c["ano"]][2]:
+                por_ano[c["ano"]] = (c, bens, total)
+        for c, bens, total in por_ano.values():
+            conn.execute(
+                """INSERT OR REPLACE INTO patrimonio
+                   (parlamentar_id, ano_eleicao, cargo, situacao, partido, total, metodo, url_fonte)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                (pid, c["ano"], c["cargo"], c["situacao"], c["partido"], total, metodo,
+                 tse.url_bens(c["ano"])))
+            conn.execute("DELETE FROM patrimonio_tipo WHERE parlamentar_id=? AND ano_eleicao=?",
+                         (pid, c["ano"]))
+            if bens:
+                conn.executemany(
+                    "INSERT INTO patrimonio_tipo VALUES (?, ?, ?, ?)",
+                    [(pid, c["ano"], tipo, v) for tipo, v in bens["por_tipo"].items()])
+            n += 1
+    return n
+
+
+def coletar_patrimonio(conn):
+    with Etapa(conn, "tse.patrimonio") as e:
+        candidaturas, bens_por_ano = [], {}
+        for ano in ANOS_TSE:
+            candidaturas += tse.ler_candidaturas(tse.baixar("consulta_cand", ano))
+            bens_por_ano[ano] = tse.somar_bens(tse.baixar("bem_candidato", ano))
+        deputados = camara.deputados_em_exercicio()
+        senadores = senado.senadores_em_exercicio()
+        cpfs = tse.cpfs_dos_deputados(camara.baixar_ceap(date.today().year))
+        vinculos = vincular_candidaturas(deputados, senadores, cpfs, candidaturas)
+        n = salvar_patrimonio(conn, vinculos, bens_por_ano)
+        conn.commit()
+        e.detalhes = {
+            "deputados_vinculados": sum(k.startswith("camara:") for k in vinculos),
+            "senadores_vinculados": sum(k.startswith("senado:") for k in vinculos),
+            "por_nome": sum(m == "nome+uf" for _, m in vinculos.values()),
+            "declaracoes": n,
+            "sem_vinculo": sorted(
+                [d["nome"] for d in deputados if camara.pid(d["id"]) not in vinculos]
+                + [s["IdentificacaoParlamentar"]["NomeParlamentar"] for s in senadores
+                   if senado.pid(s["IdentificacaoParlamentar"]["CodigoParlamentar"]) not in vinculos]),
+        }
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Coleta semanal do Dinheiro do Povo")
     ap.add_argument("--semana", type=date.fromisoformat, default=config.ultimo_sabado(),
                     help="Sábado do relatório (AAAA-MM-DD). Padrão: último sábado.")
-    ap.add_argument("--casa", choices=["camara", "senado", "todas"], default="todas")
+    ap.add_argument("--casa", choices=["camara", "senado", "tse", "todas"], default="todas")
     ap.add_argument("--sem-paginas-oficiais", action="store_true",
                     help="Pula as páginas de presença e de perfil dos deputados (≈1.000 requisições).")
     ap.add_argument("--db", default=None, help="Caminho alternativo do banco")
@@ -310,6 +407,8 @@ def main(argv=None):
         coletar_camara(conn, inicio, fim, paginas_oficiais=not args.sem_paginas_oficiais)
     if args.casa in ("senado", "todas"):
         coletar_senado(conn, inicio, fim)
+    if args.casa in ("tse", "todas"):
+        coletar_patrimonio(conn)
     return 0
 
 
