@@ -3,6 +3,7 @@
 Uso:
     python -m dp.coleta                      # semana do último sábado
     python -m dp.coleta --semana 2026-10-17  # relatório do sábado 17/10 (cobre 10 a 16/10)
+    python -m dp.coleta --casa senado
     python -m dp.coleta --sem-presenca-oficial
 """
 import argparse
@@ -11,7 +12,7 @@ import sys
 from datetime import date, datetime
 
 from dp import config, db
-from dp.fontes import camara
+from dp.fontes import camara, senado
 
 
 def _agora():
@@ -129,6 +130,48 @@ def salvar_votacao_camara(conn, v, votos):
         [(vid, camara.pid(x["deputado_"]["id"]), x["tipoVoto"]) for x in votos])
 
 
+def salvar_senadores(conn, em_exercicio, da_legislatura, hoje: str):
+    """Grava todos os senadores da legislatura (para atribuir despesas de quem
+    já saiu) e registra a filiação apenas de quem está em exercício."""
+    for s in da_legislatura + em_exercicio:  # em exercício por último: dados mais completos
+        ident = s["IdentificacaoParlamentar"]
+        cod = ident["CodigoParlamentar"]
+        conn.execute(
+            """INSERT INTO parlamentar (id, casa, id_externo, nome, uf, url_foto, url_perfil, atualizado_em)
+               VALUES (?, 'senado', ?, ?, ?, ?, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET nome=excluded.nome,
+                   uf=COALESCE(excluded.uf, parlamentar.uf),
+                   url_foto=COALESCE(excluded.url_foto, parlamentar.url_foto),
+                   url_perfil=COALESCE(excluded.url_perfil, parlamentar.url_perfil),
+                   atualizado_em=excluded.atualizado_em""",
+            (senado.pid(cod), cod, ident["NomeParlamentar"], ident.get("UfParlamentar"),
+             ident.get("UrlFotoParlamentar"), ident.get("UrlPaginaParlamentar"), hoje))
+    for s in em_exercicio:
+        ident = s["IdentificacaoParlamentar"]
+        conn.execute(
+            "INSERT OR REPLACE INTO filiacao (parlamentar_id, partido, visto_em) VALUES (?, ?, ?)",
+            (senado.pid(ident["CodigoParlamentar"]), ident["SiglaPartidoParlamentar"], hoje))
+
+
+def salvar_votacao_senado(conn, v):
+    vid = f"senado:{v['codigoSessaoVotacao']}"
+    sid = f"senado:{v['codigoSessao']}"
+    conn.execute(
+        """INSERT OR REPLACE INTO sessao (id, casa, inicio, tipo, situacao, descricao, url_fonte)
+           VALUES (?, 'senado', ?, ?, NULL, ?, NULL)""",
+        (sid, v["dataSessao"], v.get("siglaTipoSessao"), f"Sessão nº {v.get('numeroSessao')}"))
+    url = (f"https://www25.senado.leg.br/web/atividade/materias/-/materia/{v['codigoMateria']}"
+           if v.get("codigoMateria") else None)
+    conn.execute(
+        """INSERT OR REPLACE INTO votacao (id, casa, data, descricao, aprovada, sessao_id, url_fonte)
+           VALUES (?, 'senado', ?, ?, ?, ?, ?)""",
+        (vid, v["dataSessao"], f"{v.get('identificacao') or ''} {v.get('descricaoVotacao') or ''}".strip(),
+         {"A": 1, "R": 0}.get(v.get("resultadoVotacao")), sid, url))
+    conn.executemany(
+        "INSERT OR REPLACE INTO voto (votacao_id, parlamentar_id, voto) VALUES (?, ?, ?)",
+        [(vid, senado.pid(x["codigoParlamentar"]), x["siglaVotoParlamentar"]) for x in v["votos"]])
+
+
 # --- Orquestração -----------------------------------------------------------
 
 def coletar_camara(conn, inicio, fim, presenca_oficial=True):
@@ -175,10 +218,41 @@ def coletar_camara(conn, inicio, fim, presenca_oficial=True):
     conn.commit()
 
 
+def coletar_senado(conn, inicio, fim):
+    hoje = date.today().isoformat()
+
+    with Etapa(conn, "senado.senadores") as e:
+        atuais = senado.senadores_em_exercicio()
+        legislatura = senado.senadores_da_legislatura(57)
+        salvar_senadores(conn, atuais, legislatura, hoje)
+        monitorados = [s for s in atuais
+                       if s["IdentificacaoParlamentar"]["SiglaPartidoParlamentar"] in config.PARTIDOS_MONITORADOS]
+        e.detalhes = {"em_exercicio": len(atuais), "legislatura": len(legislatura),
+                      "monitorados": len(monitorados)}
+
+    indice = senado.indice_de_nomes(legislatura + atuais)
+    for ano in sorted({inicio.year, fim.year, date.today().year}):
+        with Etapa(conn, f"senado.ceaps.{ano}") as e:
+            linhas = list(senado.ler_ceaps(senado.baixar_ceaps(ano), indice))
+            e.detalhes = salvar_despesas(conn, linhas, "senado", hoje)
+            e.detalhes["nomes_sem_senador"] = sorted(
+                {l["nome_na_nota"] for l in linhas if l["parlamentar_id"] is None})
+
+    with Etapa(conn, "senado.votacoes") as e:
+        vs = senado.votacoes(inicio, fim)
+        for v in vs:
+            salvar_votacao_senado(conn, v)
+        e.detalhes = {"votacoes": len(vs), "codigos_desconhecidos": sorted(
+            {x["siglaVotoParlamentar"] for v in vs for x in v["votos"]
+             if senado.classificar_voto(x["siglaVotoParlamentar"]) == "desconhecido"})}
+    conn.commit()
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Coleta semanal do Dinheiro do Povo")
     ap.add_argument("--semana", type=date.fromisoformat, default=config.ultimo_sabado(),
                     help="Sábado do relatório (AAAA-MM-DD). Padrão: último sábado.")
+    ap.add_argument("--casa", choices=["camara", "senado", "todas"], default="todas")
     ap.add_argument("--sem-presenca-oficial", action="store_true",
                     help="Pula as páginas de presença (≈260 requisições).")
     ap.add_argument("--db", default=None, help="Caminho alternativo do banco")
@@ -187,7 +261,10 @@ def main(argv=None):
     inicio, fim = config.semana_referencia(args.semana)
     print(f"Relatório de {args.semana:%d/%m/%Y}: semana de {inicio:%d/%m} a {fim:%d/%m/%Y}")
     conn = db.conectar(args.db)
-    coletar_camara(conn, inicio, fim, presenca_oficial=not args.sem_presenca_oficial)
+    if args.casa in ("camara", "todas"):
+        coletar_camara(conn, inicio, fim, presenca_oficial=not args.sem_presenca_oficial)
+    if args.casa in ("senado", "todas"):
+        coletar_senado(conn, inicio, fim)
     return 0
 
 

@@ -1,0 +1,186 @@
+[
+ {
+  "IdentificacaoParlamentar": {
+   "CodigoParlamentar": "5672",
+   "CodigoPublicoNaLegAtual": "800",
+   "NomeParlamentar": "Alan Rick",
+   "NomeCompletoParlamentar": "Alan Rick Miranda",
+   "SexoParlamentar": "Masculino",
+   "FormaTratamento": "Senador ",
+   "UrlFotoParlamentar": "http://www.senado.leg.br/senadores/img/fotos-oficiais/senador5672.jpg",
+   "UrlPaginaParlamentar": "http://www25.senado.leg.br/web/senadores/senador/-/perfil/5672",
+   "SiglaPartidoParlamentar": "REPUBLICANOS",
+   "UfParlamentar": "AC",
+   "Bloco": {
+    "CodigoBloco": "346",
+    "NomeBloco": "Bloco Parlamentar Aliança",
+    "NomeApelido": "BLALIANÇA",
+    "DataCriacao": "2023-03-20"
+   },
+   "MembroMesa": "Não",
+   "MembroLideranca": "Sim"
+  },
+  "Mandato": {
+   "CodigoMandato": "596",
+   "UfParlamentar": "AC",
+   "PrimeiraLegislaturaDoMandato": {
+    "NumeroLegislatura": "57",
+    "DataInicio": "2023-02-01",
+    "DataFim": "2027-01-31"
+   },
+   "SegundaLegislaturaDoMandato": {
+    "NumeroLegislatura": "58",
+    "DataInicio": "2027-02-01",
+    "DataFim": "2031-01-31"
+   },
+   "DescricaoParticipacao": "Titular",
+   "Suplentes": {
+    "Suplente": [
+     {
+      "DescricaoParticipacao": "1º Suplente",
+      "CodigoParlamentar": "6343",
+      "NomeParlamentar": "Gemil Junior"
+     },
+     {
+      "DescricaoParticipacao": "2º Suplente",
+      "CodigoParlamentar": "6344",
+      "NomeParlamentar": "Coronel Casagrande"
+     }
+    ]
+   },
+   "Exercicios": {
+    "Exercicio": [
+     {
+      "CodigoExercicio": "3028",
+      "DataInicio": "2023-02-01"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "IdentificacaoParlamentar": {
+   "CodigoParlamentar": "5982",
+   "CodigoPublicoNaLegAtual": "829",
+   "NomeParlamentar": "Alessandro Vieira",
+   "NomeCompletoParlamentar": "Alessandro Vieira",
+   "SexoParlamentar": "Masculino",
+   "FormaTratamento": "Senador ",
+   "UrlFotoParlamentar": "http://www.senado.leg.br/senadores/img/fotos-oficiais/senador5982.jpg",
+   "UrlPaginaParlamentar": "http://www25.senado.leg.br/web/senadores/senador/-/perfil/5982",
+   "SiglaPartidoParlamentar": "MDB",
+   "UfParlamentar": "SE",
+   "Bloco": {
+    "CodigoBloco": "358",
+    "NomeBloco": "Bloco Parlamentar Democracia",
+    "NomeApelido": "BLDEM",
+    "DataCriacao": "2025-02-18"
+   },
+   "MembroMesa": "Não",
+   "MembroLideranca": "Não"
+  },
+  "Mandato": {
+   "CodigoMandato": "559",
+   "UfParlamentar": "SE",
+   "PrimeiraLegislaturaDoMandato": {
+    "NumeroLegislatura": "56",
+    "DataInicio": "2019-02-01",
+    "DataFim": "2023-01-31"
+   },
+   "SegundaLegislaturaDoMandato": {
+    "NumeroLegislatura": "57",
+    "DataInicio": "2023-02-01",
+    "DataFim": "2027-01-31"
+   },
+   "DescricaoParticipacao": "Titular",
+   "Suplentes": {
+    "Suplente": [
+     {
+      "DescricaoParticipacao": "1º Suplente",
+      "CodigoParlamentar": "5980",
+      "NomeParlamentar": "Fernando Carvalho"
+     },
+     {
+      "DescricaoParticipacao": "2º Suplente",
+      "CodigoParlamentar": "5981",
+      "NomeParlamentar": "Major Ildomario"
+     }
+    ]
+   },
+   "Exercicios": {
+    "Exercicio": [
+     {
+      "CodigoExercicio": "2888",
+      "DataInicio": "2019-02-01"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "IdentificacaoParlamentar": {
+   "CodigoParlamentar": "5411",
+   "CodigoPublicoNaLegAtual": "808",
+   "NomeParlamentar": "Weverton",
+   "NomeCompletoParlamentar": "Weverton Rocha Marques de Sousa",
+   "SexoParlamentar": "Masculino",
+   "FormaTratamento": "Senador ",
+   "UrlFotoParlamentar": "http://www.senado.leg.br/senadores/img/fotos-oficiais/senador5411.jpg",
+   "UrlPaginaParlamentar": "http://www25.senado.leg.br/web/senadores/senador/-/perfil/5411",
+   "SiglaPartidoParlamentar": "PDT",
+   "UfParlamentar": "MA",
+   "Bloco": {
+    "CodigoBloco": "359",
+    "NomeBloco": "Bloco Parlamentar Pelo Brasil",
+    "NomeApelido": "BLPBR",
+    "DataCriacao": "2025-02-18"
+   },
+   "MembroMesa": "Não",
+   "MembroLideranca": "Sim"
+  },
+  "Mandato": {
+   "CodigoMandato": "529",
+   "UfParlamentar": "MA",
+   "PrimeiraLegislaturaDoMandato": {
+    "NumeroLegislatura": "56",
+    "DataInicio": "2019-02-01",
+    "DataFim": "2023-01-31"
+   },
+   "SegundaLegislaturaDoMandato": {
+    "NumeroLegislatura": "57",
+    "DataInicio": "2023-02-01",
+    "DataFim": "2027-01-31"
+   },
+   "DescricaoParticipacao": "Titular",
+   "Suplentes": {
+    "Suplente": [
+     {
+      "DescricaoParticipacao": "1º Suplente",
+      "CodigoParlamentar": "5892",
+      "NomeParlamentar": "Roberth Bringel"
+     },
+     {
+      "DescricaoParticipacao": "2º Suplente",
+      "CodigoParlamentar": "5893",
+      "NomeParlamentar": "Suely Pereira"
+     }
+    ]
+   },
+   "Exercicios": {
+    "Exercicio": [
+     {
+      "CodigoExercicio": "2995",
+      "DataInicio": "2022-11-04"
+     },
+     {
+      "CodigoExercicio": "2940",
+      "DataInicio": "2019-02-01",
+      "DataFim": "2022-07-06",
+      "SiglaCausaAfastamento": "LCS",
+      "DescricaoCausaAfastamento": "Licença com convocação de suplente (sup 120 dias)"
+     }
+    ]
+   }
+  }
+ }
+]
