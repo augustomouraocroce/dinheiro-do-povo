@@ -104,15 +104,18 @@ CREATE TABLE IF NOT EXISTS voto (
     PRIMARY KEY (votacao_id, parlamentar_id)
 );
 
--- Salário, verba de gabinete etc. Sempre com vigência e fonte oficial.
-CREATE TABLE IF NOT EXISTS custo_fixo (
-    casa        TEXT NOT NULL,
-    item        TEXT NOT NULL,
-    valor_mensal REAL NOT NULL,
-    vigente_de  TEXT NOT NULL,
-    vigente_ate TEXT,
-    url_fonte   TEXT NOT NULL,
-    PRIMARY KEY (casa, item, vigente_de)
+-- Salário, cota, verba de gabinete e benefícios como publicados na página
+-- oficial de cada parlamentar (um registro por item, por ano).
+CREATE TABLE IF NOT EXISTS recurso_oficial (
+    parlamentar_id   TEXT NOT NULL,
+    ano              INTEGER NOT NULL,
+    item             TEXT NOT NULL,          -- 'salario_bruto_mensal', 'cota_gasto', 'verba_gabinete_mes_03'...
+    valor            REAL,
+    texto            TEXT,
+    url_fonte        TEXT NOT NULL,
+    atualizado_fonte TEXT,                   -- "atualizado em" informado pela própria Casa
+    coletado_em      TEXT NOT NULL,
+    PRIMARY KEY (parlamentar_id, ano, item)
 );
 
 CREATE TABLE IF NOT EXISTS coleta_log (

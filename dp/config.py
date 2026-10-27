@@ -26,6 +26,8 @@ CAMARA_API = "https://dadosabertos.camara.leg.br/api/v2"
 CAMARA_CEAP_ZIP = "https://www.camara.leg.br/cotas/Ano-{ano}.csv.zip"
 CAMARA_PRESENCA = "https://www.camara.leg.br/deputados/{id}/presenca-plenario/{ano}"
 CAMARA_PERFIL = "https://www.camara.leg.br/deputados/{id}"
+CAMARA_PERFIL_ANO = "https://www.camara.leg.br/deputados/{id}?ano={ano}"
+CAMARA_EVENTO = "https://www.camara.leg.br/evento-legislativo/{id}"
 CAMARA_ORGAO_PLENARIO = 180
 # 110 e 204 são os dois códigos de "Sessão Deliberativa" na API.
 CAMARA_TIPOS_SESSAO_DELIBERATIVA = (110, 204)

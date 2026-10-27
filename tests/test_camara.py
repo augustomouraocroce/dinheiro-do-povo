@@ -71,6 +71,29 @@ def test_classificar_frequencia(status, categoria):
     assert camara.classificar_frequencia(status) == categoria
 
 
+def test_ler_pagina_perfil():
+    html = (FIX / "camara_perfil_221328.html").read_text(encoding="utf-8")
+    itens, atualizado = camara.ler_pagina_perfil(html)
+    v = {i["item"]: i for i in itens}
+    assert atualizado == "26/10/2026 06:00"
+    assert v["salario_bruto_mensal"]["valor"] == 46366.19
+    assert v["cota_gasto"]["valor"] == 362538.41
+    assert v["cota_nao_utilizado"]["valor"] == 112955.93
+    assert v["verba_gabinete_gasto"]["valor"] == 1050138.62
+    assert v["cota_mes_01"]["valor"] == 42284.95
+    assert v["auxilio_moradia"] == {"item": "auxilio_moradia", "valor": None, "texto": "Não recebe o auxílio"}
+    assert v["imovel_funcional"]["texto"] == "Faz uso desde 20/08/2025"
+    # soma dos meses = total publicado
+    assert round(sum(i["valor"] for i in itens if i["item"].startswith("cota_mes_")), 2) == 362538.41
+
+
+@pytest.mark.parametrize("texto,valor", [
+    ("R$ 46.366,19", 46366.19), ("Recebeu R$ 38.277", 38277.0), ("Recebeu R$ 8.635,2", 8635.2),
+    ("0", 0.0), ("Não recebe o auxílio", None)])
+def test_valor_br(texto, valor):
+    assert camara.valor_br(texto) == valor
+
+
 def test_pagina_presenca_layout_mudou():
     with pytest.raises(ValueError):
         camara.ler_pagina_presenca("<html><body>nada</body></html>")

@@ -1,0 +1,210 @@
+{% set cam = camara %}
+{% set sen = senado %}
+{% set ps = cam.presenca_semana %}
+{% set pa = cam.presenca_ano %}
+{% set ps_mon = ps.por_partido[:-1] %}
+{% set ps_todos = ps.por_partido[-1] %}
+{% set vs = sen.votacoes %}
+{% set vs_mon = vs.por_partido[:-1] %}
+{% set vs_todos = vs.por_partido[-1] %}
+{% macro resultado(v) %}{% if v.aprovada == 1 %}aprovada{% elif v.aprovada == 0 %}rejeitada{% else %}resultado não informado{% endif %}{% endmacro %}
+{% macro nome(p) %}{{ p.nome }} ({{ p.partido }}-{{ p.uf }}){% endmacro %}
+# Dinheiro do Povo · Relatório semanal
+
+**Semana de {{ inicio|data }} a {{ fim|data }}** · relatório de {{ sabado|data }}
+
+Dados oficiais da Câmara dos Deputados e do Senado Federal, sem opinião. Cada número tem link para a fonte.
+Partidos acompanhados: {{ (cam.partidos + sen.partidos)|unique|join(", ") }}.
+Nas tabelas, a linha **Todos** mostra a Casa inteira, para comparação.
+
+## Resumo da semana
+
+{% if ps.dias_com_sessao %}
+{% set n_aus = ps_mon|sum(attribute="ausencia_nao_justificada") %}
+{% set n_dep = ps.ausencias_nao_justificadas|length %}
+- **Câmara:** {{ ps.dias_com_sessao|length }} {{ ps.dias_com_sessao|length|plural("dia", "dias") }} com sessão deliberativa no Plenário ({{ ps.dias_com_sessao|map("dia_mes")|join(", ") }}).
+- Os {{ cam.monitorados }} deputados acompanhados registraram presença em **{{ ((ps_mon|sum(attribute="presente")) / (ps_mon|sum(attribute="registros")))|pct }}** dos dias de sessão (Câmara inteira: {{ ps_todos.pct_presenca|pct }}).
+- Ausências **não justificadas** de deputados acompanhados: {{ n_aus }} {{ n_aus|plural("registro", "registros") }}, de {{ n_dep }} {{ n_dep|plural("deputado", "deputados") }}.
+{% else %}
+- **Câmara:** não houve sessão deliberativa no Plenário nesta semana.
+{% endif %}
+{% if vs.votacoes %}
+- **Senado:** {{ vs.votacoes|length }} {{ vs.votacoes|length|plural("votação nominal", "votações nominais") }} no Plenário. Os {{ sen.monitorados }} senadores acompanhados votaram em **{{ ((vs_mon|sum(attribute="votou")) / (vs_mon|sum(attribute="registros")))|pct }}** dos registros (Senado inteiro: {{ vs_todos.pct_votou|pct }}).
+- Senadores acompanhados registrados como "não compareceu" (sem justificativa): {{ vs.nao_compareceu|length }}.
+{% else %}
+- **Senado:** não houve votação nominal no Plenário nesta semana.
+{% endif %}
+
+## Câmara dos Deputados
+
+### Presença no Plenário: semana
+
+{% if ps.dias_com_sessao %}
+| Partido | Deputados | Dias de sessão × deputados | Presenças | Ausências justificadas | Ausências não justificadas | Presença |
+|---|---:|---:|---:|---:|---:|---:|
+{% for l in ps.por_partido %}
+| {{ "**Todos**" if l.partido == "Todos" else l.partido }} | {{ l.parlamentares }} | {{ l.registros|num }} | {{ l.presente|num }} | {{ l.ausencia_justificada }} | {{ l.ausencia_nao_justificada }} | {{ l.pct_presenca|pct }} |
+{% endfor %}
+
+Fonte: página "Presença em Plenário" de cada deputado no site da Câmara. A Câmara conta presença por **dia** de sessão deliberativa.
+
+**Ausências não justificadas na semana (deputados acompanhados)**
+
+{% for p in ps.ausencias_nao_justificadas %}
+- {{ nome(p) }}: {{ p.dias|map("data")|join(", ") }} · [fonte]({{ p.url_fonte }})
+{% else %}
+- Nenhuma.
+{% endfor %}
+
+{% if ps.motivos_justificados %}
+**Ausências justificadas, pelo motivo publicado pela Câmara (deputados acompanhados)**
+
+{% for motivo, n in ps.motivos_justificados %}
+- {{ motivo }}: {{ n }}
+{% endfor %}
+{% endif %}
+{% else %}
+Não houve sessão deliberativa no Plenário da Câmara nesta semana.
+{% endif %}
+
+### Presença no Plenário: {{ fim.year }} até {{ fim|data }}
+
+| Partido | Deputados | Dias de sessão × deputados | Ausências justificadas | Ausências não justificadas | Presença | Não justificadas |
+|---|---:|---:|---:|---:|---:|---:|
+{% for l in pa.por_partido %}
+| {{ "**Todos**" if l.partido == "Todos" else l.partido }} | {{ l.parlamentares }} | {{ l.registros|num }} | {{ l.ausencia_justificada|num }} | {{ l.ausencia_nao_justificada|num }} | {{ l.pct_presenca|pct }} | {{ l.pct_nao_justificada|pct }} |
+{% endfor %}
+
+**Mais dias de ausência não justificada em {{ fim.year }} (deputados acompanhados)**
+
+{% for p in pa.ausencias_nao_justificadas[:10] %}
+{{ loop.index }}. {{ nome(p) }}: {{ p.dias|length }} de {{ p.dias_com_sessao }} dias de sessão · [fonte]({{ p.url_fonte }})
+{% else %}
+- Nenhuma ausência não justificada no ano.
+{% endfor %}
+
+### Votações nominais no Plenário
+
+{% for v in cam.votacoes %}
+**{{ v.data|data }}: {{ v.descricao }}** ({{ resultado(v) }}){% if v.url_sessao %} · [sessão]({{ v.url_sessao }}){% endif %} · [dados]({{ v.url }})
+
+| Partido | Sim | Não | Outros (abstenção, obstrução, art. 17) | Sem registro de voto |
+|---|---:|---:|---:|---:|
+{% for b in v.bancadas %}
+| {{ b.partido }} | {{ b.sim }} | {{ b.nao }} | {{ b.outros }} | {{ b.sem_registro }} |
+{% endfor %}
+
+{% else %}
+Não houve votação nominal no Plenário da Câmara nesta semana.
+
+{% endfor %}
+{% if cam.votacoes %}
+"Sem registro de voto" inclui deputados ausentes com justificativa (missão, licença etc.).
+
+{% endif %}
+### Quanto custa: {{ cam.custos.ano }} até agora
+
+Valores publicados pela Câmara na página de cada deputado{% if cam.custos.atualizado_fonte %} (atualizada em {{ cam.custos.atualizado_fonte }}){% endif %}.
+
+| Partido | Deputados | Salário bruto mensal (média) | Cota usada no ano (média) | Limite da cota usado | Verba de gabinete no ano (média) | Limite da verba usado | Usam imóvel funcional | Receberam auxílio-moradia | Auxílio-moradia no ano (soma) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+{% for l in cam.custos.por_partido %}
+| {{ "**Todos**" if l.partido == "Todos" else l.partido }} | {{ l.parlamentares }} | {{ l.salario_medio|brl }} | {{ l.cota_media|brl }} | {{ l.pct_cota|pct }} | {{ l.verba_media|brl }} | {{ l.pct_verba|pct }} | {{ l.imovel_funcional }} | {{ l.auxilio_moradia }} | {{ l.auxilio_moradia_valor|brl }} |
+{% endfor %}
+
+Salário bruto antes de descontos (a Câmara desconta do salário as ausências não justificadas). Verba de gabinete paga os funcionários do gabinete e é publicada com atraso maior que a cota.
+
+**Maior parte do limite da cota já usada em {{ cam.custos.ano }} (deputados acompanhados)**
+
+O limite da cota muda conforme o estado do deputado, então comparamos o **percentual usado**, e não o valor em reais.
+
+{% for p in cam.custos.maiores_pct_cota[:10] %}
+{{ loop.index }}. {{ nome(p) }}: {{ p.pct_cota|pct }} do limite ({{ p.cota_gasto|brl }}) · [fonte]({{ p.url_fonte }})
+{% endfor %}
+
+### Despesas da cota publicadas nesta semana
+
+{% set dn = cam.despesas_novas %}
+{% include "despesas_novas.md.j2" %}
+
+## Senado Federal
+
+### Votações nominais no Plenário
+
+{% for v in vs.votacoes %}
+**{{ v.data|data }}: {{ v.descricao }}** ({{ resultado(v) }}; Sim: {{ v.placar.get("Sim", 0) }}, Não: {{ v.placar.get("Não", 0) }}){% if v.url %} · [matéria]({{ v.url }}){% endif %}
+
+| Partido | Sim | Não | Outros votos | Presente sem votar | Ausência justificada | Não compareceu |
+|---|---:|---:|---:|---:|---:|---:|
+{% for b in v.bancadas %}
+| {{ b.partido }} | {{ b.sim }} | {{ b.nao }} | {{ b.outros }} | {{ b.presente_sem_voto }} | {{ b.ausencia_justificada }} | {{ b.ausencia_nao_justificada }} |
+{% endfor %}
+
+{% else %}
+Não houve votação nominal no Plenário do Senado nesta semana.
+
+{% endfor %}
+**Senadores acompanhados registrados como "não compareceu" na semana**
+
+{% for p in vs.nao_compareceu %}
+- {{ nome(p) }}: {% for v in p.votacoes %}{{ v.data|data }}{% if not loop.last %}, {% endif %}{% endfor %}{% if p.url %} · [perfil]({{ p.url }}){% endif %}
+
+{% else %}
+- Nenhum.
+{% endfor %}
+
+### Participação em votações nominais: {{ fim.year }} até {{ fim|data }}
+
+| Partido | Senadores | Registros | Votou | Presente sem votar | Ausência justificada | Não compareceu | Votou (%) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for l in sen.votacoes_ano.por_partido %}
+| {{ "**Todos**" if l.partido == "Todos" else l.partido }} | {{ l.parlamentares }} | {{ l.registros|num }} | {{ l.votou|num }} | {{ l.presente_sem_voto }} | {{ l.ausencia_justificada }} | {{ l.ausencia_nao_justificada }} | {{ l.pct_votou|pct }} |
+{% endfor %}
+
+Fonte: votações nominais do Plenário (API de Dados Abertos do Senado). "Registros" = votações × senadores.
+
+### Cota parlamentar (CEAPS): {{ sen.ceaps.ano }} até agora
+
+| Partido | Senadores | Total reembolsado | Média por senador |
+|---|---:|---:|---:|
+{% for l in sen.ceaps.por_partido %}
+| {{ "**Todos**" if l.partido == "Todos" else l.partido }} | {{ l.parlamentares }} | {{ l.valor|brl }} | {{ l.media|brl }} |
+{% endfor %}
+
+**Maiores valores de cota em {{ sen.ceaps.ano }} (senadores acompanhados)**
+
+O limite da CEAPS muda conforme o estado; esta versão ainda não mostra o percentual do limite.
+
+{% for p in sen.ceaps.maiores[:10] %}
+{{ loop.index }}. {{ nome(p) }}: {{ p.valor|brl }}{% if p.url %} · [perfil]({{ p.url }}){% endif %}
+
+{% endfor %}
+
+Fonte: [CEAPS {{ sen.ceaps.ano }}, Senado Federal](https://www.senado.leg.br/transparencia/LAI/verba/despesa_ceaps_{{ sen.ceaps.ano }}.csv).
+
+### Despesas da cota publicadas nesta semana
+
+{% set dn = sen.despesas_novas %}
+{% include "despesas_novas.md.j2" %}
+
+## Como ler este relatório
+
+- **Só dados oficiais.** Nada aqui é estimativa nossa. Quando um número é calculado (média, percentual), a conta é explicada.
+- **Presença na Câmara** é contada por dia de sessão deliberativa, como a própria Câmara faz. A Câmara publica o motivo de cada ausência justificada (missão autorizada, licença médica etc.); só a ausência sem motivo é "não justificada".
+- **Presença no Senado** aqui é a participação nas votações nominais, com o código oficial de cada senador. Não é a presença na sessão inteira.
+- **Despesas da cota** podem ser apresentadas até 90 dias depois do gasto. Por isso os meses mais recentes aparecem menores, e a seção "publicadas nesta semana" mostra o que **entrou** nos dados oficiais na semana, não o que foi gasto nela.
+{% set cn = cam.custos.conferencia_notas %}
+- **Totais da cota na Câmara** vêm da página de cada deputado. O arquivo anual de notas fiscais não traz todas as despesas: em {{ cam.custos.ano }}, a soma das notas é {{ cn.total_notas|brl }}, e o total de cota usada informado pela Câmara é {{ cn.total_paginas|brl }} (diferença de {{ (cn.total_paginas - cn.total_notas)|brl }}). Pelo que observamos, a maior parte da diferença são passagens aéreas emitidas pelo sistema da Câmara (SIGEPA), que deixaram de aparecer no arquivo em 2025. Elas também não aparecem em "despesas publicadas nesta semana".
+- **Partido** é o do parlamentar na data da coleta. Quem trocou de partido aparece no partido atual.
+- **Senado:** esta versão ainda não inclui subsídio, verba de gabinete nem benefícios dos senadores.
+- Encontrou um erro? Ele será corrigido e a correção, registrada.
+
+## Fontes
+
+- Câmara dos Deputados, [API de Dados Abertos](https://dadosabertos.camara.leg.br/swagger/api.html)
+- Câmara dos Deputados, [Cota parlamentar (arquivos anuais)](https://www.camara.leg.br/cotas/Ano-{{ fim.year }}.csv.zip)
+- Câmara dos Deputados, páginas de cada deputado ("Presença em Plenário" e "Recursos e benefícios")
+- Senado Federal, [Dados Abertos](https://legis.senado.leg.br/dadosabertos)
+- Senado Federal, [CEAPS {{ fim.year }}](https://www.senado.leg.br/transparencia/LAI/verba/despesa_ceaps_{{ fim.year }}.csv)
+
+_Gerado em {{ gerado_em.strftime("%d/%m/%Y %H:%M") }} a partir da coleta local._

@@ -178,3 +178,79 @@ def ler_pagina_presenca(html: str):
                 "percentual": cels[2] or None,
             })
     return dias, resumo
+
+
+# --- Página oficial do deputado (salário, cota, verba de gabinete, benefícios) ---
+
+# Rótulo na página -> nome do item no banco. Itens numéricos ficam em `valor`.
+_BENEFICIOS = {
+    "Salário mensal bruto": ("salario_bruto_mensal", True),
+    "Pessoal de gabinete": ("pessoal_gabinete", False),
+    "Imóvel funcional": ("imovel_funcional", False),
+    "Auxílio-moradia": ("auxilio_moradia", True),       # "Recebeu R$ 38.277" ou "Não recebe"
+    "Viagens em missão oficial": ("viagens_missao_oficial", True),
+    "Passaporte diplomático": ("passaporte_diplomatico", False),
+}
+_TABELAS_TOTAL = {
+    "percentualgastocotaparlamentar": "cota",
+    "percentualgastoverbagabinete": "verba_gabinete",
+}
+_TABELAS_MENSAL = {
+    "gastomensalcotaparlamentar": "cota_mes",
+    "gastomensalverbagabinete": "verba_gabinete_mes",
+}
+_MESES = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"]
+
+
+def valor_br(txt: str):
+    """'R$ 1.050.138,62' -> 1050138.62; texto sem número -> None."""
+    m = re.search(r"-?[\d.]+(,\d+)?", txt or "")
+    if not m:
+        return None
+    return float(m.group(0).replace(".", "").replace(",", "."))
+
+
+def baixar_pagina_perfil(dep_id, ano) -> str:
+    url = config.CAMARA_PERFIL_ANO.format(id=dep_id, ano=ano)
+    return http.get(url, accept="text/html", pausa=0.3).text
+
+
+def ler_pagina_perfil(html: str):
+    """Devolve (itens, atualizado_em).
+
+    itens: [{'item': 'cota_gasto', 'valor': 362538.41, 'texto': '362.538,41'}, ...]
+    atualizado_em: data/hora informada pela Câmara ('26/10/2026 06:00') ou None.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    itens = []
+
+    for bloco in soup.select("div.beneficio"):
+        partes = [p for p in bloco.stripped_strings if p != "?"]
+        if not partes or partes[0] not in _BENEFICIOS:
+            continue
+        nome, numerico = _BENEFICIOS[partes[0]]
+        texto = " ".join(" ".join(partes[1:]).split())
+        itens.append({"item": nome, "valor": valor_br(texto) if numerico else None, "texto": texto})
+
+    for tabela_id, prefixo in _TABELAS_TOTAL.items():
+        tabela = soup.find("table", id=tabela_id)
+        for tr in tabela.find_all("tr") if tabela else []:
+            cels = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+            if len(cels) >= 2 and cels[0] in ("Gasto", "Não utilizado"):
+                sufixo = "gasto" if cels[0] == "Gasto" else "nao_utilizado"
+                itens.append({"item": f"{prefixo}_{sufixo}", "valor": valor_br(cels[1]), "texto": cels[1]})
+
+    for tabela_id, prefixo in _TABELAS_MENSAL.items():
+        tabela = soup.find("table", id=tabela_id)
+        for tr in tabela.find_all("tr") if tabela else []:
+            cels = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+            if len(cels) >= 2 and cels[0] in _MESES:
+                mes = _MESES.index(cels[0]) + 1
+                itens.append({"item": f"{prefixo}_{mes:02d}", "valor": valor_br(cels[1]), "texto": cels[1]})
+
+    if not any(i["item"] == "salario_bruto_mensal" for i in itens):
+        raise ValueError("Layout da página do deputado mudou: salário não encontrado")
+
+    atualizado = soup.find(string=re.compile(r"Informações de recursos atualizadas em"))
+    m = re.search(r"(\d{2}/\d{2}/\d{4} \d{2}:\d{2})", atualizado or "")
+    return itens, (m.group(1) if m else None)

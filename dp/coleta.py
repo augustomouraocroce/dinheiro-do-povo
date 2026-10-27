@@ -4,11 +4,12 @@ Uso:
     python -m dp.coleta                      # semana do último sábado
     python -m dp.coleta --semana 2026-10-17  # relatório do sábado 17/10 (cobre 10 a 16/10)
     python -m dp.coleta --casa senado
-    python -m dp.coleta --sem-presenca-oficial
+    python -m dp.coleta --sem-paginas-oficiais
 """
 import argparse
 import json
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
 
 from dp import config, db
@@ -117,6 +118,16 @@ def salvar_presenca_oficial(conn, dep_id, ano, dias, resumo, hoje):
         [(p, ano, r["indicador"], r["valor"], r["percentual"], url, hoje) for r in resumo])
 
 
+def salvar_recursos_oficiais(conn, dep_id, ano, itens, atualizado_fonte, hoje):
+    p = camara.pid(dep_id)
+    url = config.CAMARA_PERFIL_ANO.format(id=dep_id, ano=ano)
+    conn.executemany(
+        """INSERT OR REPLACE INTO recurso_oficial
+           (parlamentar_id, ano, item, valor, texto, url_fonte, atualizado_fonte, coletado_em)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        [(p, ano, i["item"], i["valor"], i["texto"], url, atualizado_fonte, hoje) for i in itens])
+
+
 def salvar_votacao_camara(conn, v, votos):
     vid = f"camara:{v['id']}"
     sessao = v.get("uriEvento") or ""
@@ -174,7 +185,21 @@ def salvar_votacao_senado(conn, v):
 
 # --- Orquestração -----------------------------------------------------------
 
-def coletar_camara(conn, inicio, fim, presenca_oficial=True):
+def _em_paralelo(funcao, ids, workers=4):
+    """Executa `funcao(id)` em poucas threads (para não sobrecarregar o site).
+
+    Gera (id, (resultado, erro)); um deputado com problema não para a coleta.
+    """
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futuros = {ex.submit(funcao, i): i for i in ids}
+        for f in as_completed(futuros):
+            try:
+                yield futuros[f], (f.result(), None)
+            except Exception as erro:
+                yield futuros[f], (None, str(erro)[:200])
+
+
+def coletar_camara(conn, inicio, fim, paginas_oficiais=True):
     hoje = date.today().isoformat()
 
     with Etapa(conn, "camara.deputados") as e:
@@ -203,19 +228,37 @@ def coletar_camara(conn, inicio, fim, presenca_oficial=True):
             salvar_votacao_camara(conn, v, lista)
         e.detalhes = {"votacoes": len(vs), "nominais": nominais}
 
-    if presenca_oficial:
-        for ano in sorted({inicio.year, fim.year}):
-            with Etapa(conn, f"camara.presenca_oficial.{ano}") as e:
-                falhas = []
-                for d in monitorados:
-                    try:
-                        dias, resumo = camara.ler_pagina_presenca(camara.baixar_pagina_presenca(d["id"], ano))
-                        salvar_presenca_oficial(conn, d["id"], ano, dias, resumo, hoje)
-                    except Exception as erro:  # um deputado com problema não para a coleta
-                        falhas.append({"id": d["id"], "erro": str(erro)[:200]})
-                conn.commit()
-                e.detalhes = {"deputados": len(monitorados) - len(falhas), "falhas": falhas}
-    conn.commit()
+    if not paginas_oficiais:
+        conn.commit()
+        return
+
+    # Páginas de todos os deputados em exercício (não só dos monitorados):
+    # a média da Câmara usada nas comparações vem da mesma fonte.
+    ids = [d["id"] for d in deps]
+    for ano in sorted({inicio.year, fim.year}):
+        with Etapa(conn, f"camara.presenca_oficial.{ano}") as e:
+            def presenca(dep_id, ano=ano):
+                return camara.ler_pagina_presenca(camara.baixar_pagina_presenca(dep_id, ano))
+            falhas = []
+            for dep_id, (dados, erro) in _em_paralelo(presenca, ids):
+                if erro:
+                    falhas.append({"id": dep_id, "erro": erro})
+                else:
+                    salvar_presenca_oficial(conn, dep_id, ano, *dados, hoje)
+            conn.commit()
+            e.detalhes = {"deputados": len(ids) - len(falhas), "falhas": falhas}
+
+    ano = fim.year
+    with Etapa(conn, f"camara.perfil_oficial.{ano}") as e:
+        falhas = []
+        for dep_id, (dados, erro) in _em_paralelo(
+                lambda i: camara.ler_pagina_perfil(camara.baixar_pagina_perfil(i, ano)), ids):
+            if erro:
+                falhas.append({"id": dep_id, "erro": erro})
+            else:
+                salvar_recursos_oficiais(conn, dep_id, ano, *dados, hoje)
+        conn.commit()
+        e.detalhes = {"deputados": len(ids) - len(falhas), "falhas": falhas}
 
 
 def coletar_senado(conn, inicio, fim):
@@ -238,8 +281,10 @@ def coletar_senado(conn, inicio, fim):
             e.detalhes["nomes_sem_senador"] = sorted(
                 {l["nome_na_nota"] for l in linhas if l["parlamentar_id"] is None})
 
+    # Desde 1º de janeiro: o relatório também mostra a participação no ano.
+    # (A API aceita até 1 ano por consulta.)
     with Etapa(conn, "senado.votacoes") as e:
-        vs = senado.votacoes(inicio, fim)
+        vs = senado.votacoes(date(fim.year, 1, 1), fim)
         for v in vs:
             salvar_votacao_senado(conn, v)
         e.detalhes = {"votacoes": len(vs), "codigos_desconhecidos": sorted(
@@ -253,8 +298,8 @@ def main(argv=None):
     ap.add_argument("--semana", type=date.fromisoformat, default=config.ultimo_sabado(),
                     help="Sábado do relatório (AAAA-MM-DD). Padrão: último sábado.")
     ap.add_argument("--casa", choices=["camara", "senado", "todas"], default="todas")
-    ap.add_argument("--sem-presenca-oficial", action="store_true",
-                    help="Pula as páginas de presença (≈260 requisições).")
+    ap.add_argument("--sem-paginas-oficiais", action="store_true",
+                    help="Pula as páginas de presença e de perfil dos deputados (≈1.000 requisições).")
     ap.add_argument("--db", default=None, help="Caminho alternativo do banco")
     args = ap.parse_args(argv)
 
@@ -262,7 +307,7 @@ def main(argv=None):
     print(f"Relatório de {args.semana:%d/%m/%Y}: semana de {inicio:%d/%m} a {fim:%d/%m/%Y}")
     conn = db.conectar(args.db)
     if args.casa in ("camara", "todas"):
-        coletar_camara(conn, inicio, fim, presenca_oficial=not args.sem_presenca_oficial)
+        coletar_camara(conn, inicio, fim, paginas_oficiais=not args.sem_paginas_oficiais)
     if args.casa in ("senado", "todas"):
         coletar_senado(conn, inicio, fim)
     return 0

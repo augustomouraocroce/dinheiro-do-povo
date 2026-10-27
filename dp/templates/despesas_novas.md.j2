@@ -1,0 +1,31 @@
+{% if not dn.disponivel %}
+{% if dn.primeira_coleta %}
+A coleta começou em {{ dn.primeira_coleta|data }}, depois desta semana. A partir do próximo relatório, esta seção mostra as notas que entraram nos dados oficiais desde a coleta anterior.
+{% else %}
+Ainda não há coleta de despesas.
+{% endif %}
+{% else %}
+Notas que entraram nos dados oficiais entre {{ dn.desde|data }} e {{ sabado|data }}.
+
+| Partido | Parlamentares com notas novas | Notas | Valor |
+|---|---:|---:|---:|
+{% for l in dn.por_partido %}
+| {{ "**Todos**" if l.partido == "Todos" else l.partido }} | {{ l.parlamentares }} | {{ l.notas|num }} | {{ l.valor|brl }} |
+{% endfor %}
+
+{% if dn.maiores %}
+**Maiores notas novas (parlamentares acompanhados)**
+
+{% for d in dn.maiores %}
+{{ loop.index }}. {{ d.nome }} ({{ d.partido }}-{{ d.uf }}): {{ d.valor|brl }}, {{ d.categoria|lower }}, {{ d.fornecedor }} (emitida em {{ d.data_emissao|data }}){% if d.url_documento %} · [nota fiscal]({{ d.url_documento }}){% endif %}
+
+{% endfor %}
+{% endif %}
+{% if dn.por_categoria %}
+**Por categoria (parlamentares acompanhados)**
+
+{% for categoria, valor in dn.por_categoria %}
+- {{ categoria|capitalize }}: {{ valor|brl }}
+{% endfor %}
+{% endif %}
+{% endif %}

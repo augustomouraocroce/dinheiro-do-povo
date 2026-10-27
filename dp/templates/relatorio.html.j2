@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinheiro do Povo · Relatório de {{ sabado|data }}</title>
+<style>
+  :root {
+    --azul: #12325b;
+    --azul-claro: #e8eef6;
+    --texto: #1d2329;
+    --texto-suave: #55606b;
+    --linha: #d5dce4;
+    --fundo: #ffffff;
+    --fundo-tabela: #f6f8fa;
+    --link: #1351b4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fundo);
+    color: var(--texto);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header.marca {
+    background: var(--azul);
+    color: #fff;
+    padding: 14px 16px;
+  }
+  header.marca div {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  header.marca strong { font-size: 18px; letter-spacing: .02em; }
+  header.marca span { font-size: 14px; opacity: .85; }
+  main { max-width: 1080px; margin: 0 auto; padding: 8px 16px 48px; }
+  h1 { font-size: 28px; line-height: 1.2; margin: 24px 0 8px; color: var(--azul); }
+  h2 {
+    font-size: 22px;
+    margin: 40px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--azul);
+    color: var(--azul);
+  }
+  h3 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { max-width: 78ch; }
+  a { color: var(--link); text-underline-offset: 2px; }
+  table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin: 12px 0 8px;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    max-width: 100%;
+  }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--linha); vertical-align: top; }
+  th {
+    background: var(--azul-claro);
+    color: var(--azul);
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+  }
+  td { white-space: nowrap; }
+  tbody tr:nth-child(even) td { background: var(--fundo-tabela); }
+  tbody tr:last-child td { border-bottom: 2px solid var(--azul); }
+  ol, ul { padding-left: 22px; }
+  li { margin: 3px 0; }
+  em { color: var(--texto-suave); }
+  footer {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 16px;
+    border-top: 1px solid var(--linha);
+    color: var(--texto-suave);
+    font-size: 13px;
+  }
+  @media print {
+    header.marca { background: none; color: var(--azul); border-bottom: 2px solid var(--azul); }
+    table { display: table; overflow: visible; }
+    a { color: inherit; }
+  }
+</style>
+</head>
+<body>
+<header class="marca">
+  <div>
+    <strong>DINHEIRO DO POVO</strong>
+    <span>Dados oficiais do Congresso Nacional · semana de {{ inicio|data }} a {{ fim|data }}</span>
+  </div>
+</header>
+<main>
+{{ corpo }}
+</main>
+<footer>
+  Todo número deste relatório vem de fontes oficiais da Câmara dos Deputados e do Senado Federal, com link para conferência.
+</footer>
+</body>
+</html>
