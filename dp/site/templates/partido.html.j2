@@ -8,10 +8,12 @@
   <h1 id="t-partido">{{ pt.nome }}</h1>
   <p>{{ pt.deputados }} {{ pt.deputados|plural("deputado federal", "deputados federais") }} e {{ pt.senadores }} {{ pt.senadores|plural("senador", "senadores") }} em exercício na data da coleta.</p>
   {% if pt.custo_medio %}
-  <div>
+  <div class="preco-bloco">
     <p class="rotulo-preco">Custo médio de cada deputado do {{ pt.sigla }}</p>
-    <div style="margin-top:8px">{{ c.preco(pt.custo_medio.total, "m") }}</div>
-    <p class="sob-preco">por mês · média da Câmara: {{ camara.media_custo.total|brl }}</p>
+    {{ c.preco(pt.custo_medio.total) }}
+    <p class="sob-preco">por mês</p>
+    {{ c.sm(pt.custo_medio.total) }}
+    <p class="secundario">Média da Câmara inteira: {{ camara.media_custo.total|brl }} por mês.</p>
   </div>
   <div class="linha">{{ c.ev("calculo", "média calculada a partir das páginas oficiais") }}</div>
   {% endif %}

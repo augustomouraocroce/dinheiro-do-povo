@@ -33,6 +33,11 @@ A gramática de promoção do encarte (estrelas de explosão, "OFERTA", "IMPERD�
 ## Referências
 
 - Comp de decisão (referência de crítica, construção code-led por falta de créditos de imagem): `.impeccable/mocks/decision/assigned.png`
+- Caminho de construção nesta superfície: code-led. O projeto registra `buildPath: comp` (escolha do usuário no init), mas os créditos de imagem acabaram após o primeiro comp e o usuário disse, sobre o uso do Magnific, "não era pra usar". Não gerar imagens pagas sem pedido explícito.
+
+## Adaptações aceitas
+
+- Início sem foto no primeiro viewport: o preço do início é a média dos 513 deputados, não de uma pessoa; a foto aparece no primeiro viewport da página de cada parlamentar.
 
 ## Em aberto
 

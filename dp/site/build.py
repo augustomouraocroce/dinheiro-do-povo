@@ -168,9 +168,7 @@ def construir(conn, sabado: date, saida: Path = SAIDA):
         alvo.write_text(html, encoding="utf-8")
 
     g_custo, linhas = graficos_custo("Média por deputado", d["camara"]["media_custo"], d)
-    escrever("index.html", "index.html.j2", "", "inicio", grafico_custo=g_custo, linhas_custo=linhas,
-             grafico_presenca=grafico_partidos(d, "presenca"),
-             grafico_custo_partidos=grafico_partidos(d, "custo"))
+    escrever("index.html", "index.html.j2", "", "inicio", grafico_custo=g_custo, linhas_custo=linhas)
     escrever("partidos.html", "partidos.html.j2", "", "partidos")
     escrever("metodologia.html", "metodologia.html.j2", "", "metodologia")
     escrever(f"semana/{sabado.isoformat()}.html", "semana.html.j2", "../", "semana",

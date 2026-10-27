@@ -6,29 +6,36 @@
 <section class="heroi" aria-labelledby="t-heroi">
   <div class="ladrilho pilha">
     <h1 id="t-heroi">Quanto custa, por mês, um deputado federal?</h1>
-    <div>
+    <div class="preco-bloco">
       <p class="rotulo-preco">Em média, cada um dos {{ camara.total }} deputados custa</p>
-      <div style="margin-top:8px">{{ c.preco(m.total) }}</div>
+      {{ c.preco(m.total) }}
       <p class="sob-preco">por mês</p>
-    </div>
-    <div class="linha">
       {{ c.carimbo("Fonte: Câmara dos Deputados", "https://www.camara.leg.br/deputados/quem-sao", hero=True) }}
-      {{ c.ev("calculo", "média calculada a partir dos dados oficiais") }}
     </div>
-    <p>O salário bruto, de <strong>{{ m.partes[0].valor|brl }}</strong>, é só uma parte. A maior parte é a verba que paga os funcionários do gabinete.</p>
-    {{ c.legenda_custo(partes_custo) }}
-    {{ grafico_custo|safe }}
-    {{ c.tabela_custo(linhas_custo) }}
+    {{ c.ev("calculo", "média calculada a partir das páginas oficiais dos deputados") }}
   </div>
 
   <div class="pilha no-amarelo">
     <h2>Esse custo mensal equivale a:</h2>
     {{ c.equivalencias(m.total, refs, ["salario_minimo", "cesta_basica", "passagem_aerea", "m2_apartamento"]) }}
+  </div>
+</section>
+
+<section class="secao" aria-labelledby="t-onde">
+  <div class="grade-2" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr))">
     <div class="ladrilho pilha">
-      <h3>Em 12 meses: {{ (m.total * 12)|brl }}</h3>
+      <h2 id="t-onde">De onde vem esse custo</h2>
+      <p>O salário bruto, de <strong>{{ m.partes[0].valor|brl }}</strong>, é só uma parte. A maior parte é a verba de gabinete, que paga os funcionários do deputado.</p>
+      {{ c.legenda_custo(partes_custo) }}
+      {{ grafico_custo|safe }}
+      {{ c.tabela_custo(linhas_custo) }}
+    </div>
+    <div class="ladrilho pilha">
+      <h2>Em 12 meses: {{ (m.total * 12)|brl }}</h2>
+      {{ c.sm(m.total * 12) }}
       <p>Por deputado. Dá para comprar <strong>{{ (m.total * 12 / refs.carro_0km.valor)|qtd }} carros 0 km</strong> de entrada:</p>
       {{ c.pilha(m.total * 12 / refs.carro_0km.valor, "carro_0km") }}
-      <p class="secundario">Ou <strong>{{ (m.total * 12 / refs.apartamento_50m2.valor)|qtd }} apartamentos de 50 m²</strong> pelo preço médio do metro quadrado.</p>
+      <p>Ou <strong>{{ (m.total * 12 / refs.apartamento_50m2.valor)|qtd }} apartamentos de 50 m²</strong> pelo preço médio do metro quadrado.</p>
       <div class="linha">{{ c.ev("calculo", "12 × a média mensal") }}<a class="ev" href="{{ raiz }}metodologia.html#referencias">como calculamos</a></div>
     </div>
   </div>
@@ -37,7 +44,7 @@
 <section class="secao" aria-labelledby="t-busca">
   <div class="ladrilho pilha">
     <h2 id="t-busca">Procure quem representa você</h2>
-    <p>Busque pelo nome do deputado ou senador, ou pela sigla do partido. Cada página mostra quanto a pessoa custa, se comparece, como vota e o patrimônio que declarou ao TSE.</p>
+    <p>Busque pelo nome do deputado ou senador, ou pela sigla do partido, na barra do topo. Cada página mostra quanto a pessoa custa, se comparece, como vota e o patrimônio que declarou ao TSE.</p>
     <div class="linha">
       {% for pt in partidos %}{{ c.partido_id(pt.sigla, raiz, logos) }}{% endfor %}
     </div>
@@ -45,34 +52,9 @@
 </section>
 
 <section class="secao" aria-labelledby="t-partidos">
-  <h2 id="t-partidos">Partidos acompanhados</h2>
-  <div class="partidos">
-  {% for pt in partidos %}
-    <a class="partido" href="{{ raiz }}partido/{{ pt.sigla|slug }}.html">
-      <div class="cab">{{ c.partido_id(pt.sigla, raiz, logos, com_link=False) }}<span class="secundario">{{ pt.deputados }} dep. · {{ pt.senadores }} sen.</span></div>
-      <strong>{{ pt.nome }}</strong>
-      <dl>
-        {% if pt.custo_medio %}<dt>Custo médio por deputado, por mês</dt><dd>{{ pt.custo_medio.total|compacto }}</dd>{% endif %}
-        {% if pt.presenca.total %}<dt>Presença no Plenário em {{ ano }}</dt><dd>{{ pt.presenca.pct_presente|pct }}</dd>{% endif %}
-        {% if pt.patrimonio.media %}<dt>Patrimônio médio declarado</dt><dd>{{ pt.patrimonio.media|compacto }}</dd>{% endif %}
-      </dl>
-    </a>
-  {% endfor %}
-  </div>
-  <div class="grade-2" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr))">
-    <div class="ladrilho pilha">
-      <h3>Presença no Plenário em {{ ano }}</h3>
-      <p class="secundario">Dias de sessão com presença registrada, por partido. "Todos" é a Câmara inteira.</p>
-      {{ grafico_presenca|safe }}
-      {{ c.carimbo("Fonte: Presença em Plenário, Câmara", "https://www.camara.leg.br/deputados/quem-sao") }}
-    </div>
-    <div class="ladrilho pilha">
-      <h3>Custo médio por deputado, por mês</h3>
-      <p class="secundario">Salário, cota, verba de gabinete e auxílio-moradia somados.</p>
-      {{ grafico_custo_partidos|safe }}
-      {{ c.ev("calculo", "média calculada a partir dos dados oficiais") }}
-    </div>
-  </div>
+  <h2 id="t-partidos" class="no-amarelo">Partidos lado a lado</h2>
+  {{ c.gondola(partidos, camara, raiz, logos, ano) }}
+  <p class="secundario no-amarelo">Custo: salário, cota, verba de gabinete e auxílio-moradia, média por mês. Presença: dias de sessão deliberativa com presença registrada. Patrimônio: valor declarado ao TSE na candidatura mais recente.</p>
 </section>
 
 <section class="secao" aria-labelledby="t-semana">
@@ -84,7 +66,8 @@
       <li>A Câmara teve <strong>{{ ps.dias_com_sessao|length }} {{ ps.dias_com_sessao|length|plural("dia", "dias") }} de sessão deliberativa</strong>.</li>
       <li><strong>{{ ps.ausencias_nao_justificadas|length }} {{ ps.ausencias_nao_justificadas|length|plural("deputado acompanhado faltou", "deputados acompanhados faltaram") }}</strong> sem justificativa em pelo menos um dia.</li>
       {% else %}<li>Não houve sessão deliberativa no Plenário da Câmara.</li>{% endif %}
-      <li>O Senado fez <strong>{{ semana.senado.votacoes.votacoes|length }} {{ semana.senado.votacoes.votacoes|length|plural("votação nominal", "votações nominais") }}</strong>.</li>
+      {% set nv = semana.senado.votacoes.votacoes|length %}
+      <li>{% if nv %}O Senado fez <strong>{{ nv }} {{ nv|plural("votação nominal", "votações nominais") }}</strong>.{% else %}Não houve votação nominal no Plenário do Senado.{% endif %}</li>
     </ul>
     <a class="carimbo" href="{{ raiz }}semana/{{ sabado.isoformat() }}.html">Ler o relatório da semana<svg aria-hidden="true"><use href="#i-seta"/></svg></a>
   </div>

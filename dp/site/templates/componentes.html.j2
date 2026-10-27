@@ -59,7 +59,7 @@
 
 {# Tabela equivalente a um gráfico de custo #}
 {% macro tabela_custo(linhas) -%}
-<details class="tabela-dados"><summary>Ver em tabela</summary>
+<details class="tabela-dados"><summary><svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>Ver em tabela</summary>
 <div class="rolagem"><table class="tabela"><thead><tr><th></th>{% for p in linhas[0].partes %}<th class="n">{{ p.nome }}</th>{% endfor %}<th class="n">Total por mês</th></tr></thead><tbody>
 {%- for l in linhas %}<tr><th scope="row">{{ l.rotulo }}</th>{% for p in l.partes %}<td class="n">{{ p.valor|brl }}</td>{% endfor %}{% for _ in range(linhas[0].partes|length - l.partes|length) %}<td class="n">—</td>{% endfor %}<td class="n"><strong>{{ l.total|brl }}</strong></td></tr>{% endfor -%}
 </tbody></table></div></details>
@@ -90,4 +90,35 @@
   <span class="p-info">{{ p.partido }} · {{ p.uf }} · {{ "Deputado(a)" if p.casa == "camara" else "Senador(a)" }}</span>
   {% if valor_texto %}<span class="p-valor">{{ valor_texto }}</span>{% endif %}
 </a>
+{%- endmacro %}
+
+{# Régua única: todo valor em reais também em salários mínimos #}
+{% macro sm(valor, curto=False) -%}
+{%- if valor %}<span class="sm">= {{ (valor / refs.salario_minimo.valor)|qtd }} {{ "sal. mínimos" if curto else "salários mínimos" }}</span>{% endif -%}
+{%- endmacro %}
+
+{# Gôndola: cada partido é uma prateleira com etiqueta; "Todos" é a Câmara inteira #}
+{% macro gondola(partidos, camara, raiz, logos, ano) -%}
+<div class="gondola">
+{%- for pt in partidos %}
+  <a class="prateleira" href="{{ raiz }}partido/{{ pt.sigla|slug }}.html">
+    <div class="p-id">{{ partido_id(pt.sigla, raiz, logos, com_link=False) }}<div><div class="p-nome">{{ pt.nome }}</div><div class="p-conta">{{ pt.deputados }} {{ pt.deputados|plural("deputado", "deputados") }} · {{ pt.senadores }} {{ pt.senadores|plural("senador", "senadores") }}</div></div></div>
+    <div class="p-dados">
+      <div class="p-dado"><span class="k">Custo por mês</span>{% if pt.custo_medio %}<span class="tag">{{ pt.custo_medio.total|compacto }}</span>{{ sm(pt.custo_medio.total, curto=True) }}{% else %}<span class="v">—</span>{% endif %}</div>
+      <div class="p-dado"><span class="k">Presença em {{ ano }}</span>{% if pt.presenca.total %}<span class="v marca-v"><svg aria-hidden="true"><use href="#m-presente"/></svg>{{ pt.presenca.pct_presente|pct }}</span><span class="sm">sem justificativa: {{ pt.presenca.pct_nao_justificada|pct }}</span>{% else %}<span class="v">—</span>{% endif %}</div>
+      <div class="p-dado"><span class="k">Patrimônio médio</span>{% if pt.patrimonio.media %}<span class="v">{{ pt.patrimonio.media|compacto }}</span>{{ sm(pt.patrimonio.media, curto=True) }}{% else %}<span class="v">—</span>{% endif %}</div>
+    </div>
+    <svg class="seta" aria-hidden="true"><use href="#i-seta"/></svg>
+  </a>
+{%- endfor %}
+  <div class="prateleira todos">
+    <div class="p-id"><span class="selo">513</span><div><div class="p-nome">Câmara inteira (todos os partidos)</div><div class="p-conta">para comparação</div></div></div>
+    <div class="p-dados">
+      <div class="p-dado"><span class="k">Custo por mês</span><span class="tag">{{ camara.media_custo.total|compacto }}</span>{{ sm(camara.media_custo.total, curto=True) }}</div>
+      <div class="p-dado"><span class="k">Presença em {{ ano }}</span><span class="v marca-v"><svg aria-hidden="true"><use href="#m-presente"/></svg>{{ camara.presenca.pct_presente|pct }}</span><span class="sm">sem justificativa: {{ camara.presenca.pct_nao_justificada|pct }}</span></div>
+      <div class="p-dado"><span class="k">Patrimônio médio</span><span class="v">{{ camara.patrimonio.media|compacto }}</span>{{ sm(camara.patrimonio.media, curto=True) }}</div>
+    </div>
+    <span></span>
+  </div>
+</div>
 {%- endmacro %}

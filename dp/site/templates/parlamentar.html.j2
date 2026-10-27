@@ -4,25 +4,30 @@
 {% block descricao %}Quanto custa, como comparece e como vota {{ p.nome }}, {{ p.cargo|lower }} pelo {{ p.partido }}-{{ p.uf }}. Dados oficiais com fonte.{% endblock %}
 {% block conteudo %}
 <section class="heroi" aria-labelledby="t-nome">
-  <div class="ladrilho">
-    <div class="heroi-tile">
+  <div class="ladrilho pilha">
+    <div class="heroi-cabeca">
       <img class="foto" src="{{ raiz }}fotos/{{ p.slug }}.jpg" alt="Foto oficial de {{ p.nome }}" width="360" height="480">
       <div class="heroi-info">
         <h1 id="t-nome">{{ p.nome }}</h1>
-        <div class="linha">{{ c.partido_id(p.partido, raiz, logos) }}<span>{{ p.cargo }} · {{ p.uf }}</span></div>
-        {% if p.casa == "camara" and p.custo %}
-          <p class="rotulo-preco">Custo médio do mandato</p>
-          <div>{{ c.preco(p.custo.total, "m") }}</div>
-          <p class="sob-preco">por mês</p>
-          {{ c.carimbo("Fonte: Câmara dos Deputados", p.url ~ "?ano=" ~ ano, hero=True) }}
-        {% elif p.casa == "senado" %}
-          <p class="rotulo-preco">Cota parlamentar (CEAPS), média</p>
-          <div>{{ c.preco(p.ceaps_media, "m") }}</div>
-          <p class="sob-preco">por mês</p>
-          {{ c.carimbo("Fonte: Senado Federal", refs_senado_ceaps, hero=True) }}
-        {% endif %}
+        <div class="linha">{{ c.partido_id(p.partido, raiz, logos) }}</div>
+        <span>{{ p.cargo }} · {{ p.uf }}</span>
       </div>
     </div>
+    {% if p.casa == "camara" and p.custo %}
+    <div class="preco-bloco">
+      <p class="rotulo-preco">Custo médio do mandato</p>
+      {{ c.preco(p.custo.total) }}
+      <p class="sob-preco">por mês</p>
+      {{ c.carimbo("Fonte: Câmara dos Deputados", p.url ~ "?ano=" ~ ano, hero=True) }}
+    </div>
+    {% elif p.casa == "senado" %}
+    <div class="preco-bloco">
+      <p class="rotulo-preco">Cota parlamentar (CEAPS), média</p>
+      {{ c.preco(p.ceaps_media) }}
+      <p class="sob-preco">por mês</p>
+      {{ c.carimbo("Fonte: Senado Federal", refs_senado_ceaps, hero=True) }}
+    </div>
+    {% endif %}
   </div>
 
   <div class="pilha no-amarelo">
@@ -53,10 +58,10 @@
     <h3>Em {{ ano }}, segundo a página oficial</h3>
     <table class="tabela tabela-ficha">
       <tbody>
-        <tr><th scope="row">Salário bruto mensal</th><td class="n">{{ sal.valor|brl if sal else "—" }}</td></tr>
-        <tr><th scope="row">Cota parlamentar usada no ano</th><td class="t">{{ cota.valor|brl if cota else "—" }}{% if cota and sobra and (cota.valor + sobra.valor) %}<br><span class="secundario">{{ (cota.valor / (cota.valor + sobra.valor))|pct }} do limite</span>{% endif %}</td></tr>
-        <tr><th scope="row">Verba de gabinete usada no ano</th><td class="n">{{ verba.valor|brl if verba else "—" }}</td></tr>
-        <tr><th scope="row">Auxílio-moradia no ano</th><td class="n">{{ p.custo.auxilio_ano|brl }}</td></tr>
+        <tr><th scope="row">Salário bruto mensal</th><td class="t">{{ sal.valor|brl if sal else "—" }}{% if sal %}{{ c.sm(sal.valor) }}{% endif %}</td></tr>
+        <tr><th scope="row">Cota parlamentar usada no ano</th><td class="t">{{ cota.valor|brl if cota else "—" }}{% if cota %}{{ c.sm(cota.valor) }}{% endif %}{% if cota and sobra and (cota.valor + sobra.valor) %}<span class="sm">{{ (cota.valor / (cota.valor + sobra.valor))|pct }} do limite</span>{% endif %}</td></tr>
+        <tr><th scope="row">Verba de gabinete usada no ano</th><td class="t">{{ verba.valor|brl if verba else "—" }}{% if verba %}{{ c.sm(verba.valor) }}{% endif %}</td></tr>
+        <tr><th scope="row">Auxílio-moradia no ano</th><td class="t">{{ p.custo.auxilio_ano|brl }}{{ c.sm(p.custo.auxilio_ano) }}</td></tr>
         <tr><th scope="row">Imóvel funcional</th><td class="t">{{ imovel.texto if imovel else "—" }}</td></tr>
         <tr><th scope="row">Pessoal de gabinete</th><td class="t">{{ pessoal.texto if pessoal else "—" }}</td></tr>
       </tbody>
@@ -67,7 +72,7 @@
     <h3>Cota parlamentar, mês a mês</h3>
     <div class="legenda" aria-hidden="true"><span><i style="background: var(--s-cota)"></i>Mês consolidado</span><span><i class="hachura"></i>Ainda pode aumentar (notas entram em até 90 dias)</span></div>
     {{ grafico_cota|safe }}
-    <details class="tabela-dados"><summary>Ver em tabela</summary><table class="tabela"><tbody>
+    <details class="tabela-dados"><summary><svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>Ver em tabela</summary><table class="tabela"><tbody>
       {% for m, v in p.custo.cota_serie|dictsort %}<tr><th scope="row">{{ meses[m - 1] }}</th><td class="n">{{ v|brl }}</td></tr>{% endfor %}
     </tbody></table></details>
   </div>
@@ -91,7 +96,7 @@
 <section class="secao" aria-labelledby="t-custo-sen">
   <div class="ladrilho pilha">
     <h2 id="t-custo-sen">Cota parlamentar (CEAPS), mês a mês</h2>
-    <p>Em {{ ano }}, até agora: <strong>{{ p.ceaps_ano|brl }}</strong>. A média dos {{ senado.total }} senadores é {{ senado.ceaps_media|brl }} por mês.</p>
+    <p>Em {{ ano }}, até agora: <strong>{{ p.ceaps_ano|brl }}</strong> ({{ (p.ceaps_ano / refs.salario_minimo.valor)|qtd }} salários mínimos). A média dos {{ senado.total }} senadores é {{ senado.ceaps_media|brl }} por mês.</p>
     {{ grafico_cota|safe }}
     <p class="secundario">O Senado ainda não publica subsídio, verba de gabinete e benefícios num formato que dê para coletar; por isso aqui aparece só a cota.</p>
     {{ c.carimbo("Fonte: CEAPS, Senado Federal", refs_senado_ceaps) }}
@@ -139,11 +144,11 @@
       <p>Na candidatura de {{ pt.ultima.ano_eleicao }} ({{ pt.ultima.cargo|lower }}), declarou <strong>{{ pt.ultima.total|brl }}</strong> em bens, o equivalente a <strong>{{ (pt.ultima.total / refs.salario_minimo.valor)|qtd }} salários mínimos</strong>.</p>
       {% if pt.declaracoes|length > 1 %}{{ grafico_patrimonio|safe }}{% endif %}
       {% if pt.tipos_ultima %}
-      <details class="tabela-dados" open><summary>Por tipo de bem ({{ pt.ultima.ano_eleicao }})</summary>
-        <div class="rolagem"><table class="tabela"><tbody>
-        {% for t in pt.tipos_ultima[:8] %}<tr><th scope="row">{{ t.tipo }}</th><td class="n">{{ t.valor|brl }}</td></tr>{% endfor %}
-        {% if pt.tipos_ultima|length > 8 %}<tr><th scope="row">Outros {{ pt.tipos_ultima|length - 8 }} tipos</th><td class="n">{{ pt.tipos_ultima[8:]|sum(attribute="valor")|brl }}</td></tr>{% endif %}
-        </tbody></table></div>
+      <details class="tabela-dados" open><summary><svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>Por tipo de bem ({{ pt.ultima.ano_eleicao }})</summary>
+        <table class="tabela tabela-ficha"><tbody>
+        {% for t in pt.tipos_ultima[:8] %}<tr><th scope="row">{{ t.tipo }}</th><td class="t">{{ t.valor|brl }}{{ c.sm(t.valor) }}</td></tr>{% endfor %}
+        {% if pt.tipos_ultima|length > 8 %}<tr><th scope="row">Outros {{ pt.tipos_ultima|length - 8 }} tipos</th><td class="t">{{ pt.tipos_ultima[8:]|sum(attribute="valor")|brl }}{{ c.sm(pt.tipos_ultima[8:]|sum(attribute="valor")) }}</td></tr>{% endif %}
+        </tbody></table>
       </details>
       {% endif %}
       <p class="secundario">É o valor que o próprio candidato declarou à Justiça Eleitoral, não o preço de mercado dos bens.</p>
