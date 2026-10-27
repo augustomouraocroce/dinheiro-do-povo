@@ -8,3 +8,5 @@ relatorios/
 .impeccable/build/
 .impeccable/config.local.json
 artefato/
+.claude/
+.impeccable/questions/
