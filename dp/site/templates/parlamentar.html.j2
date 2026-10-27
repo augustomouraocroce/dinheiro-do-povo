@@ -136,6 +136,37 @@
   </div>
 </section>
 
+{% set tb = p.trabalho %}
+<section class="secao" aria-labelledby="t-trab">
+  <div class="ladrilho pilha">
+    <h2 id="t-trab">Votações sobre trabalho e renda</h2>
+    {% set total_casa = pauta.camara if p.casa == "camara" else pauta.senado %}
+    {% if tb.registrados %}
+    <p>Desde 2023, registrou voto em <strong>{{ tb.registrados }}</strong> das {{ total_casa }} votações nominais do Plenário sobre trabalho, emprego, previdência, salário mínimo, imposto de renda e cesta básica: <strong>{{ tb.contagem.sim }} Sim</strong> e <strong>{{ tb.contagem.nao }} Não</strong>{% if tb.contagem.outros %}, além de {{ tb.contagem.outros }} {{ tb.contagem.outros|plural("abstenção ou obstrução", "abstenções ou obstruções") }}{% endif %}.</p>
+    <p class="secundario">Nas outras não há voto registrado (ausência, licença ou fora do mandato na época). "Sim" e "Não" respondem à pergunta de cada votação, descrita ao lado do voto.</p>
+    <div class="pilha">
+    {% for item in tb.grupos %}{% set g = item.grupo %}
+      <details class="tabela-dados votos-proposta"{% if g.destaque %} open{% endif %}>
+        <summary><svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>{{ g.proposicao }} · {{ item.votos|length }} {{ item.votos|length|plural("voto", "votos") }}</summary>
+        {% if g.destaque %}<p><strong>{{ g.motivo }}</strong></p>{% elif g.ementa %}<p class="secundario">{{ g.ementa|truncate(220) }}</p>{% endif %}
+        <div class="votos">
+        {% for i in item.votos %}
+          <div class="voto">
+            <span class="v {% if i.voto == 'Sim' %}v-sim{% elif i.voto == 'Não' %}v-nao{% endif %}">{{ i.voto|rotulo_voto }}</span>
+            <p>{{ i.votacao.descricao }} <span class="secundario">({{ i.votacao.data|data }}{% if i.partido_epoca and i.partido_epoca != p.partido %}, votou pelo {{ i.partido_epoca }}{% endif %})</span>{% if i.votacao.url %} · <a href="{{ i.votacao.url }}" target="_blank" rel="noopener">fonte</a>{% endif %}</p>
+          </div>
+        {% endfor %}
+        </div>
+      </details>
+    {% endfor %}
+    </div>
+    {% else %}
+    <p>Não há voto registrado desta pessoa nas votações nominais sobre trabalho e renda desde 2023.</p>
+    {% endif %}
+    <a class="carimbo" href="{{ raiz }}trabalho.html">Ver todas as votações e como cada partido votou<svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+  </div>
+</section>
+
 <section class="secao" aria-labelledby="t-patrimonio">
   <div class="ladrilho pilha">
     <h2 id="t-patrimonio">Patrimônio declarado ao TSE</h2>

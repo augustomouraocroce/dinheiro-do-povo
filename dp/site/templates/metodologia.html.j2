@@ -22,6 +22,19 @@
 <h2 id="patrimonio">Patrimônio declarado</h2>
 <p>É o total de bens que o próprio candidato declarou ao TSE ao registrar a candidatura (2018, 2022 ou 2026). É o valor declarado à Receita, não o preço de mercado. Mostramos o total e a soma por tipo de bem, nunca a descrição de cada bem. Deputados são ligados à candidatura pelo CPF (usado só na hora da ligação, nunca guardado nem exibido); senadores, pelo nome completo e estado, e conferimos que cada um foi candidato ao Senado no próprio estado.</p>
 
+<h2 id="trabalho">Votações sobre trabalho e renda</h2>
+<p>Entram todas as votações nominais do Plenário, desde fevereiro de 2023 (início do mandato atual), em que a proposta votada atende a pelo menos uma destas condições:</p>
+<ul>
+  <li>tem um destes temas oficiais da Câmara: {% for cod, nome in pauta.regras.temas_camara.items() %}{{ nome }}{% if not loop.last %}, {% endif %}{% endfor %};</li>
+  <li>a ementa, o título ou a descrição da votação citam: {{ pauta.regras.palavras|join(", ") }};</li>
+  <li>está na lista de propostas incluídas pelo motivo indicado: {% for i in pauta.regras.incluidas %}{{ i.titulo }} ({{ i.motivo }}){% if not loop.last %}; {% endif %}{% endfor %}</li>
+</ul>
+<p>Mostramos a pergunta oficial de cada votação, o resultado, o voto de cada parlamentar e a contagem por partido na época do voto. A Câmara descreve emendas e destaques só pelo número; o link de cada votação leva aos dados oficiais. Não classificamos votos como a favor ou contra ninguém.</p>
+
+<h2 id="dias">Dias de trabalho</h2>
+<p><strong>Trabalhador</strong>: dias de segunda a sexta, sem os feriados nacionais definidos em lei federal, menos 30 dias corridos de férias por ano (em média, 30 × 5/7 dias úteis). Carnaval, Sexta-feira Santa e Corpus Christi não entram porque não são feriados nacionais por lei federal. Fontes: {% for nome, url in dias.fontes %}<a href="{{ url }}" target="_blank" rel="noopener">{{ nome }}</a>{% if not loop.last %}; {% endif %}{% endfor %}.</p>
+<p><strong>Câmara</strong>: dias com sessão deliberativa realizada no Plenário, contados na API de Dados Abertos da Câmara (sessões encerradas). O número de {{ dias.atual.ano }} confere com o total oficial da página de presença dos deputados. Deputados também trabalham em comissões, no gabinete e nos estados; esses dias não entram na conta porque a Câmara só registra presença oficial no Plenário.</p>
+
 <h2 id="referencias">Referências do dia a dia</h2>
 <p>Usadas para traduzir valores em coisas do cotidiano. Dividimos o valor pelo preço da referência.</p>
 <div class="rolagem"><table>

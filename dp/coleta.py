@@ -13,7 +13,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
 
-from dp import config, db
+from dp import config, db, trabalho
 from dp.fontes import camara, senado, tse
 
 
@@ -138,8 +138,8 @@ def salvar_votacao_camara(conn, v, votos):
         (vid, v["data"], v["descricao"], v.get("aprovacao"),
          f"camara:{sessao.rsplit('/', 1)[-1]}" if sessao else None, v["uri"]))
     conn.executemany(
-        "INSERT OR REPLACE INTO voto (votacao_id, parlamentar_id, voto) VALUES (?, ?, ?)",
-        [(vid, camara.pid(x["deputado_"]["id"]), x["tipoVoto"]) for x in votos])
+        "INSERT OR REPLACE INTO voto (votacao_id, parlamentar_id, voto, partido) VALUES (?, ?, ?, ?)",
+        [(vid, camara.pid(x["deputado_"]["id"]), x["tipoVoto"], x["deputado_"].get("siglaPartido")) for x in votos])
 
 
 def salvar_senadores(conn, em_exercicio, da_legislatura, hoje: str):
@@ -180,8 +180,9 @@ def salvar_votacao_senado(conn, v):
         (vid, v["dataSessao"], f"{v.get('identificacao') or ''} {v.get('descricaoVotacao') or ''}".strip(),
          {"A": 1, "R": 0}.get(v.get("resultadoVotacao")), sid, url))
     conn.executemany(
-        "INSERT OR REPLACE INTO voto (votacao_id, parlamentar_id, voto) VALUES (?, ?, ?)",
-        [(vid, senado.pid(x["codigoParlamentar"]), x["siglaVotoParlamentar"]) for x in v["votos"]])
+        "INSERT OR REPLACE INTO voto (votacao_id, parlamentar_id, voto, partido) VALUES (?, ?, ?, ?)",
+        [(vid, senado.pid(x["codigoParlamentar"]), x["siglaVotoParlamentar"], x.get("siglaPartidoParlamentar"))
+         for x in v["votos"]])
 
 
 # --- Orquestração -----------------------------------------------------------
@@ -390,11 +391,35 @@ def coletar_patrimonio(conn):
         }
 
 
+INICIO_MANDATO = 2023  # 57ª legislatura: fev/2023 a jan/2027
+URL_EVENTOS = config.CAMARA_API + "/eventos?codTipoEvento=110&codTipoEvento=204&dataInicio={de}&dataFim={ate}"
+
+
+def coletar_trabalho(conn, fim):
+    """Votações sobre trabalho e renda desde o início do mandato e dias de sessão por ano."""
+    regras = trabalho.carregar_regras()
+    anos = list(range(INICIO_MANDATO, fim.year + 1))
+    with Etapa(conn, "trabalho.camara") as e:
+        e.detalhes = trabalho.coletar_camara(conn, anos, regras, date.today().year)
+    with Etapa(conn, "trabalho.senado") as e:
+        e.detalhes = trabalho.coletar_senado(conn, anos, regras)
+    with Etapa(conn, "camara.dias_sessao") as e:
+        for ano in (fim.year - 1, fim.year):
+            ate = date(ano, 12, 31) if ano < fim.year else fim
+            eventos = camara.sessoes_deliberativas(date(ano, 1, 1), ate)
+            dias = {ev["dataHoraInicio"][:10] for ev in eventos if ev["situacao"] == "Encerrada"}
+            conn.execute("INSERT OR REPLACE INTO dias_sessao VALUES ('camara', ?, ?, ?, ?)",
+                         (ano, len(dias), ate.isoformat(),
+                          URL_EVENTOS.format(de=f"{ano}-01-01", ate=ate.isoformat())))
+            e.detalhes[str(ano)] = len(dias)
+        conn.commit()
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Coleta semanal do Dinheiro do Povo")
     ap.add_argument("--semana", type=date.fromisoformat, default=config.ultimo_sabado(),
                     help="Sábado do relatório (AAAA-MM-DD). Padrão: último sábado.")
-    ap.add_argument("--casa", choices=["camara", "senado", "tse", "todas"], default="todas")
+    ap.add_argument("--casa", choices=["camara", "senado", "tse", "trabalho", "todas"], default="todas")
     ap.add_argument("--sem-paginas-oficiais", action="store_true",
                     help="Pula as páginas de presença e de perfil dos deputados (≈1.000 requisições).")
     ap.add_argument("--db", default=None, help="Caminho alternativo do banco")
@@ -409,6 +434,8 @@ def main(argv=None):
         coletar_senado(conn, inicio, fim)
     if args.casa in ("tse", "todas"):
         coletar_patrimonio(conn)
+    if args.casa in ("trabalho", "todas"):
+        coletar_trabalho(conn, fim)
     return 0
 
 

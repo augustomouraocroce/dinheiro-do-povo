@@ -381,3 +381,36 @@ a.prateleira:hover { background: var(--papel-2); }
   background-size: var(--mosaico-tamanho, 2000% 1500%); background-repeat: no-repeat; }
 .pessoa .foto-s { width: 100%; aspect-ratio: 3 / 4; border-radius: 6px; }
 .busca-resultados .r-foto { width: 40px; height: 52px; border-radius: 5px; border: 1.5px solid var(--tinta); }
+
+/* ---------- Dias de trabalho ---------- */
+.dias-barras { display: grid; gap: 12px; }
+.dia-trab .g-seg { background: var(--carimbo); }
+.dia-cam .g-seg { background: var(--tinta); }
+
+/* ---------- Trabalho e renda: propostas e votações ---------- */
+.proposta { display: grid; gap: 8px; }
+.proposta-cab { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.casa-tag { font-stretch: 70%; font-weight: 850; font-size: .875rem; text-transform: uppercase; letter-spacing: .04em;
+  border: 2px solid var(--tinta); border-radius: 5px; padding: 1px 6px; background: var(--amarelo); }
+.proposta-ementa { color: var(--tinta-2); }
+.motivo { font-size: .95rem; }
+.votacoes-lista { display: grid; border-top: 1px solid var(--linha); }
+.votacao { border-bottom: 1px solid var(--linha); }
+.votacao > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 18px auto 1fr; gap: 2px 10px;
+  align-items: baseline; padding: 10px 0; }
+.votacao > summary::-webkit-details-marker { display: none; }
+.votacao > summary .chev { width: 16px; height: 16px; align-self: center; transition: transform .18s cubic-bezier(.16, 1, .3, 1); }
+.votacao[open] > summary .chev { transform: rotate(90deg); }
+.vt-data { font-weight: 750; font-variant-numeric: tabular-nums; }
+.vt-res { font-size: .875rem; color: var(--tinta-2); }
+.vt-placar { grid-column: 2 / -1; font-stretch: 75%; font-weight: 800; }
+.vt-desc { grid-column: 2 / -1; font-size: .95rem; color: var(--tinta-2); }
+.votacao > p, .votacao > table { margin: 0 0 10px 28px; }
+.votacao .linha a { color: var(--carimbo); font-weight: 700; }
+.tabela-votos { width: auto; min-width: 260px; }
+.voto .v-nao { background: var(--papel); }
+.votos-proposta > summary { font-stretch: 75%; font-weight: 800; font-size: 1.05rem; color: var(--tinta); }
+.votos-proposta .votos { margin-top: 6px; }
+.nav-baixo { grid-template-columns: repeat(5, 1fr); }
+.nav-baixo a { font-size: .75rem; }
+.votacao[open] > summary .vt-desc { display: none; }

@@ -1,0 +1,57 @@
+{% extends "base.html.j2" %}
+{% import "componentes.html.j2" as c with context %}
+{% block titulo %}Trabalho e renda · Dinheiro do Povo{% endblock %}
+{% block descricao %}Votações sobre trabalho e renda no Congresso desde 2023, com o voto de cada parlamentar. Dados oficiais.{% endblock %}
+{% block conteudo %}
+<section class="ladrilho pilha" aria-labelledby="t-trabalho">
+  <h1 id="t-trabalho">Trabalho e renda no Congresso</h1>
+  <p>Todas as votações nominais do Plenário, desde 2023, sobre trabalho, emprego, previdência, salário mínimo, imposto de renda e cesta básica. São <strong>{{ pauta.camara }} votações na Câmara</strong> e <strong>{{ pauta.senado }} no Senado</strong>, sobre {{ pauta.grupos|length }} propostas.</p>
+  <p class="secundario">"Sim" e "Não" respondem à pergunta de cada votação, que pode ser o texto principal, uma emenda, um destaque ou um pedido de urgência. Por isso a descrição oficial aparece ao lado de cada voto. Não classificamos votos como a favor ou contra ninguém.</p>
+  <div class="linha">{{ c.ev("calculo", "seleção pela regra publicada em Como ler") }}<a class="ev" href="{{ raiz }}metodologia.html#trabalho">ver a regra</a></div>
+</section>
+
+<section class="secao" aria-labelledby="t-dias">
+  {% include "dias.html.j2" %}
+</section>
+
+<section class="secao" aria-labelledby="t-propostas">
+  <h2 id="t-propostas" class="no-amarelo">As propostas votadas</h2>
+  <label class="filtro"><svg class="ic" aria-hidden="true"><use href="#i-busca"/></svg><span class="visivel-leitor">Filtrar propostas</span>
+    <input type="search" id="filtro-pauta" placeholder="Filtrar: cesta básica, salário, CLT…" data-filtro="lista-pauta" data-contador="n-pauta"></label>
+  <p class="secundario no-amarelo"><span id="n-pauta">{{ pauta.grupos|length }}</span> propostas. As da cesta básica com imposto zero vêm primeiro; as demais, da votação mais recente para a mais antiga.</p>
+  <div class="pilha" id="lista-pauta">
+  {% for g in pauta.grupos %}
+    <article class="ladrilho proposta" id="{{ g.slug }}" data-busca="{{ (g.proposicao ~ ' ' ~ g.ementa ~ ' ' ~ g.motivo)|normalizar }}">
+      <div class="proposta-cab">
+        <span class="casa-tag">{{ "Câmara" if g.casa == "camara" else "Senado" }}</span>
+        <h3>{{ g.proposicao }}</h3>
+      </div>
+      {% if g.ementa %}<p class="proposta-ementa">{{ g.ementa|truncate(320) }}</p>{% endif %}
+      <p class="motivo">{% if g.destaque %}<strong>{{ g.motivo }}</strong>{% else %}Na lista porque: {{ g.motivo }}{% endif %}</p>
+      <p class="secundario">{{ g.votacoes|length }} {{ g.votacoes|length|plural("votação nominal", "votações nominais") }}{% if g.url %} · <a href="{{ g.url }}" target="_blank" rel="noopener">ficha oficial da proposta</a>{% endif %}</p>
+      <div class="votacoes-lista">
+      {% for v in g.votacoes %}
+        <details class="votacao">
+          <summary>
+            <svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>
+            <span class="vt-data">{{ v.data|data }}</span>
+            <span class="vt-res">{% if v.aprovada == 1 %}aprovada{% elif v.aprovada == 0 %}rejeitada{% endif %}</span>
+            <span class="vt-placar">Sim {{ v.placar.sim }} · Não {{ v.placar.nao }}</span>
+            <span class="vt-desc">{{ v.descricao|truncate(140) }}</span>
+          </summary>
+          <p>{{ v.descricao }}</p>
+          {% if v.por_partido %}
+          <table class="tabela tabela-votos">
+            <thead><tr><th>Partido na época</th><th class="n">Sim</th><th class="n">Não</th><th class="n">Outros</th></tr></thead>
+            <tbody>{% for b in v.por_partido %}<tr><th scope="row">{{ b.partido }}</th><td class="n">{{ b.sim }}</td><td class="n">{{ b.nao }}</td><td class="n">{{ b.outros }}</td></tr>{% endfor %}</tbody>
+          </table>
+          {% endif %}
+          <p class="linha">{% if v.url_sessao %}<a href="{{ v.url_sessao }}" target="_blank" rel="noopener">sessão</a>{% endif %}{% if v.url %}<a href="{{ v.url }}" target="_blank" rel="noopener">{{ "dados oficiais" if g.casa == "camara" else "matéria" }}</a>{% endif %}</p>
+        </details>
+      {% endfor %}
+      </div>
+    </article>
+  {% endfor %}
+  </div>
+</section>
+{% endblock %}

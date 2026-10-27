@@ -29,6 +29,7 @@
     <nav class="nav-topo" aria-label="Principal">
       <a href="{{ raiz }}index.html" {% if ativa == "inicio" %}aria-current="page"{% endif %}>Início</a>
       <a href="{{ raiz }}partidos.html" {% if ativa == "partidos" %}aria-current="page"{% endif %}>Partidos</a>
+      <a href="{{ raiz }}trabalho.html" {% if ativa == "trabalho" %}aria-current="page"{% endif %}>Trabalho</a>
       <a href="{{ raiz }}semana/{{ sabado.isoformat() }}.html" {% if ativa == "semana" %}aria-current="page"{% endif %}>Semana</a>
       <a href="{{ raiz }}metodologia.html" {% if ativa == "metodologia" %}aria-current="page"{% endif %}>Como ler</a>
     </nav>
@@ -49,6 +50,7 @@
   <a href="{{ raiz }}index.html" {% if ativa == "inicio" %}aria-current="page"{% endif %}><svg aria-hidden="true"><use href="#i-inicio"/></svg>Início</a>
   <a href="#busca-campo" data-focar-busca><svg aria-hidden="true"><use href="#i-busca"/></svg>Buscar</a>
   <a href="{{ raiz }}partidos.html" {% if ativa == "partidos" %}aria-current="page"{% endif %}><svg aria-hidden="true"><use href="#i-partidos"/></svg>Partidos</a>
+  <a href="{{ raiz }}trabalho.html" {% if ativa == "trabalho" %}aria-current="page"{% endif %}><svg aria-hidden="true"><use href="#i-trabalho"/></svg>Trabalho</a>
   <a href="{{ raiz }}semana/{{ sabado.isoformat() }}.html" {% if ativa == "semana" %}aria-current="page"{% endif %}><svg aria-hidden="true"><use href="#i-semana"/></svg>Semana</a>
 </nav>
 <script src="{{ raiz }}static/busca-indice.js"></script>

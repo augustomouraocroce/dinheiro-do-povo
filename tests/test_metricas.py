@@ -51,11 +51,11 @@ def conn(tmp_path):
         [(p, d, s, cat, url.format(p.split(":")[1])) for p, d, s, cat in presenca])
 
     c.execute("INSERT INTO votacao VALUES ('camara:v1', 'camara', '2026-10-14', 'PL 1/2026', 1, NULL, 'https://v1')")
-    c.executemany("INSERT INTO voto VALUES ('camara:v1', ?, ?)",
+    c.executemany("INSERT INTO voto (votacao_id, parlamentar_id, voto) VALUES ('camara:v1', ?, ?)",
                   [("camara:1", "Sim"), ("camara:3", "Não")])  # camara:2 sem registro
 
     c.execute("INSERT INTO votacao VALUES ('senado:s1', 'senado', '2026-10-15', 'PLP 2/2026', 1, NULL, 'https://s1')")
-    c.executemany("INSERT INTO voto VALUES ('senado:s1', ?, ?)",
+    c.executemany("INSERT INTO voto (votacao_id, parlamentar_id, voto) VALUES ('senado:s1', ?, ?)",
                   [("senado:10", "NCom"), ("senado:11", "Sim"), ("senado:12", "AP")])
 
     for pid, salario, gasto, sobra in [("camara:1", 46366.19, 300000, 100000),

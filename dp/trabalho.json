@@ -1,0 +1,39 @@
+{
+  "_como_funciona": "Uma votação nominal do Plenário entra na lista 'trabalho e renda' quando a proposição votada tem um dos temas oficiais abaixo, quando a ementa, o título ou a descrição da votação citam uma das palavras abaixo, ou quando a proposição está na lista de incluídas (com o motivo). A lista mostra o voto de cada parlamentar; não classificamos votos como a favor ou contra ninguém.",
+  "temas_camara": {
+    "58": "Trabalho e Emprego",
+    "52": "Previdência e Assistência Social"
+  },
+  "palavras": [
+    "cesta básica",
+    "salário mínimo",
+    "salário-mínimo",
+    "imposto de renda",
+    "imposto sobre a renda",
+    "jornada de trabalho",
+    "Consolidação das Leis do Trabalho",
+    "FGTS",
+    "Fundo de Garantia do Tempo de Serviço",
+    "seguro-desemprego",
+    "aposentadoria",
+    "previdência",
+    "trabalhador",
+    "trabalhadora",
+    "repouso semanal",
+    "piso salarial",
+    "décimo terceiro",
+    "licença-maternidade",
+    "licença-paternidade",
+    "salário-maternidade"
+  ],
+  "incluidas": [
+    {
+      "titulo": "PEC 45/2019",
+      "motivo": "Reforma tributária: criou a Cesta Básica Nacional de Alimentos com imposto zero (Emenda Constitucional 132/2023)."
+    },
+    {
+      "titulo": "PLP 68/2024",
+      "motivo": "Regulamentação da reforma tributária: definiu os alimentos da cesta básica com imposto zero (Lei Complementar 214/2025)."
+    }
+  ]
+}

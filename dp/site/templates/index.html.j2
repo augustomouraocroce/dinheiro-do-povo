@@ -41,6 +41,18 @@
   </div>
 </section>
 
+<section class="secao" aria-labelledby="t-dias">
+  {% include "dias.html.j2" %}
+</section>
+
+<section class="secao" aria-labelledby="t-pauta">
+  <div class="ladrilho pilha">
+    <h2 id="t-pauta">Como votaram sobre trabalho e renda</h2>
+    <p>Desde 2023 foram <strong>{{ pauta.camara }} votações nominais na Câmara</strong> e <strong>{{ pauta.senado }} no Senado</strong> sobre trabalho, emprego, previdência, salário mínimo, imposto de renda e a cesta básica com imposto zero. Veja a pergunta de cada votação, o resultado e como votou cada partido e cada parlamentar.</p>
+    <a class="carimbo" href="{{ raiz }}trabalho.html">Ver as votações sobre trabalho e renda<svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+  </div>
+</section>
+
 <section class="secao" aria-labelledby="t-busca">
   <div class="ladrilho pilha">
     <h2 id="t-busca">Procure quem representa você</h2>

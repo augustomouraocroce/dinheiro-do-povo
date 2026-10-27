@@ -12,6 +12,8 @@ Tom de portal de transparência: sem opinião, sem adjetivos sobre pessoas. Todo
 - **Votações nominais** da semana e o voto de cada parlamentar.
 - **Patrimônio declarado ao TSE** em 2018, 2022 e 2026, por tipo de bem.
 - **Partidos lado a lado** e uma página por partido.
+- **Trabalho e renda**: todas as votações nominais do Plenário desde 2023 sobre trabalho, emprego, previdência, salário mínimo, imposto de renda e cesta básica com imposto zero, com a pergunta de cada votação, o resultado, o voto de cada parlamentar e a contagem por partido na época. A regra de seleção fica em [`dp/trabalho.json`](dp/trabalho.json); não classificamos votos como a favor ou contra ninguém.
+- **Dias de trabalho**: dias úteis de quem trabalha com carteira assinada (feriados nacionais por lei federal e 30 dias de férias da CLT) ao lado dos dias de sessão deliberativa no Plenário da Câmara.
 - **Busca** por nome ou sigla, com foto oficial e logo do partido.
 - **Relatório semanal** (sábado a sexta) em Markdown e HTML.
 
@@ -26,6 +28,8 @@ Tom de portal de transparência: sem opinião, sem adjetivos sobre pessoas. Todo
 | Senadores, votações nominais | Dados Abertos do Senado |
 | Cota dos senadores (CEAPS) | Arquivo anual do Senado |
 | Candidaturas e bens declarados | Portal de Dados Abertos do TSE (2018, 2022, 2026) |
+| Votações do Plenário desde 2023, com temas | Arquivos anuais de votações da Câmara, API de temas das proposições, Dados Abertos do Senado |
+| Feriados e férias | Leis 662/1949, 6.802/1980, 14.759/2023 e CLT art. 130 (Planalto) |
 | Referências do dia a dia | Planalto (salário mínimo), DIEESE/Conab (cesta básica), ANAC (tarifa aérea), FipeZAP (m²), Renault (carro 0 km) |
 
 Os valores de referência, com data e link, ficam em [`dp/referencias.json`](dp/referencias.json) e devem ser revistos todo mês.
@@ -79,6 +83,8 @@ dp/
   db.py                banco SQLite (data/dinheiro.db)
   coleta.py            coleta semanal (Câmara, Senado, TSE)
   fontes/              leitura de cada fonte (camara, senado, tse, fotos)
+  trabalho.py          votações sobre trabalho e renda (regra em trabalho.json)
+  calendario.py        dias úteis e férias do trabalhador
   metricas.py          números do relatório semanal
   relatorio.py         relatório em Markdown e HTML
   referencias.json     valores do dia a dia com fonte e data

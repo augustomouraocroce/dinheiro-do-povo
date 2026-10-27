@@ -1,0 +1,28 @@
+{% import "componentes.html.j2" as c with context %}
+{# Dias de trabalho: trabalhador com carteira x dias de sessão deliberativa no Plenário da Câmara #}
+<div class="ladrilho pilha">
+  <h2 id="t-dias">Quantos dias se trabalha</h2>
+  {% set a, b = dias.anterior, dias.atual %}
+  {% if a.camara %}
+  <p>Em {{ a.ano }}, quem trabalha com carteira assinada, de segunda a sexta, trabalhou cerca de <strong>{{ a.trabalhador.trabalhados }} dias</strong>. O Plenário da Câmara teve <strong>{{ a.camara.dias }} dias de sessão deliberativa</strong>, quando há votação e a presença dos deputados é registrada.</p>
+  {% endif %}
+  <div class="dias-barras" role="group" aria-label="Dias de trabalho e dias de sessão">
+    {% set maximo = [a.trabalhador.trabalhados, b.trabalhador.trabalhados]|max %}
+    {% for linha in [
+        ("Trabalhador com carteira, " ~ a.ano, a.trabalhador.trabalhados, "trab"),
+        ("Plenário da Câmara, " ~ a.ano, a.camara.dias if a.camara else None, "cam"),
+        ("Trabalhador, " ~ b.ano ~ " até " ~ (b.trabalhador.ate|dia_mes), b.trabalhador.trabalhados, "trab"),
+        ("Plenário da Câmara, " ~ b.ano ~ " até " ~ (b.camara.ate|dia_mes if b.camara else ""), b.camara.dias if b.camara else None, "cam")] %}
+      {% if linha[1] is not none %}
+      <div class="g-linha"><span class="g-rot">{{ linha[0] }}</span>
+        <span class="g-trilho"><span class="g-barra dia-{{ linha[2] }}" style="--f:{{ '%.4f'|format(linha[1] / maximo) }}"><span class="g-seg" data-tip="{{ linha[0] }}: {{ linha[1] }} dias" tabindex="0" aria-label="{{ linha[0] }}: {{ linha[1] }} dias" style="flex-grow:1"></span></span><span class="g-val">{{ linha[1] }} dias</span></span></div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <p class="secundario">Os deputados também trabalham em comissões, no gabinete e nos estados; a Câmara só registra presença oficial nos dias de sessão deliberativa do Plenário. {{ b.ano }} é ano de eleição, com menos sessões no segundo semestre.</p>
+  <div class="linha">
+    {{ c.ev("calculo", "dias úteis sem feriados nacionais, menos 30 dias de férias da CLT") }}
+    {% if a.camara %}{{ c.carimbo("Fonte: sessões da Câmara", a.camara.url_fonte) }}{% endif %}
+    <a class="ev" href="{{ raiz }}metodologia.html#dias">como calculamos</a>
+  </div>
+</div>

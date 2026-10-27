@@ -139,6 +139,33 @@ CREATE TABLE IF NOT EXISTS patrimonio_tipo (
     PRIMARY KEY (parlamentar_id, ano_eleicao, tipo)
 );
 
+-- Temas oficiais das proposições da Câmara (cache da API; cod_tema NULL = sem tema).
+CREATE TABLE IF NOT EXISTS proposicao_tema (
+    proposicao_id TEXT NOT NULL,
+    cod_tema      INTEGER,
+    UNIQUE (proposicao_id, cod_tema)
+);
+
+-- Votações nominais do Plenário sobre trabalho e renda (regra em dp/trabalho.json).
+CREATE TABLE IF NOT EXISTS pauta_trabalho (
+    votacao_id     TEXT PRIMARY KEY REFERENCES votacao(id),
+    casa           TEXT NOT NULL,
+    proposicao     TEXT NOT NULL,
+    ementa         TEXT,
+    url_proposicao TEXT,
+    motivo         TEXT NOT NULL
+);
+
+-- Dias com sessão deliberativa no Plenário, por ano.
+CREATE TABLE IF NOT EXISTS dias_sessao (
+    casa      TEXT NOT NULL,
+    ano       INTEGER NOT NULL,
+    dias      INTEGER NOT NULL,
+    ate       TEXT NOT NULL,
+    url_fonte TEXT NOT NULL,
+    PRIMARY KEY (casa, ano)
+);
+
 CREATE TABLE IF NOT EXISTS coleta_log (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     etapa       TEXT NOT NULL,
@@ -157,4 +184,7 @@ def conectar(path: Path = None) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     conn.executescript(SCHEMA)
+    colunas_voto = {r[1] for r in conn.execute("PRAGMA table_info(voto)")}
+    if "partido" not in colunas_voto:  # partido do parlamentar na data do voto
+        conn.execute("ALTER TABLE voto ADD COLUMN partido TEXT")
     return conn

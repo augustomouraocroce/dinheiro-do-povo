@@ -10,7 +10,7 @@ import json
 from collections import Counter, defaultdict
 from datetime import date
 
-from dp import config, metricas
+from dp import calendario, config, metricas, trabalho
 from dp.fontes import senado
 
 ARQUIVO_REFERENCIAS = config.ROOT / "dp" / "referencias.json"
@@ -175,6 +175,91 @@ def ceaps_mensal(conn, ano: int) -> dict:
     return saida
 
 
+# --- Trabalho e renda: votações e dias de trabalho ----------------------------------
+
+def _categoria_voto(casa: str, sigla: str):
+    """sim / nao / outros (abstenção, obstrução, voto secreto...) ou None quando não é voto
+    (no Senado, códigos de ausência como "NCom" e "AP" vêm junto com os votos)."""
+    if sigla == "Sim":
+        return "sim"
+    if sigla == "Não":
+        return "nao"
+    if casa == "senado" and senado.classificar_voto(sigla) != "votou":
+        return None
+    return "outros"
+
+
+def pauta_trabalho(conn, partidos_monitorados) -> dict:
+    """Votações sobre trabalho e renda agrupadas por proposição, com o voto de cada um."""
+    regras = trabalho.carregar_regras()
+    incluidas = {i["titulo"] for i in regras["incluidas"]}
+    linhas = conn.execute(
+        """SELECT p.votacao_id, p.casa, p.proposicao, p.ementa, p.url_proposicao, p.motivo,
+                  v.data, v.descricao, v.aprovada, v.url_fonte, v.sessao_id
+           FROM pauta_trabalho p JOIN votacao v ON v.id = p.votacao_id
+           ORDER BY v.data DESC, v.id DESC""").fetchall()
+    votos = defaultdict(list)
+    for vid, pid, voto, partido in conn.execute(
+            """SELECT votacao_id, parlamentar_id, voto, partido FROM voto
+               WHERE votacao_id IN (SELECT votacao_id FROM pauta_trabalho)"""):
+        votos[vid].append((pid, voto, partido))
+
+    grupos, por_parlamentar = {}, defaultdict(list)
+    for r in linhas:
+        chave = (r["casa"], r["proposicao"])
+        g = grupos.setdefault(chave, {
+            "casa": r["casa"], "proposicao": r["proposicao"], "ementa": (r["ementa"] or "").split("\n")[0].strip(),
+            "motivo": r["motivo"], "url": r["url_proposicao"], "destaque": r["proposicao"] in incluidas,
+            "votacoes": [], "ultima": r["data"], "slug": slug_proposicao(r["casa"], r["proposicao"])})
+        sessao = r["sessao_id"].split(":", 1)[1] if r["sessao_id"] and r["casa"] == "camara" else None
+        placar = Counter(c for c in (_categoria_voto(r["casa"], v) for _, v, _ in votos[r["votacao_id"]]) if c)
+        por_partido = []
+        for sigla in partidos_monitorados:
+            c = Counter(x for x in (_categoria_voto(r["casa"], v) for _, v, pt in votos[r["votacao_id"]] if pt == sigla) if x)
+            if sum(c.values()):
+                por_partido.append({"partido": sigla, **{k: c[k] for k in ("sim", "nao", "outros")}})
+        votacao = {"id": r["votacao_id"], "data": r["data"], "descricao": r["descricao"], "aprovada": r["aprovada"],
+                   "url": r["url_fonte"], "url_sessao": config.CAMARA_EVENTO.format(id=sessao) if sessao else None,
+                   "placar": placar, "por_partido": por_partido}
+        g["votacoes"].append(votacao)
+        for pid, voto, partido in votos[r["votacao_id"]]:
+            if _categoria_voto(r["casa"], voto):
+                por_parlamentar[pid].append({"grupo": chave, "votacao": votacao, "voto": voto, "partido_epoca": partido})
+
+    ordem = sorted(grupos.values(), key=lambda g: (not g["destaque"], g["ultima"] and -int(g["ultima"].replace("-", ""))))
+    return {"grupos": ordem, "por_parlamentar": por_parlamentar, "regras": regras,
+            "total": len(linhas), "camara": sum(1 for r in linhas if r["casa"] == "camara"),
+            "senado": sum(1 for r in linhas if r["casa"] == "senado")}
+
+
+def slug_proposicao(casa: str, titulo: str) -> str:
+    return casa + "-" + "".join(ch if ch.isalnum() else "-" for ch in senado.normalizar_nome(titulo).lower()).strip("-")
+
+
+def votos_trabalho_da_pessoa(pauta, pid):
+    """Votos da pessoa agrupados por proposição, na ordem da página de trabalho."""
+    meus = defaultdict(list)
+    for item in pauta["por_parlamentar"].get(pid, []):
+        meus[item["grupo"]].append(item)
+    grupos = []
+    for g in pauta["grupos"]:
+        chave = (g["casa"], g["proposicao"])
+        if chave in meus:
+            grupos.append({"grupo": g, "votos": meus[chave]})
+    contagem = Counter(_categoria_voto(i["grupo"][0], i["voto"]) for itens in meus.values() for i in itens)
+    return {"grupos": grupos, "contagem": contagem, "registrados": sum(contagem.values())}
+
+
+def dias_de_trabalho(conn, ano: int, fim: date) -> dict:
+    sessoes = {r["ano"]: dict(r) for r in conn.execute("SELECT * FROM dias_sessao WHERE casa = 'camara'")}
+    return {
+        "anterior": {"ano": ano - 1, "trabalhador": calendario.dias_trabalhados(ano - 1),
+                     "camara": sessoes.get(ano - 1)},
+        "atual": {"ano": ano, "trabalhador": calendario.dias_trabalhados(ano, fim), "camara": sessoes.get(ano)},
+        "fontes": calendario.FONTES,
+    }
+
+
 # --- Montagem do site ------------------------------------------------------------
 
 def montar(conn, sabado: date) -> dict:
@@ -250,6 +335,9 @@ def montar(conn, sabado: date) -> dict:
                 item["votos"] = [{**v, "voto": v["votos"].get(pid)} for v in votos_sen]
             parlamentares.append(item)
     parlamentares.sort(key=lambda x: senado.normalizar_nome(x["nome"]))
+    pauta = pauta_trabalho(conn, [s for s in config.PARTIDOS_MONITORADOS])
+    for item in parlamentares:
+        item["trabalho"] = votos_trabalho_da_pessoa(pauta, item["id"])
 
     # Partidos
     partidos_info = []
@@ -275,6 +363,8 @@ def montar(conn, sabado: date) -> dict:
         "mes_corte": mes_corte, "meses": MESES,
         "refs": refs,
         "errata": carregar_errata(),
+        "pauta": pauta,
+        "dias": dias_de_trabalho(conn, ano, fim),
         "partes_custo": PARTES_CUSTO,
         "parlamentares": parlamentares,
         "partidos": partidos_info,

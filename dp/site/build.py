@@ -243,6 +243,7 @@ def construir(conn, sabado: date, saida: Path = SAIDA, artefato: bool = False):
     g_custo, linhas = graficos_custo("Média por deputado", d["camara"]["media_custo"], d)
     escrever("index.html", "index.html.j2", "", "inicio", grafico_custo=g_custo, linhas_custo=linhas)
     escrever("partidos.html", "partidos.html.j2", "", "partidos")
+    escrever("trabalho.html", "trabalho.html.j2", "", "trabalho")
     escrever("metodologia.html", "metodologia.html.j2", "", "metodologia")
     escrever(f"semana/{sabado.isoformat()}.html", "semana.html.j2", "../", "semana",
              corpo=Markup(corpo_semana))
