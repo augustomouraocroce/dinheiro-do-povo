@@ -102,3 +102,44 @@ def test_barras_custo_escala_unica():
     html = graficos.barras_custo(linhas, "teste")
     assert "--f:1.00000" in html and "--f:0.25000" in html
     assert 'data-tip="Salário: R$ 100,00 por mês"' in html
+
+
+def test_cada_100_soma_exatamente_100():
+    custo = {"total": 233591.45, "partes": [
+        {"chave": "salario", "nome": "Salário", "valor": 46366.19},
+        {"chave": "cota", "nome": "Cota", "valor": 43355.0},
+        {"chave": "verba", "nome": "Verba", "valor": 143651.0},
+        {"chave": "auxilio", "nome": "Auxílio", "valor": 219.26}]}
+    partes = dados.cada_100(custo)
+    assert sum(p["reais"] for p in partes) == 100
+    assert [p["chave"] for p in partes][0] == "verba"  # maior parte primeiro
+    assert partes[-1]["reais"] == 0                    # auxílio pequeno vira "menos de R$ 1"
+
+
+def _ctx_cards(n_ausentes, n_votos, despesas=False):
+    ausentes = [{"nome": f"Dep {i}", "partido": "PL", "uf": "SP", "dias": ["2026-10-13"]} for i in range(n_ausentes)]
+    return {"semana": {"camara": {"presenca_semana": {"ausencias_nao_justificadas": ausentes},
+                                  "despesas_novas": {"disponivel": despesas}}},
+            "votacoes_semana": [{"descricao": "x"}] * n_votos}
+
+
+def test_carrossel_tem_no_maximo_10_imagens():
+    from dp.cards import gerar
+    cards = gerar.roteiro_carrossel(_ctx_cards(30, 6, despesas=True))
+    assert len(cards) <= gerar.MAX_CARDS
+    faltas = [c for c in cards if c[0].startswith("faltas-")]
+    mostrados = sum(len(c[2]["nomes"]) for c in faltas)
+    assert mostrados + sum(c[2].get("restantes", 0) for c in faltas) == 30  # ninguém some sem aviso
+    votos = next(c for c in cards if c[0] == "votacoes")
+    assert len(votos[2]["votos"]) == gerar.VOTACOES_POR_CARD and votos[2]["restantes"] == 4
+
+
+def test_carrossel_semana_sem_sessao():
+    from dp.cards import gerar
+    nomes = [c[0] for c in gerar.roteiro_carrossel(_ctx_cards(0, 0))]
+    assert nomes == ["capa", "custo", "compra", "alem", "presenca", "votacoes", "dias", "fim"]
+
+
+def test_descricao_sem_placar():
+    from dp.cards import gerar
+    assert gerar._sem_placar("Aprovado o Requerimento. Sim: 11; Não: 387; Total: 398.") == "Aprovado o Requerimento."

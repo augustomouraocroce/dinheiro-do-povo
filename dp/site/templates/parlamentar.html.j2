@@ -45,8 +45,8 @@
 <section class="secao" aria-labelledby="t-custo">
   <div class="ladrilho pilha">
     <h2 id="t-custo">De onde vem esse custo</h2>
-    <p>Comparado com a média dos {{ camara.total }} deputados e com um salário mínimo, na mesma escala.</p>
-    {{ c.legenda_custo(partes_custo) }}
+    {{ c.cada_100(p.custo) }}
+    <p class="secundario">Na mesma escala: este mandato, a média da Câmara e um salário mínimo.</p>
     {{ grafico_custo|safe }}
     {{ c.tabela_custo(linhas_custo) }}
     <div class="linha">{{ c.ev("calculo", "salário + médias mensais de cota e verba (jan a " ~ meses[mes_corte - 1] ~ ") + auxílio-moradia ÷ " ~ mes_atual ~ " meses") }}</div>
@@ -75,6 +75,15 @@
     <details class="tabela-dados"><summary><svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>Ver em tabela</summary><table class="tabela"><tbody>
       {% for m, v in p.custo.cota_serie|dictsort %}<tr><th scope="row">{{ meses[m - 1] }}</th><td class="n">{{ v|brl }}</td></tr>{% endfor %}
     </tbody></table></details>
+  </div>
+</section>
+
+<section class="secao" aria-labelledby="t-alem">
+  <div class="ladrilho pilha">
+    <h2 id="t-alem">Além do salário</h2>
+    <p>O que vem junto com o cargo de deputado federal, segundo a Câmara, e o que a lei garante a quem ganha um salário mínimo com carteira assinada.</p>
+    {{ c.alem_do_salario(beneficios) }}
+    {{ c.carimbo("Fonte: Câmara dos Deputados", p.url ~ "?ano=" ~ ano) }}
   </div>
 </section>
 

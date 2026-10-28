@@ -38,6 +38,11 @@ def carregar_referencias() -> dict:
     return refs
 
 
+def carregar_beneficios() -> dict:
+    caminho = config.ROOT / "dp" / "beneficios.json"
+    return json.loads(caminho.read_text(encoding="utf-8"))
+
+
 def carregar_errata() -> list:
     if not ARQUIVO_ERRATA.exists():
         return []
@@ -94,6 +99,27 @@ def custo_mensal_deputado(itens: dict, mes_atual: int) -> dict:
         "cota_serie": cota_serie,
         "auxilio_ano": auxilio_ano,
     }
+
+
+NOMES_POPULARES = {
+    "salario": ("Salário do deputado", "o salário bruto, antes dos descontos"),
+    "cota": ("Cota para gastos do mandato", "combustível, passagens, divulgação, escritório"),
+    "verba": ("Salários da equipe do gabinete", "até 25 funcionários escolhidos pelo deputado"),
+    "auxilio": ("Auxílio-moradia", "para quem não usa imóvel funcional"),
+}
+
+
+def cada_100(custo: dict) -> list:
+    """Divide R$ 100 entre as partes do custo (maiores restos), para a soma dar exatamente 100."""
+    total = custo["total"] or 1
+    partes = [p for p in custo["partes"] if p["valor"] > 0]
+    brutos = [100 * p["valor"] / total for p in partes]
+    inteiros = [int(b) for b in brutos]
+    for i in sorted(range(len(partes)), key=lambda i: brutos[i] - inteiros[i], reverse=True)[:100 - sum(inteiros)]:
+        inteiros[i] += 1
+    return [{"chave": p["chave"], "nome": NOMES_POPULARES[p["chave"]][0], "explica": NOMES_POPULARES[p["chave"]][1],
+             "reais": n, "pct": p["valor"] / total, "valor": p["valor"]}
+            for p, n in sorted(zip(partes, inteiros), key=lambda x: -x[0]["valor"])]
 
 
 def media_partes(custos: list) -> dict:
@@ -260,6 +286,67 @@ def dias_de_trabalho(conn, ano: int, fim: date) -> dict:
     }
 
 
+# --- Rankings ----------------------------------------------------------------------
+MINIMO_VOTOS = 100  # só entra no ranking de votos "Não" quem votou ao menos isso
+
+
+def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
+    """Mesmo critério para todos; os deputados listados são dos partidos acompanhados."""
+    deputados = [p for p in parlamentares if p["casa"] == "camara"]
+    senadores = [p for p in parlamentares if p["casa"] == "senado"]
+    nome = lambda p: senado.normalizar_nome(p["nome"])
+
+    grupos = defaultdict(list)
+    for pid, c in custos.items():
+        if pid in dep:
+            grupos[dep[pid]["partido"]].append(c["total"])
+    partidos = sorted(({"sigla": s, "nome": config.PARTIDOS_MONITORADOS.get(s, s), "media": sum(v) / len(v),
+                        "n": len(v), "acompanhado": s in config.PARTIDOS_MONITORADOS} for s, v in grupos.items()),
+                      key=lambda x: -x["media"])
+
+    com_custo = [p for p in deputados if p.get("custo")]
+    mais_custo = sorted(com_custo, key=lambda p: -p["custo"]["total"])[:top]
+
+    def ausencias(categoria):
+        lista = [p for p in deputados if p.get("presenca") and p["presenca"]["contagem"][categoria] > 0]
+        lista.sort(key=lambda p: (-p["presenca"]["contagem"][categoria], nome(p)))
+        saida = []
+        for p in lista[:top]:
+            motivos = Counter(d["status"] for d in p["presenca"]["dias"] if d["categoria"] == categoria)
+            saida.append({"p": p, "dias": p["presenca"]["contagem"][categoria], "sessoes": p["presenca"]["total"],
+                          "motivos": motivos.most_common()})
+        return saida
+
+    producao = dict(conn.execute("SELECT parlamentar_id, projetos FROM producao"))
+    com_producao = [p for p in deputados if p["id"] in producao]
+    menos_projetos = sorted(com_producao, key=lambda p: (producao[p["id"]], nome(p)))[:top]
+    todos_proj = [v for k, v in producao.items() if k in dep]
+
+    resumo = {r[0]: r for r in conn.execute(
+        "SELECT parlamentar_id, sim, nao, outros, votacoes_total FROM resumo_votos WHERE casa = 'camara'")}
+    elegiveis = [p for p in deputados if p["id"] in resumo and resumo[p["id"]][1] + resumo[p["id"]][2] >= MINIMO_VOTOS]
+    pct_nao = lambda pid: resumo[pid][2] / (resumo[pid][1] + resumo[pid][2])
+    mais_nao = sorted(elegiveis, key=lambda p: (-pct_nao(p["id"]), nome(p)))[:top]
+    sim_total = sum(r[1] for k, r in resumo.items() if k in dep)
+    nao_total = sum(r[2] for k, r in resumo.items() if k in dep)
+
+    return {
+        "partidos": partidos,
+        "mais_custo": mais_custo,
+        "senado_cota": sorted(senadores, key=lambda p: -(p.get("ceaps_media") or 0))[:top],
+        "sem_justificativa": ausencias("ausencia_nao_justificada"),
+        "justificadas": ausencias("ausencia_justificada"),
+        "menos_projetos": [{"p": p, "projetos": producao[p["id"]]} for p in menos_projetos],
+        "sem_projeto": sum(1 for p in com_producao if producao[p["id"]] == 0),
+        "media_projetos": sum(todos_proj) / len(todos_proj) if todos_proj else None,
+        "mais_nao": [{"p": p, "pct": pct_nao(p["id"]), "nao": resumo[p["id"]][2],
+                      "votos": resumo[p["id"]][1] + resumo[p["id"]][2]} for p in mais_nao],
+        "media_nao": nao_total / (sim_total + nao_total) if sim_total + nao_total else None,
+        "minimo_votos": MINIMO_VOTOS,
+        "tipos_projeto": "PL, PLP, PDL e PRC",
+    }
+
+
 # --- Montagem do site ------------------------------------------------------------
 
 def montar(conn, sabado: date) -> dict:
@@ -363,7 +450,9 @@ def montar(conn, sabado: date) -> dict:
         "mes_corte": mes_corte, "meses": MESES,
         "refs": refs,
         "errata": carregar_errata(),
+        "beneficios": carregar_beneficios(),
         "pauta": pauta,
+        "rankings": montar_rankings(conn, dep, custos, parlamentares),
         "dias": dias_de_trabalho(conn, ano, fim),
         "partes_custo": PARTES_CUSTO,
         "parlamentares": parlamentares,

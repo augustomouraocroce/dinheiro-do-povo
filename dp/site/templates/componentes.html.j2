@@ -69,9 +69,10 @@
 {% macro marcas_presenca(presenca, meses) -%}
 {%- set c = presenca.contagem -%}
 <div class="marcas-legenda">
-  <span><svg aria-hidden="true"><use href="#m-presente"/></svg><b>{{ c.presente }}</b> presente</span>
-  <span><svg aria-hidden="true"><use href="#m-justificada"/></svg><b>{{ c.ausencia_justificada }}</b> ausência justificada</span>
-  <span><svg aria-hidden="true"><use href="#m-nao-justificada"/></svg><b>{{ c.ausencia_nao_justificada }}</b> sem justificativa</span>
+  {%- set tot = presenca.total or 1 %}
+  <span><svg aria-hidden="true"><use href="#m-presente"/></svg><b>{{ c.presente }}</b> presente <em>{{ (c.presente / tot)|pct }}</em></span>
+  <span><svg aria-hidden="true"><use href="#m-justificada"/></svg><b>{{ c.ausencia_justificada }}</b> ausência justificada <em>{{ (c.ausencia_justificada / tot)|pct }}</em></span>
+  <span><svg aria-hidden="true"><use href="#m-nao-justificada"/></svg><b>{{ c.ausencia_nao_justificada }}</b> sem justificativa <em>{{ (c.ausencia_nao_justificada / tot)|pct }}</em></span>
 </div>
 <div class="marcas-meses">
 {%- for mes, dias in presenca.dias|groupby_mes %}
@@ -121,5 +122,39 @@
     </div>
     <span></span>
   </div>
+</div>
+{%- endmacro %}
+
+{# A cada R$ 100 que o mandato custa: para onde vai cada parte #}
+{% macro cada_100(custo, sujeito="esse mandato") -%}
+<div class="cada100">
+  <p class="cada100-tit">A cada <span class="tag">R$ 100</span> que {{ sujeito }} custa:</p>
+  <ul>
+  {%- for parte in custo|cada100 %}
+    <li>
+      <i style="background: var(--s-{{ parte.chave }})" aria-hidden="true"></i>
+      <span class="c-reais">{{ "menos de R$ 1" if parte.reais == 0 else "R$ " ~ parte.reais }}</span>
+      <span class="c-nome">{{ parte.nome }}<small>{{ parte.explica }}</small></span>
+      <span class="c-det">{{ parte.valor|brl }} por mês · {{ parte.pct|pct }}</span>
+    </li>
+  {%- endfor %}
+  </ul>
+</div>
+{%- endmacro %}
+
+{# O que vem junto com o cargo de deputado x o que a lei garante a quem ganha um salário mínimo #}
+{% macro alem_do_salario(beneficios) -%}
+<div class="alem">
+  <div class="alem-cab" aria-hidden="true"><span></span><span>Deputado federal</span><span>Trabalhador com 1 salário mínimo</span></div>
+  <ul>
+  {%- for b in beneficios.itens %}
+    <li>
+      <svg class="alem-ic" aria-hidden="true"><use href="#{{ b.icone }}"/></svg>
+      <span class="alem-tit">{{ b.titulo }}</span>
+      <span class="alem-lado alem-dep"><svg aria-hidden="true"><use href="#{{ 'm-tem' if b.deputado_tem else 'm-nao-tem' }}"/></svg><span><b class="alem-rot">Deputado: </b>{{ b.deputado }}</span></span>
+      <span class="alem-lado alem-trab"><svg aria-hidden="true"><use href="#{{ 'm-tem' if b.trabalhador_tem else 'm-nao-tem' }}"/></svg><span><b class="alem-rot">Salário mínimo: </b>{{ b.trabalhador }}{% if b.fonte_trabalhador %} <a href="{{ b.fonte_trabalhador[1] }}" target="_blank" rel="noopener">{{ b.fonte_trabalhador[0] }}</a>{% endif %}</span></span>
+    </li>
+  {%- endfor %}
+  </ul>
 </div>
 {%- endmacro %}

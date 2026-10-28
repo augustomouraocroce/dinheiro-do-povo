@@ -36,7 +36,7 @@
             <svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>
             <span class="vt-data">{{ v.data|data }}</span>
             <span class="vt-res">{% if v.aprovada == 1 %}aprovada{% elif v.aprovada == 0 %}rejeitada{% endif %}</span>
-            <span class="vt-placar">Sim {{ v.placar.sim }} · Não {{ v.placar.nao }}</span>
+            {% set tv = (v.placar.sim + v.placar.nao + v.placar.outros) or 1 %}<span class="vt-placar">Sim {{ v.placar.sim }} ({{ (v.placar.sim / tv * 100)|round|int }}%) · Não {{ v.placar.nao }} ({{ (v.placar.nao / tv * 100)|round|int }}%)</span>
             <span class="vt-desc">{{ v.descricao|truncate(140) }}</span>
           </summary>
           <p>{{ v.descricao }}</p>

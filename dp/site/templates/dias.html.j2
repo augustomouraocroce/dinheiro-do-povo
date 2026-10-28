@@ -19,6 +19,7 @@
       {% endif %}
     {% endfor %}
   </div>
+  {% if a.camara %}<p class="frase-grande">Em {{ a.ano }}, o Plenário teve sessão em <strong>{{ (a.camara.dias / a.trabalhador.trabalhados)|pct }}</strong> dos dias que um trabalhador trabalhou: cerca de {{ (a.camara.dias / a.trabalhador.trabalhados * 10)|round|int }} em cada 10.</p>{% endif %}
   <p class="secundario">Os deputados também trabalham em comissões, no gabinete e nos estados; a Câmara só registra presença oficial nos dias de sessão deliberativa do Plenário. {{ b.ano }} é ano de eleição, com menos sessões no segundo semestre.</p>
   <div class="linha">
     {{ c.ev("calculo", "dias úteis sem feriados nacionais, menos 30 dias de férias da CLT") }}

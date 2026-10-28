@@ -13,7 +13,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
 
-from dp import config, db, trabalho
+from dp import config, db, rankings, trabalho
 from dp.fontes import camara, senado, tse
 
 
@@ -415,11 +415,19 @@ def coletar_trabalho(conn, fim):
         conn.commit()
 
 
+def coletar_rankings(conn, fim):
+    """Projetos apresentados por deputado e resumo de votos no Plenário (mandato atual)."""
+    with Etapa(conn, "rankings.projetos") as e:
+        e.detalhes = rankings.coletar_projetos(conn, camara.deputados_em_exercicio())
+    with Etapa(conn, "rankings.votos") as e:
+        e.detalhes = rankings.coletar_resumo_votos(conn, list(range(INICIO_MANDATO, fim.year + 1)))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Coleta semanal do Dinheiro do Povo")
     ap.add_argument("--semana", type=date.fromisoformat, default=config.ultimo_sabado(),
                     help="Sábado do relatório (AAAA-MM-DD). Padrão: último sábado.")
-    ap.add_argument("--casa", choices=["camara", "senado", "tse", "trabalho", "todas"], default="todas")
+    ap.add_argument("--casa", choices=["camara", "senado", "tse", "trabalho", "rankings", "todas"], default="todas")
     ap.add_argument("--sem-paginas-oficiais", action="store_true",
                     help="Pula as páginas de presença e de perfil dos deputados (≈1.000 requisições).")
     ap.add_argument("--db", default=None, help="Caminho alternativo do banco")
@@ -436,6 +444,8 @@ def main(argv=None):
         coletar_patrimonio(conn)
     if args.casa in ("trabalho", "todas"):
         coletar_trabalho(conn, fim)
+    if args.casa in ("rankings", "todas"):
+        coletar_rankings(conn, fim)
     return 0
 
 

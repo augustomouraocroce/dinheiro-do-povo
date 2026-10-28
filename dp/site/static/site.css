@@ -414,3 +414,67 @@ a.prateleira:hover { background: var(--papel-2); }
 .nav-baixo { grid-template-columns: repeat(5, 1fr); }
 .nav-baixo a { font-size: .75rem; }
 .votacao[open] > summary .vt-desc { display: none; }
+
+/* ---------- A cada R$ 100 ---------- */
+.cada100 { display: grid; gap: 10px; }
+.cada100-tit { font-stretch: 72%; font-weight: 800; font-size: 1.3rem; line-height: 1.15; }
+.cada100-tit .tag { font-size: 1.25rem; vertical-align: 1px; }
+.cada100 ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 2px solid var(--tinta); }
+.cada100 li { display: grid; grid-template-columns: 14px minmax(88px, auto) 1fr; gap: 2px 12px; align-items: baseline;
+  padding: 10px 0; border-bottom: 1px solid var(--linha); }
+.cada100 li i { width: 14px; height: 14px; border-radius: 3px; align-self: start; margin-top: 9px; }
+.cada100 .c-reais { font-stretch: 62%; font-weight: 900; font-size: 2rem; line-height: 1; white-space: nowrap; }
+.cada100 .c-nome { font-weight: 750; line-height: 1.2; }
+.cada100 .c-nome small { display: block; font-weight: 500; font-size: .875rem; color: var(--tinta-2); }
+.cada100 .c-det { grid-column: 3; font-size: .875rem; color: var(--tinta-2); font-variant-numeric: tabular-nums; }
+.marcas-legenda em { font-style: normal; font-size: .875rem; color: var(--tinta-2); font-weight: 650; }
+.frase-grande { font-stretch: 75%; font-weight: 750; font-size: 1.35rem; line-height: 1.2; }
+
+/* Tabelas dentro de "Ver em tabela" não podem alargar o quadro */
+details.tabela-dados, .pilha > * { min-width: 0; max-width: 100%; }
+details.tabela-dados .rolagem { max-width: 100%; overflow-x: auto; }
+
+/* ---------- Além do salário ---------- */
+.alem ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--tinta); }
+.alem li { display: grid; grid-template-columns: 52px 1fr; gap: 6px 14px; padding: 14px 0; border-bottom: 1px solid var(--linha); align-items: start; }
+.alem-ic { width: 52px; height: 52px; grid-row: span 3; }
+.alem-tit { font-stretch: 72%; font-weight: 850; font-size: 1.15rem; line-height: 1.15; }
+.alem-lado { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; font-size: .95rem; line-height: 1.35; }
+.alem-lado > svg { width: 22px; height: 22px; margin-top: 1px; }
+.alem-lado a { color: var(--carimbo); font-size: .875rem; font-weight: 700; }
+.alem-cab { display: none; }
+.alem-lado span { min-width: 0; }
+.alem-rot { font-weight: 800; }
+@media (min-width: 760px) {
+  .alem-cab { display: grid; grid-template-columns: 52px minmax(160px, 1fr) 1.4fr 1.4fr; gap: 14px; font-stretch: 72%; font-weight: 850;
+    font-size: 1rem; padding-bottom: 8px; }
+  .alem li { grid-template-columns: 52px minmax(160px, 1fr) 1.4fr 1.4fr; align-items: center; }
+  .alem-ic { grid-row: auto; }
+  .alem-rot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* ---------- Rankings ---------- */
+.rk-indice { display: flex; flex-wrap: wrap; gap: 8px; }
+.rk-indice a { font-weight: 700; font-size: .9rem; border: 2px solid var(--tinta); border-radius: 999px; padding: 4px 12px;
+  text-decoration: none; background: var(--amarelo); }
+.rk-lista { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--tinta); }
+.rk-lista li { display: grid; grid-template-columns: 34px 44px 1fr auto; gap: 4px 12px; align-items: center; padding: 10px 0;
+  border-bottom: 1px solid var(--linha); }
+.rk-pos { font-stretch: 62%; font-weight: 900; font-size: 1.5rem; }
+.rk-foto { width: 44px; height: 58px; border-radius: 5px; border: 1.5px solid var(--tinta); object-fit: cover; display: block; }
+span.rk-foto { background-size: var(--mosaico-tamanho, 2000% 1500%); }
+.rk-nome { font-weight: 750; line-height: 1.2; text-decoration: none; min-width: 0; }
+.rk-nome small, .rk-partido small { display: block; font-weight: 600; font-size: .875rem; color: var(--tinta-2); }
+.rk-valor { display: grid; justify-items: end; text-align: right; gap: 2px; }
+.rk-valor small { font-size: .875rem; color: var(--tinta-2); max-width: 22ch; }
+.rk-num { display: inline-flex; align-items: center; gap: 6px; font-stretch: 66%; font-weight: 900; font-size: 1.5rem; white-space: nowrap; }
+.rk-num svg { width: 20px; height: 20px; }
+.rk-lista .tag { font-size: 1.3rem; }
+.rk-partido { grid-column: 2 / 4; display: flex; align-items: center; gap: 12px; }
+.rk-acomp { background: var(--papel-2); }
+@media (max-width: 480px) {
+  .rk-lista li { grid-template-columns: 30px 40px 1fr; }
+  .rk-valor { grid-column: 3; justify-items: start; text-align: left; }
+  .rk-partido { grid-column: 2 / 4; }
+  .rk-lista li:has(.rk-partido) .rk-valor { grid-column: 2 / 4; }
+}

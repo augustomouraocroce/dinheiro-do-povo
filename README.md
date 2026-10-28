@@ -13,6 +13,9 @@ Tom de portal de transparência: sem opinião, sem adjetivos sobre pessoas. Todo
 - **Patrimônio declarado ao TSE** em 2018, 2022 e 2026, por tipo de bem.
 - **Partidos lado a lado** e uma página por partido.
 - **Trabalho e renda**: todas as votações nominais do Plenário desde 2023 sobre trabalho, emprego, previdência, salário mínimo, imposto de renda e cesta básica com imposto zero, com a pergunta de cada votação, o resultado, o voto de cada parlamentar e a contagem por partido na época. A regra de seleção fica em [`dp/trabalho.json`](dp/trabalho.json); não classificamos votos como a favor ou contra ninguém.
+- **Rankings**: partido e deputado que mais gastam, senador com maior cota, mais faltas sem e com justificativa (com o motivo), menos projetos apresentados desde 2023 (PL, PLP, PDL e PRC; PEC fica de fora) e quem mais vota "Não". Cada ranking diz o que mede e o que não mede.
+- **A cada R$ 100**: o custo do mandato dividido em partes, em linguagem simples, com porcentagens; e o quadro **Além do salário**, que compara o que vem com o cargo (segundo a Câmara) com o que a lei garante a quem ganha um salário mínimo ([`dp/beneficios.json`](dp/beneficios.json)).
+- **Cards para as redes**: carrossel 1080×1350 (Instagram, Kwai) e telas 1080×1920 (Stories, TikTok, Reels), gerados do relatório de sábado, com rascunho de legenda.
 - **Dias de trabalho**: dias úteis de quem trabalha com carteira assinada (feriados nacionais por lei federal e 30 dias de férias da CLT) ao lado dos dias de sessão deliberativa no Plenário da Câmara.
 - **Busca** por nome ou sigla, com foto oficial e logo do partido.
 - **Relatório semanal** (sábado a sexta) em Markdown e HTML.
@@ -58,6 +61,14 @@ Site publicado: **https://dinheiro-do-povo.netlify.app**. Para publicar uma nova
 npx -y netlify-cli@27.14.3 deploy --prod --no-build --dir public
 ```
 
+Cards do post de sábado (precisa do Google Chrome instalado):
+
+```bash
+.venv/bin/python -m dp.cards --semana 2026-10-24
+```
+
+Saem em `cards/AAAA-MM-DD/`: `carrossel/`, `vertical/` e `legenda.txt`.
+
 Para ver o site localmente:
 
 ```bash
@@ -91,6 +102,8 @@ dp/
   fontes/              leitura de cada fonte (camara, senado, tse, fotos)
   trabalho.py          votações sobre trabalho e renda (regra em trabalho.json)
   calendario.py        dias úteis e férias do trabalhador
+  rankings.py          projetos apresentados e resumo de votos (rankings)
+  cards/               cards para as redes (templates e CSS)
   metricas.py          números do relatório semanal
   relatorio.py         relatório em Markdown e HTML
   referencias.json     valores do dia a dia com fonte e data

@@ -74,7 +74,7 @@ def ambiente() -> Environment:
         brl=relatorio.brl, pct=relatorio.pct, num=relatorio.num, data=relatorio.data_br,
         dia_mes=relatorio.dia_mes, plural=relatorio.plural, brl_partes=brl_partes, qtd=qtd,
         compacto=graficos.brl_compacto, slug=slug, normalizar=normalizar, groupby_mes=groupby_mes,
-        rotulo_voto=lambda v: ROTULO_VOTO.get(v, v))
+        rotulo_voto=lambda v: ROTULO_VOTO.get(v, v), cada100=dados.cada_100)
     return env
 
 
@@ -244,6 +244,7 @@ def construir(conn, sabado: date, saida: Path = SAIDA, artefato: bool = False):
     escrever("index.html", "index.html.j2", "", "inicio", grafico_custo=g_custo, linhas_custo=linhas)
     escrever("partidos.html", "partidos.html.j2", "", "partidos")
     escrever("trabalho.html", "trabalho.html.j2", "", "trabalho")
+    escrever("rankings.html", "rankings.html.j2", "", "rankings")
     escrever("metodologia.html", "metodologia.html.j2", "", "metodologia")
     escrever(f"semana/{sabado.isoformat()}.html", "semana.html.j2", "../", "semana",
              corpo=Markup(corpo_semana))

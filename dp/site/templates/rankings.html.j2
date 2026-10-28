@@ -1,0 +1,129 @@
+{% extends "base.html.j2" %}
+{% import "componentes.html.j2" as c with context %}
+{% block titulo %}Rankings · Dinheiro do Povo{% endblock %}
+{% block descricao %}Quem mais gasta, quem mais falta, quem apresenta menos projetos e quem mais vota "Não", com dados oficiais e o mesmo critério para todos.{% endblock %}
+{% set r = rankings %}
+{% macro foto(p) -%}
+{%- if artefato %}<span class="foto-s rk-foto" style="background-position: {{ sprite[p.slug] }}" aria-hidden="true"></span>
+{%- else %}<img class="rk-foto" src="{{ raiz }}fotos/mini/{{ p.slug }}.jpg" alt="" loading="lazy" width="120" height="160">{% endif -%}
+{%- endmacro %}
+{% macro pessoa(pos, p) -%}
+<span class="rk-pos">{{ pos }}º</span>{{ foto(p) }}
+<a class="rk-nome" href="{{ raiz }}p/{{ p.slug }}.html">{{ p.nome }}<small>{{ p.partido }}-{{ p.uf }}</small></a>
+{%- endmacro %}
+{% block conteudo %}
+<section class="ladrilho pilha" aria-labelledby="t-rk">
+  <h1 id="t-rk">Rankings</h1>
+  <p>Os mesmos critérios para todos, com dados oficiais. Cada ranking diz o que mede e o que não mede. Os parlamentares listados são dos partidos acompanhados: PL, PP, Republicanos, MDB, Podemos, Novo e Missão.</p>
+  <nav class="rk-indice" aria-label="Rankings nesta página">
+    <a href="#rk-partidos">Partido que mais gasta</a><a href="#rk-custo">Deputado que mais gasta</a><a href="#rk-senado">Senador com maior cota</a>
+    <a href="#rk-sem">Mais faltas sem justificativa</a><a href="#rk-just">Mais faltas justificadas</a><a href="#rk-projetos">Menos projetos</a><a href="#rk-nao">Mais votos "Não"</a>
+  </nav>
+</section>
+
+<section class="secao" id="rk-partidos" aria-labelledby="t-rk-partidos">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-partidos">Partido que mais gasta</h2>
+    <p class="secundario">Custo médio do mandato por deputado, por mês: salário, cota, verba de gabinete e auxílio-moradia. Todos os partidos da Câmara; os acompanhados estão marcados.</p>
+    <ol class="rk-lista">
+    {% for pt in r.partidos %}
+      <li class="{{ 'rk-acomp' if pt.acompanhado else '' }}">
+        <span class="rk-pos">{{ loop.index }}º</span>
+        <span class="rk-partido">{% if pt.acompanhado %}{{ c.partido_id(pt.sigla, raiz, logos) }}{% else %}<span class="selo">{{ pt.sigla }}</span>{% endif %}<small>{{ pt.n }} {{ pt.n|plural("deputado", "deputados") }}</small></span>
+        <span class="rk-valor"><span class="tag">{{ pt.media|compacto }}</span><small>= {{ (pt.media / refs.salario_minimo.valor)|qtd }} sal. mínimos</small></span>
+      </li>
+    {% endfor %}
+    </ol>
+    {{ c.carimbo("Fonte: Câmara dos Deputados", "https://www.camara.leg.br/deputados/quem-sao") }}
+  </div>
+</section>
+
+<section class="secao" id="rk-custo" aria-labelledby="t-rk-custo">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-custo">Deputado que mais gasta</h2>
+    <p class="secundario">Custo médio do mandato por mês. O limite da cota muda conforme o estado, porque as passagens para Brasília custam diferente.</p>
+    <ol class="rk-lista">
+    {% for p in r.mais_custo %}
+      <li>{{ pessoa(loop.index, p) }}
+        <span class="rk-valor"><span class="tag">{{ p.custo.total|compacto }}</span><small>= {{ (p.custo.total / refs.salario_minimo.valor)|qtd }} sal. mínimos</small></span></li>
+    {% endfor %}
+    </ol>
+    <p class="secundario">Média da Câmara: {{ camara.media_custo.total|brl }} por mês.</p>
+  </div>
+</section>
+
+<section class="secao" id="rk-senado" aria-labelledby="t-rk-senado">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-senado">Senador com maior cota por mês</h2>
+    <p class="secundario">Média mensal da cota parlamentar (CEAPS) em {{ ano }}. O Senado ainda não publica salário, verba de gabinete e benefícios num formato que dê para coletar.</p>
+    <ol class="rk-lista">
+    {% for p in r.senado_cota %}
+      <li>{{ pessoa(loop.index, p) }}
+        <span class="rk-valor"><span class="tag">{{ p.ceaps_media|compacto }}</span><small>= {{ (p.ceaps_media / refs.salario_minimo.valor)|qtd }} sal. mínimos</small></span></li>
+    {% endfor %}
+    </ol>
+    {{ c.carimbo("Fonte: CEAPS, Senado Federal", refs_senado_ceaps) }}
+  </div>
+</section>
+
+<section class="secao" id="rk-sem" aria-labelledby="t-rk-sem">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-sem">Mais faltas sem justificativa em {{ ano }}</h2>
+    <p class="secundario">Dias de sessão deliberativa no Plenário com ausência registrada pela Câmara sem motivo informado. A Câmara desconta essas faltas do salário.</p>
+    <ol class="rk-lista">
+    {% for i in r.sem_justificativa %}
+      <li>{{ pessoa(loop.index, i.p) }}
+        <span class="rk-valor"><span class="rk-num"><svg aria-hidden="true"><use href="#m-nao-justificada"/></svg>{{ i.dias }} {{ i.dias|plural("dia", "dias") }}</span><small>de {{ i.sessoes }} dias de sessão</small></span></li>
+    {% else %}<li>Nenhuma falta sem justificativa entre os deputados acompanhados.</li>
+    {% endfor %}
+    </ol>
+    {{ c.carimbo("Fonte: Presença em Plenário, Câmara", "https://www.camara.leg.br/deputados/quem-sao") }}
+  </div>
+</section>
+
+<section class="secao" id="rk-just" aria-labelledby="t-rk-just">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-just">Mais faltas com justificativa em {{ ano }}</h2>
+    <p class="secundario">Ausências com motivo registrado pela Câmara. O motivo aparece ao lado: licença médica e licença-maternidade são direitos, e missão autorizada é trabalho fora do Plenário.</p>
+    <ol class="rk-lista">
+    {% for i in r.justificadas %}
+      <li>{{ pessoa(loop.index, i.p) }}
+        <span class="rk-valor"><span class="rk-num"><svg aria-hidden="true"><use href="#m-justificada"/></svg>{{ i.dias }} {{ i.dias|plural("dia", "dias") }}</span>
+          <small>{% for motivo, n in i.motivos %}{{ motivo }}: {{ n }}{% if not loop.last %} · {% endif %}{% endfor %}</small></span></li>
+    {% endfor %}
+    </ol>
+    {{ c.carimbo("Fonte: Presença em Plenário, Câmara", "https://www.camara.leg.br/deputados/quem-sao") }}
+  </div>
+</section>
+
+<section class="secao" id="rk-projetos" aria-labelledby="t-rk-projetos">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-projetos">Menos projetos apresentados desde 2023</h2>
+    <p class="secundario">Projetos ({{ r.tipos_projeto }}) assinados como autor ou coautor desde o início do mandato, em fevereiro de 2023. PEC fica de fora: precisa de 171 assinaturas, e assinar não é ser autor. Apresentar projetos é só uma parte do trabalho: relatar, votar e atuar em comissões não entram nesta conta. Quem assumiu depois, como suplente, teve menos tempo.</p>
+    {% if r.sem_projeto %}<p class="frase-grande">{{ r.sem_projeto }} {{ r.sem_projeto|plural("deputado acompanhado não apresentou", "deputados acompanhados não apresentaram") }} nenhum projeto desde 2023.</p>{% endif %}
+    <ol class="rk-lista">
+    {% for i in r.menos_projetos %}
+      <li>{{ pessoa(loop.index, i.p) }}
+        <span class="rk-valor"><span class="rk-num">{{ i.projetos }} {{ i.projetos|plural("projeto", "projetos") }}</span></span></li>
+    {% endfor %}
+    </ol>
+    {% if r.media_projetos %}<p class="secundario">Média da Câmara: {{ r.media_projetos|round|int }} projetos por deputado.</p>{% endif %}
+    {{ c.carimbo("Fonte: proposições da Câmara", "https://www.camara.leg.br/busca-portal/proposicoes/pesquisa-simplificada") }}
+  </div>
+</section>
+
+<section class="secao" id="rk-nao" aria-labelledby="t-rk-nao">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-nao">Quem mais vota "Não"</h2>
+    <p class="secundario">Parte dos votos "Não" entre os votos Sim e Não nas votações nominais do Plenário desde 2023. Só entra quem votou ao menos {{ r.minimo_votos }} vezes. Votar "Não" pode ser contra o texto principal, uma emenda ou um pedido de urgência; cada voto está na página do parlamentar.</p>
+    <ol class="rk-lista">
+    {% for i in r.mais_nao %}
+      <li>{{ pessoa(loop.index, i.p) }}
+        <span class="rk-valor"><span class="rk-num">{{ i.pct|pct }}</span><small>{{ i.nao|num }} "Não" em {{ i.votos|num }} votos</small></span></li>
+    {% endfor %}
+    </ol>
+    {% if r.media_nao %}<p class="secundario">Na Câmara inteira, {{ r.media_nao|pct }} dos votos Sim/Não foram "Não".</p>{% endif %}
+    {{ c.carimbo("Fonte: votações nominais, Câmara", "https://dadosabertos.camara.leg.br/swagger/api.html") }}
+  </div>
+</section>
+{% endblock %}

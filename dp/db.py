@@ -166,6 +166,26 @@ CREATE TABLE IF NOT EXISTS dias_sessao (
     PRIMARY KEY (casa, ano)
 );
 
+-- Projetos apresentados (PL, PLP, PDL, PRC; autor ou coautor) desde o início do mandato.
+CREATE TABLE IF NOT EXISTS producao (
+    parlamentar_id TEXT PRIMARY KEY,
+    desde          TEXT NOT NULL,
+    projetos       INTEGER NOT NULL,
+    coletado_em    TEXT NOT NULL
+);
+
+-- Resumo dos votos nominais no Plenário desde o início do mandato.
+CREATE TABLE IF NOT EXISTS resumo_votos (
+    parlamentar_id TEXT NOT NULL,
+    casa           TEXT NOT NULL,
+    desde          TEXT NOT NULL,
+    sim            INTEGER NOT NULL,
+    nao            INTEGER NOT NULL,
+    outros         INTEGER NOT NULL,
+    votacoes_total INTEGER NOT NULL,
+    PRIMARY KEY (parlamentar_id, casa)
+);
+
 CREATE TABLE IF NOT EXISTS coleta_log (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     etapa       TEXT NOT NULL,

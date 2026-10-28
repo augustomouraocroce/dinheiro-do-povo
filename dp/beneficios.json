@@ -1,0 +1,110 @@
+{
+  "_como_atualizar": "Valores do lado do deputado vêm dos textos de ajuda da página oficial de cada deputado na Câmara (ícone '?'); os do trabalhador, da lei. Confira e atualize a data quando a Câmara mudar algum valor.",
+  "fonte_deputado": {
+    "nome": "Câmara dos Deputados, página de cada deputado (textos de ajuda de cada benefício)",
+    "url": "https://www.camara.leg.br/deputados/quem-sao",
+    "conferido_em": "2026-10-26"
+  },
+  "itens": [
+    {
+      "chave": "salario",
+      "icone": "x-salario_minimo",
+      "titulo": "Salário por mês",
+      "deputado": "R$ 46.366,19",
+      "deputado_tem": true,
+      "trabalhador": "R$ 1.621,00",
+      "trabalhador_tem": true,
+      "fonte_trabalhador": [
+        "Decreto 12.797/2025",
+        "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/D12797.htm"
+      ],
+      "card": true,
+      "deputado_curto": "R$ 46.366,19",
+      "trabalhador_curto": "R$ 1.621,00"
+    },
+    {
+      "chave": "moradia",
+      "icone": "x-apartamento_50m2",
+      "titulo": "Ajuda para morar",
+      "deputado": "Apartamento funcional em Brasília ou auxílio-moradia de R$ 4.253,00 por mês",
+      "deputado_tem": true,
+      "trabalhador": "A CLT não obriga o patrão a pagar",
+      "trabalhador_tem": false,
+      "fonte_trabalhador": [
+        "CLT",
+        "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm"
+      ],
+      "card": true,
+      "deputado_curto": "Apartamento funcional ou R$ 4.253 por mês",
+      "trabalhador_curto": "A lei não obriga o patrão"
+    },
+    {
+      "chave": "transporte",
+      "icone": "x-passagem_aerea",
+      "titulo": "Transporte para trabalhar",
+      "deputado": "Cota parlamentar paga passagens aéreas e combustível",
+      "deputado_tem": true,
+      "trabalhador": "Vale-transporte, pagando até 6% do próprio salário",
+      "trabalhador_tem": true,
+      "fonte_trabalhador": [
+        "Lei 7.418/1985",
+        "https://www.planalto.gov.br/ccivil_03/leis/l7418.htm"
+      ]
+    },
+    {
+      "chave": "celular",
+      "icone": "x-celular",
+      "titulo": "Celular e escritório",
+      "deputado": "Conta de celular e escritório no estado pagos pela cota",
+      "deputado_tem": true,
+      "trabalhador": "A CLT não obriga o patrão a pagar",
+      "trabalhador_tem": false,
+      "fonte_trabalhador": [
+        "CLT",
+        "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm"
+      ],
+      "card": true,
+      "deputado_curto": "Pagos pela cota parlamentar",
+      "trabalhador_curto": "A lei não obriga o patrão"
+    },
+    {
+      "chave": "equipe",
+      "icone": "x-equipe",
+      "titulo": "Equipe paga com dinheiro público",
+      "deputado": "Até 25 secretários parlamentares, escolhidos pelo deputado (limite de R$ 165.806,07 por mês)",
+      "deputado_tem": true,
+      "trabalhador": "Não tem",
+      "trabalhador_tem": false,
+      "fonte_trabalhador": null,
+      "card": true,
+      "deputado_curto": "Até 25 pessoas, até R$ 165.806 por mês",
+      "trabalhador_curto": "Não tem"
+    },
+    {
+      "chave": "viagem",
+      "icone": "x-diaria",
+      "titulo": "Diária em viagem oficial",
+      "deputado": "R$ 842,00 por dia no Brasil",
+      "deputado_tem": true,
+      "trabalhador": "A CLT não obriga; depende da empresa",
+      "trabalhador_tem": false,
+      "fonte_trabalhador": [
+        "CLT",
+        "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm"
+      ]
+    },
+    {
+      "chave": "passaporte",
+      "icone": "x-passaporte",
+      "titulo": "Passaporte diplomático",
+      "deputado": "Para si e para os dependentes",
+      "deputado_tem": true,
+      "trabalhador": "Passaporte comum, pago pelo próprio cidadão",
+      "trabalhador_tem": false,
+      "fonte_trabalhador": null,
+      "card": true,
+      "deputado_curto": "Diplomático, também para dependentes",
+      "trabalhador_curto": "Comum, pago pelo cidadão"
+    }
+  ]
+}

@@ -23,7 +23,8 @@
 <section class="secao" aria-labelledby="t-comp">
   <div class="ladrilho pilha">
     <h2 id="t-comp">Composição do custo, ao lado da Câmara inteira</h2>
-    {{ c.legenda_custo(partes_custo) }}
+    {{ c.cada_100(pt.custo_medio, "um deputado do " ~ pt.sigla) }}
+    <p class="secundario">Na mesma escala: a média do partido, a média da Câmara e um salário mínimo.</p>
     {{ grafico_custo|safe }}
     {{ c.tabela_custo(linhas_custo) }}
   </div>

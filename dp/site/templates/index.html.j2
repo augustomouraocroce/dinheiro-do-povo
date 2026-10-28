@@ -26,7 +26,8 @@
     <div class="ladrilho pilha">
       <h2 id="t-onde">De onde vem esse custo</h2>
       <p>O salário bruto, de <strong>{{ m.partes[0].valor|brl }}</strong>, é só uma parte. A maior parte é a verba de gabinete, que paga os funcionários do deputado.</p>
-      {{ c.legenda_custo(partes_custo) }}
+      {{ c.cada_100(m, "um deputado") }}
+      <p class="secundario">Na mesma escala: a média por deputado e um salário mínimo.</p>
       {{ grafico_custo|safe }}
       {{ c.tabela_custo(linhas_custo) }}
     </div>
@@ -38,6 +39,15 @@
       <p>Ou <strong>{{ (m.total * 12 / refs.apartamento_50m2.valor)|qtd }} apartamentos de 50 m²</strong> pelo preço médio do metro quadrado.</p>
       <div class="linha">{{ c.ev("calculo", "12 × a média mensal") }}<a class="ev" href="{{ raiz }}metodologia.html#referencias">como calculamos</a></div>
     </div>
+  </div>
+</section>
+
+<section class="secao" aria-labelledby="t-alem">
+  <div class="ladrilho pilha">
+    <h2 id="t-alem">Além do salário</h2>
+    <p>O que vem junto com o cargo de deputado federal, segundo a Câmara, e o que a lei garante a quem trabalha com carteira assinada e ganha um salário mínimo.</p>
+    {{ c.alem_do_salario(beneficios) }}
+    <div class="linha">{{ c.carimbo("Fonte: Câmara dos Deputados", beneficios.fonte_deputado.url) }}<span class="ev">valores conferidos em {{ beneficios.fonte_deputado.conferido_em|data }}</span></div>
   </div>
 </section>
 
@@ -66,6 +76,7 @@
 <section class="secao" aria-labelledby="t-partidos">
   <h2 id="t-partidos" class="no-amarelo">Partidos lado a lado</h2>
   {{ c.gondola(partidos, camara, raiz, logos, ano) }}
+  <a class="carimbo" href="{{ raiz }}rankings.html">Ver os rankings: quem mais gasta, quem mais falta, quem mais vota "Não"<svg aria-hidden="true"><use href="#i-seta"/></svg></a>
   <p class="secundario no-amarelo">Custo: salário, cota, verba de gabinete e auxílio-moradia, média por mês. Presença: dias de sessão deliberativa com presença registrada. Patrimônio: valor declarado ao TSE na candidatura mais recente.</p>
 </section>
 
