@@ -549,3 +549,23 @@ span.rk-foto { background-size: var(--mosaico-tamanho, 2000% 1500%); }
 .posts-aviso { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
 a.botao { display: inline-flex; align-items: center; text-decoration: none; }
 a.botao:hover { color: var(--papel); }
+
+/* Partido que mais gasta: por deputado ou total, sem JavaScript */
+.rk-ordem { margin-top: 2px; }
+.rk-partidos { display: flex; flex-direction: column; }
+.rk-partidos li { order: var(--o-media); }
+.rk-partidos .o-total { display: none; }
+.rk-dois { gap: 4px; }
+.rk-dois > span { font-size: .875rem; color: var(--tinta-2); white-space: nowrap; }
+.rk-dois b { font-weight: 750; color: var(--tinta); }
+.rk-dois .v-media b { display: inline-block; background: var(--amarelo); border: 2px solid var(--tinta); border-radius: 6px;
+  padding: 0 7px; font-stretch: 68%; font-weight: 900; font-size: 1.3rem; }
+#rk-partidos:has(input[value="total"]:checked) .rk-partidos li { order: var(--o-total); }
+#rk-partidos:has(input[value="total"]:checked) .o-total { display: inline; }
+#rk-partidos:has(input[value="total"]:checked) .o-media { display: none; }
+#rk-partidos:has(input[value="total"]:checked) .v-media b { background: none; border: 0; padding: 0; font-stretch: 100%; font-weight: 750; font-size: inherit; }
+#rk-partidos:has(input[value="total"]:checked) .v-total b { display: inline-block; background: var(--amarelo); border: 2px solid var(--tinta);
+  border-radius: 6px; padding: 0 7px; font-stretch: 68%; font-weight: 900; font-size: 1.3rem; }
+#rk-partidos:has(input[value="total"]:checked) .v-total { order: -1; }
+.rk-porque { display: grid; gap: 8px; background: var(--papel-2); border-radius: 8px; padding: 14px; }
+.rk-porque h3 { font-size: 1.1rem; }

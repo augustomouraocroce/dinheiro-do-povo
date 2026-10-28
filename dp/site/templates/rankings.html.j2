@@ -24,16 +24,34 @@
 <section class="secao" id="rk-partidos" aria-labelledby="t-rk-partidos">
   <div class="ladrilho pilha">
     <h2 id="t-rk-partidos">Partido que mais gasta</h2>
-    <p class="secundario">Custo médio do mandato por deputado, por mês: salário, cota, verba de gabinete e auxílio-moradia. Todos os partidos da Câmara; os acompanhados estão marcados.</p>
-    <ol class="rk-lista">
+    <p>Dá para comparar de dois jeitos. <strong>Por deputado</strong> é a média de cada deputado do partido, por mês: não depende do tamanho da bancada. <strong>Total do partido</strong> é a soma de todos os deputados: quem tem mais deputados gasta mais no total.</p>
+    <p class="secundario">Custo do mandato por mês: salário, cota, verba de gabinete e auxílio-moradia. Todos os partidos da Câmara; os acompanhados estão marcados.</p>
+    <fieldset class="cv-chips rk-ordem">
+      <legend>Ordenar por</legend>
+      <label><input type="radio" name="rk-ordem" value="media" checked><span>Por deputado</span></label>
+      <label><input type="radio" name="rk-ordem" value="total"><span>Total do partido</span></label>
+    </fieldset>
+    <ol class="rk-lista rk-partidos">
     {% for pt in r.partidos %}
-      <li class="{{ 'rk-acomp' if pt.acompanhado else '' }}">
-        <span class="rk-pos">{{ loop.index }}º</span>
+      <li class="{{ 'rk-acomp' if pt.acompanhado else '' }}" style="--o-media: {{ loop.index }}; --o-total: {{ pt.pos_total }}">
+        <span class="rk-pos"><span class="o-media">{{ loop.index }}º</span><span class="o-total">{{ pt.pos_total }}º</span></span>
         <span class="rk-partido">{% if pt.acompanhado %}{{ c.partido_id(pt.sigla, raiz, logos) }}{% else %}<span class="selo">{{ pt.sigla }}</span>{% endif %}<small>{{ pt.n }} {{ pt.n|plural("deputado", "deputados") }}</small></span>
-        <span class="rk-valor"><span class="tag">{{ pt.media|compacto }}</span><small>= {{ (pt.media / refs.salario_minimo.valor)|qtd }} sal. mínimos</small></span>
+        <span class="rk-valor rk-dois">
+          <span class="v-media"><b>{{ pt.media|compacto }}</b> por deputado</span>
+          <span class="v-total"><b>{{ pt.total|compacto }}</b> no total</span>
+        </span>
       </li>
     {% endfor %}
     </ol>
+    {% set dp_ = r.diferenca_partidos %}
+    {% if dp_ %}
+    <div class="rk-porque">
+      <h3>Por que a média por deputado muda tão pouco?</h3>
+      <p>O salário é o mesmo para todos ({{ (camara.media_custo.partes|selectattr("chave", "equalto", "salario")|first).valor|brl }}) e a verba de gabinete tem o mesmo teto. O que muda é a cota, cujo limite depende do estado (as passagens para Brasília custam diferente), e quanto cada deputado usa da verba de gabinete e da cota.</p>
+      <p>Entre os partidos com {{ r.minimo_bancada }} ou mais deputados, o {{ dp_.maior.sigla }} tem a maior média e o {{ dp_.menor.sigla }}, a menor. A diferença é de {{ dp_.valor|compacto }} por deputado, por mês{% if dp_.partes %}: {% for pt in dp_.partes %}{{ (pt.valor|abs)|compacto }} {{ "a mais" if pt.valor > 0 else "a menos" }} em {{ pt.nome|lower }}{% if not loop.last %}{{ " e " if loop.revindex == 2 else ", " }}{% endif %}{% endfor %}{% endif %}.</p>
+      <p class="secundario">Bancadas com menos de {{ r.minimo_bancada }} deputados mudam muito de média com uma pessoa só.</p>
+    </div>
+    {% endif %}
     {{ c.carimbo("Fonte: Câmara dos Deputados", "https://www.camara.leg.br/deputados/quem-sao") }}
   </div>
 </section>

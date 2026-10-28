@@ -289,6 +289,7 @@ def dias_de_trabalho(conn, ano: int, fim: date) -> dict:
 
 # --- Rankings ----------------------------------------------------------------------
 MINIMO_VOTOS = 100  # só entra nos rankings de votos Sim e Não quem votou ao menos isso
+MINIMO_BANCADA = 5  # bancadas menores mudam muito de média com uma pessoa só
 
 
 def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
@@ -300,10 +301,16 @@ def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
     grupos = defaultdict(list)
     for pid, c in custos.items():
         if pid in dep:
-            grupos[dep[pid]["partido"]].append(c["total"])
-    partidos = sorted(({"sigla": s, "nome": config.PARTIDOS_MONITORADOS.get(s, s), "media": sum(v) / len(v),
-                        "n": len(v), "acompanhado": s in config.PARTIDOS_MONITORADOS} for s, v in grupos.items()),
-                      key=lambda x: -x["media"])
+            grupos[dep[pid]["partido"]].append(c)
+    partidos = []
+    for sigla, lista in grupos.items():
+        m = media_partes(lista)
+        partidos.append({"sigla": sigla, "nome": config.PARTIDOS_MONITORADOS.get(sigla, sigla), "media": m["total"],
+                         "partes": {pt["chave"]: pt["valor"] for pt in m["partes"]}, "n": len(lista),
+                         "total": sum(c["total"] for c in lista), "acompanhado": sigla in config.PARTIDOS_MONITORADOS})
+    partidos.sort(key=lambda x: -x["media"])
+    for n, pt in enumerate(sorted(partidos, key=lambda x: -x["total"]), 1):
+        pt["pos_total"] = n
 
     com_custo = [p for p in deputados if p.get("custo")]
     mais_custo = sorted(com_custo, key=lambda p: -p["custo"]["total"])[:top]
@@ -332,8 +339,22 @@ def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
     sim_total = sum(r[1] for k, r in resumo.items() if k in dep)
     nao_total = sum(r[2] for k, r in resumo.items() if k in dep)
 
+    # Por que a média por deputado muda de um partido para outro: compara a maior e a menor
+    # média entre os partidos com bancada de pelo menos MINIMO_BANCADA deputados.
+    comparaveis = [pt for pt in partidos if pt["n"] >= MINIMO_BANCADA]
+    diferenca_partidos = None
+    if len(comparaveis) >= 2:
+        maior, menor = comparaveis[0], comparaveis[-1]
+        nomes = dict(PARTES_CUSTO)
+        partes = sorted(({"chave": k, "nome": nomes[k], "valor": maior["partes"][k] - menor["partes"][k]}
+                         for k in maior["partes"]), key=lambda x: -abs(x["valor"]))
+        diferenca_partidos = {"maior": maior, "menor": menor, "valor": maior["media"] - menor["media"],
+                              "partes": [pt for pt in partes if abs(pt["valor"]) >= 1]}
+
     return {
         "partidos": partidos,
+        "diferenca_partidos": diferenca_partidos,
+        "minimo_bancada": MINIMO_BANCADA,
         "mais_custo": mais_custo,
         "senado_cota": sorted(senadores, key=lambda p: -(p.get("ceaps_media") or 0))[:top],
         "sem_justificativa": ausencias("ausencia_nao_justificada"),
