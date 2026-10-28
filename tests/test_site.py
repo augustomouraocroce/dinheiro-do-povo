@@ -188,8 +188,51 @@ def test_votos_plenario_indice_e_arquivo_por_deputado(tmp_path):
     indice, por_pessoa = dados.votos_plenario(conn, pessoas)
     assert [v[0] for v in indice["votacoes"]] == ["2025-05-01", "2025-03-01"]   # mais recente primeiro
     assert indice["votacoes"][1][1] == "Rejeitado o Requerimento."               # sem o placar
-    assert indice["votacoes"][1][3] == "pedido" and indice["votacoes"][1][6:] == [1, 1]
+    assert indice["votacoes"][1][3] == "pedido" and indice["votacoes"][1][6:8] == [1, 1]
+    assert indice["votacoes"][1][2] == "rejeitado"
+    assert indice["explicacoes"][indice["votacoes"][1][8]][1] == "Sim = a favor do pedido."
     assert indice["proposicoes"][indice["votacoes"][0][4]][0] == "PL 1/2025"
     assert set(por_pessoa) == {"fulano"}                                         # só deputados
     assert por_pessoa["fulano"]["votos"] == [[0, "S"], [1, "N"]]
     assert por_pessoa["fulano"]["partidos"] == {"1": "PSD"}                      # votou por outro partido
+
+
+def test_casos_json_tem_fonte_situacao_e_data_validas():
+    import json
+    import re
+    bruto = json.loads(dados.ARQUIVO_CASOS.read_text(encoding="utf-8"))
+    ids = [c["id"] for c in bruto["casos"]]
+    assert len(ids) == len(set(ids))
+    for c in bruto["casos"]:
+        assert re.fullmatch(r"(camara|senado):\d+", c["parlamentar"]), c["id"]
+        assert c["situacao"] in bruto["situacoes"] and c["assunto"] in bruto["assuntos"], c["id"]
+        assert re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", c["data"]) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", c["conferido_em"])
+        assert c["titulo"] and c["resumo"] and c["detalhe"], c["id"]
+        assert c["fontes"] and all(f["url"].startswith("https://") and f["veiculo"] for f in c["fontes"]), c["id"]
+
+
+def test_data_caso_aceita_mes_e_ano():
+    assert build.data_caso("2022-12") == "dez/2022"
+    assert build.data_caso("2026-03-17") == "17/03/2026"
+
+
+@pytest.mark.parametrize("descricao,o_que,sim", [
+    ("Aprovada a Emenda de Redação n° 2. Sim: 314; Não: 117; Abstenção: 1; Total: 432.", "Ajuste de redação", "aprovar o ajuste"),
+    ("Rejeitados os dispositivos do Substitutivo do Senado Federal ao Projeto de Lei Complementar nº 68, de 2024, "
+     "com parecer pela rejeição. Sim: 18; Não: 328.", "relator recomendou derrubar", "manter essas mudanças do Senado"),
+    ("Rejeitada a Emenda nº 33 do Senado Federal.", "Mudanças que o Senado fez", "manter as mudanças do Senado"),
+    ("Mantido o texto. Sim: 313; Não: 119; Total: 433.", "destaque", "manter o trecho"),
+    ("Aprovado o Requerimento de Urgência (Art. 155 do RICD).", "urgência", "a favor da urgência"),
+    ("Rejeitado o Requerimento.", "andamento da votação", "a favor do pedido"),
+    ("Aprovado o Projeto de Lei nº 3.292, de 2025.", "texto principal do projeto", "aprovar o projeto"),
+])
+def test_explicar_votacao(descricao, o_que, sim):
+    e = dados.explicar_votacao(descricao)
+    assert o_que in e["o_que"] and sim in e["sim"]
+
+
+def test_explicar_votacao_resultado_e_placar():
+    e = dados.explicar_votacao("Rejeitado o Requerimento. Sim: 110; Não: 159; Total: 269.")
+    assert e["resultado"] == "rejeitado" and e["placar"] == (110, 159)
+    assert dados.explicar_votacao("Resultado.") is None
+    assert dados.explicar_votacao("Suprimido o texto. Sim: 200; Não: 250.")["resultado"] == "o trecho saiu"

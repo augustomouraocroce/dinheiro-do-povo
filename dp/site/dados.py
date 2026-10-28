@@ -16,6 +16,7 @@ from dp.fontes import senado
 
 ARQUIVO_REFERENCIAS = config.ROOT / "dp" / "referencias.json"
 ARQUIVO_ERRATA = config.ROOT / "dp" / "errata.json"
+ARQUIVO_CASOS = config.ROOT / "dp" / "casos.json"
 JANELA_MESES = 3  # a Câmara aceita notas até 90 dias depois do gasto
 
 PARTES_CUSTO = (
@@ -130,6 +131,67 @@ def media_partes(custos: list) -> dict:
               for k, _ in PARTES_CUSTO}
     return {"partes": [{"chave": k, "nome": nome, "valor": medias[k]} for k, nome in PARTES_CUSTO],
             "total": sum(medias.values()), "n": len(custos)}
+
+
+# --- Por que esse custo -------------------------------------------------------------
+
+def _uso(itens: dict, prefixo: str):
+    """(gasto no ano, limite no ano) pela página oficial: o limite é o gasto mais o valor
+    não utilizado."""
+    gasto = (itens.get(f"{prefixo}_gasto") or {}).get("valor")
+    sobra = (itens.get(f"{prefixo}_nao_utilizado") or {}).get("valor")
+    if gasto is None or sobra is None or gasto + sobra <= 0:
+        return None
+    meses = sum(1 for k in itens if k.startswith(f"{prefixo}_mes_"))
+    return {"gasto": gasto, "limite": gasto + sobra, "pct": gasto / (gasto + sobra),
+            "limite_mes": (gasto + sobra) / meses if meses else None}
+
+
+def limites_de_gasto(recursos: dict, ufs: dict) -> dict:
+    """Limite mensal da cota em cada estado e da verba de gabinete. A Câmara não publica a
+    tabela num formato coletável: usamos a mediana de (gasto + não utilizado) ÷ meses de cada
+    deputado, que bate com a ordem oficial (Roraima tem a maior cota; o DF, a menor)."""
+    cota_uf, verba = defaultdict(list), []
+    for pid, itens in recursos.items():
+        c, v = _uso(itens, "cota"), _uso(itens, "verba_gabinete")
+        if c and c["limite_mes"] and pid in ufs:
+            cota_uf[ufs[pid]].append(c["limite_mes"])
+        if v and v["limite_mes"]:
+            verba.append(v["limite_mes"])
+    mediana = lambda vs: sorted(vs)[len(vs) // 2]
+    cota = {uf: mediana(vs) for uf, vs in cota_uf.items()}
+    ordem = sorted(cota, key=lambda uf: -cota[uf])
+    return {"cota": cota, "posicao": {uf: n for n, uf in enumerate(ordem, 1)}, "estados": len(ordem),
+            "verba": mediana(verba) if verba else None}
+
+
+def explica_custo(itens: dict, custo: dict, media: dict, uf: str, limites: dict) -> dict:
+    """Onde o custo do mandato fica acima ou abaixo da média da Câmara, parte por parte,
+    com o que explica cada diferença (limite do estado, uso do limite, equipe, imóvel)."""
+    media_partes = {pt["chave"]: pt["valor"] for pt in media["partes"]}
+    partes = []
+    for pt in custo["partes"]:
+        if pt["chave"] == "salario":  # igual para todos
+            continue
+        parte = {"chave": pt["chave"], "nome": NOMES_POPULARES[pt["chave"]][0], "valor": pt["valor"],
+                 "media": media_partes[pt["chave"]], "diferenca": pt["valor"] - media_partes[pt["chave"]]}
+        if pt["chave"] == "cota":
+            parte["uso"] = _uso(itens, "cota")
+            parte["limite_estado"] = limites["cota"].get(uf)
+            parte["posicao_estado"] = limites["posicao"].get(uf)
+            parte["estados"] = limites["estados"]
+        elif pt["chave"] == "verba":
+            parte["uso"] = _uso(itens, "verba_gabinete")
+            parte["limite"] = limites["verba"]
+            parte["equipe"] = (itens.get("pessoal_gabinete") or {}).get("texto")
+        else:
+            parte["imovel"] = (itens.get("imovel_funcional") or {}).get("texto")
+        partes.append(parte)
+    partes.sort(key=lambda x: -abs(x["diferenca"]))
+    acima = [pt for pt in partes if pt["diferenca"] > 0]
+    salario = next(pt["valor"] for pt in custo["partes"] if pt["chave"] == "salario")
+    return {"total": custo["total"], "media": media["total"], "diferenca": custo["total"] - media["total"],
+            "partes": partes, "maior": acima[0] if acima else None, "salario": salario, "uf": uf}
 
 
 # --- Presença, votos e patrimônio -------------------------------------------------
@@ -373,6 +435,21 @@ def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
     }
 
 
+# --- Processos e reportagens ----------------------------------------------------------
+
+def carregar_casos(parlamentares) -> dict:
+    """Casos revisados à mão em dp/casos.json, só de quem está no mandato e é acompanhado."""
+    bruto = json.loads(ARQUIVO_CASOS.read_text(encoding="utf-8"))
+    pessoas = {p["id"]: p for p in parlamentares}
+    casos = sorted(({**c, "p": pessoas[c["parlamentar"]]} for c in bruto["casos"] if c["parlamentar"] in pessoas),
+                   key=lambda c: c["data"], reverse=True)
+    por_pessoa = defaultdict(list)
+    for c in casos:
+        por_pessoa[c["parlamentar"]].append(c)
+    return {"casos": casos, "por_pessoa": por_pessoa, "situacoes": bruto["situacoes"], "assuntos": bruto["assuntos"],
+            "conferido_em": max((c["conferido_em"] for c in bruto["casos"]), default=None)}
+
+
 # --- Votos no Plenário (página "Como votou") ----------------------------------------
 
 TIPOS_VOTACAO = {
@@ -403,6 +480,59 @@ def tipo_votacao(descricao: str) -> str:
     return "principal"
 
 
+# O que cada votação decide, em linguagem simples, a partir da descrição oficial da Câmara.
+# "Sim" sempre responde à pergunta "aprovar isto?"; a primeira regra que bate vale. O quarto
+# item, quando existe, diz o resultado com palavras próprias (aprovado, rejeitado).
+EXPLICACOES_VOTO = [
+    (r"urgência", "Pedido de urgência: votar o projeto mais rápido, sem esperar as comissões.", "a favor da urgência"),
+    (r"redação final", "A versão final do texto, já com as mudanças aprovadas.", "aprovar a versão final"),
+    (r"emenda de redação", "Ajuste de redação: corrige palavras do texto, sem mudar o conteúdo.", "aprovar o ajuste"),
+    (r"(dispositivo|emenda)[^.]*senado.*parecer pela rejeição",
+     "Mudanças que o Senado fez no projeto e que o relator recomendou derrubar.", "manter essas mudanças do Senado",
+     ("as mudanças ficaram", "as mudanças caíram")),
+    (r"(dispositivo|emenda)[^.]*senado.*parecer pela aprovação",
+     "Mudanças que o Senado fez no projeto e que o relator recomendou manter.", "manter essas mudanças do Senado",
+     ("as mudanças ficaram", "as mudanças caíram")),
+    (r"(dispositivo|emenda)[^.]*senado", "Mudanças que o Senado fez no projeto.",
+     "manter as mudanças do Senado", ("as mudanças ficaram", "as mudanças caíram")),
+    (r"substitutivo d[oa] senado", "A versão do Senado para o projeto inteiro.", "ficar com a versão do Senado"),
+    (r"^(mantid|suprimid)[oa]s? ", "Um trecho separado para votação (destaque): decide se ele fica no texto.",
+     "manter o trecho; Não = tirar", ("o trecho ficou", "o trecho saiu")),
+    (r"destaque", "Um destaque: pedido para votar uma parte do texto separadamente.", "a favor do destaque"),
+    (r"emenda aglutinativa substitutiva|subemenda substitutiva|substitutivo",
+     "O texto principal, na versão do relator, que substitui o projeto original.", "aprovar o texto"),
+    (r"emenda aglutinativa", "Uma emenda que junta várias propostas de mudança num texto só.", "aprovar a emenda"),
+    (r"emenda", "Uma proposta de mudança no texto (emenda).", "aprovar a mudança"),
+    (r"retirada de pauta", "Pedido para tirar o projeto da pauta do dia.", "a favor do pedido"),
+    (r"adiamento", "Pedido para adiar a votação ou a discussão.", "a favor do pedido"),
+    (r"requerimento", "Pedido sobre o andamento da votação, como adiar, tirar de pauta ou mudar a ordem.",
+     "a favor do pedido"),
+    (r"preferência", "Pedido para votar um texto antes de outro.", "a favor do pedido"),
+    (r"recurso", "Recurso contra uma decisão sobre o projeto.", "a favor do recurso"),
+    (r"apreciação preliminar", "Se a medida provisória cumpre os requisitos de urgência e relevância.",
+     "a favor da medida provisória seguir"),
+    (r"parecer", "O parecer (a opinião) da comissão sobre o projeto.", "aprovar o parecer"),
+    (r"proposta de emenda à constituição", "A mudança na Constituição (PEC), texto principal.", "aprovar a PEC"),
+    (r"medida provisória", "A medida provisória, texto principal.", "aprovar a medida provisória"),
+    (r"projeto", "O texto principal do projeto.", "aprovar o projeto"),
+]
+
+
+def explicar_votacao(descricao: str):
+    """{"o_que", "sim", "resultado", "placar"} em linguagem simples, ou None quando a descrição
+    não segue o padrão da Câmara (o Senado descreve de outro jeito)."""
+    d = sem_placar(descricao).lower()
+    placar = re.search(r"Sim:\s*(\d+).*?Não:\s*(\d+)", descricao or "", re.S)
+    for padrao, o_que, sim, *palavras in EXPLICACOES_VOTO:
+        if re.search(padrao, d):
+            aprovado, rejeitado = palavras[0] if palavras else ("aprovado", "rejeitado")
+            resultado = (aprovado if re.match(r"(aprovad|mantid)", d) else
+                         rejeitado if re.match(r"(rejeitad|suprimid)", d) else None)
+            return {"o_que": o_que, "sim": f"Sim = {sim}.", "resultado": resultado,
+                    "placar": (int(placar.group(1)), int(placar.group(2))) if placar else None}
+    return None
+
+
 def votos_plenario(conn, pessoas) -> tuple:
     """(índice das votações, {slug: votos}) para a página "Como votou".
 
@@ -416,13 +546,19 @@ def votos_plenario(conn, pessoas) -> tuple:
     for pid, titulo, ementa in conn.execute("SELECT id, titulo, ementa FROM plenario_proposicao"):
         pos_prop[pid] = len(proposicoes)
         proposicoes.append([titulo or f"Proposição {pid}", ementa or "", trabalho.URL_PROPOSICAO_CAMARA.format(id=pid)])
-    votacoes, pos = [], {}
+    votacoes, pos, explicacoes, pos_exp = [], {}, [], {}
     for v in conn.execute("SELECT * FROM plenario_votacao ORDER BY data DESC, id DESC"):
         pos[v["id"]] = len(votacoes)
-        votacoes.append([v["data"], sem_placar(v["descricao"]), v["aprovada"], tipo_votacao(v["descricao"]),
+        e = explicar_votacao(v["descricao"])
+        if e and (e["o_que"], e["sim"]) not in pos_exp:
+            pos_exp[(e["o_que"], e["sim"])] = len(explicacoes)
+            explicacoes.append([e["o_que"], e["sim"]])
+        resultado = e["resultado"] if e and e["resultado"] else {1: "aprovado", 0: "rejeitado"}.get(v["aprovada"])
+        votacoes.append([v["data"], sem_placar(v["descricao"]), resultado, tipo_votacao(v["descricao"]),
                          pos_prop.get(v["proposicao_id"]), v["url_fonte"],
-                         placar[v["id"]]["Sim"], placar[v["id"]]["Não"]])
-    indice = {"tipos": {k: list(t) for k, t in TIPOS_VOTACAO.items()},
+                         placar[v["id"]]["Sim"], placar[v["id"]]["Não"],
+                         pos_exp[(e["o_que"], e["sim"])] if e else None])
+    indice = {"tipos": {k: list(t) for k, t in TIPOS_VOTACAO.items()}, "explicacoes": explicacoes,
               "proposicoes": proposicoes, "votacoes": votacoes}
 
     por_pessoa = {}
@@ -465,6 +601,7 @@ def montar(conn, sabado: date) -> dict:
         r["atualizado_fonte"] for itens in recursos.values() for r in itens.values()
         if r["atualizado_fonte"]).most_common(1)
     mes_corte = max(1, mes_atual - JANELA_MESES)
+    limites = limites_de_gasto(recursos, {pid: p["uf"] for pid, p in dep.items()})
 
     def pct_presenca_grupo(pids):
         c = Counter()
@@ -504,6 +641,9 @@ def montar(conn, sabado: date) -> dict:
             item["patrimonio"] = patrimonio.get(pid)
             if casa == "camara":
                 item["custo"] = custos.get(pid)
+                if item["custo"]:
+                    item["explica_custo"] = explica_custo(recursos.get(pid, {}), item["custo"], media_camara,
+                                                          p["uf"], limites)
                 item["presenca"] = presenca.get(pid)
                 item["recursos"] = recursos.get(pid, {})
                 item["votos"] = [{**v, "voto": v["votos"].get(pid)} for v in votos_cam]
@@ -517,8 +657,10 @@ def montar(conn, sabado: date) -> dict:
             parlamentares.append(item)
     parlamentares.sort(key=lambda x: senado.normalizar_nome(x["nome"]))
     pauta = pauta_trabalho(conn, [s for s in config.PARTIDOS_MONITORADOS])
+    casos = carregar_casos(parlamentares)
     for item in parlamentares:
         item["trabalho"] = votos_trabalho_da_pessoa(pauta, item["id"])
+        item["casos"] = casos["por_pessoa"].get(item["id"], [])
 
     # Partidos
     partidos_info = []
@@ -545,6 +687,7 @@ def montar(conn, sabado: date) -> dict:
         "refs": refs,
         "errata": carregar_errata(),
         "beneficios": carregar_beneficios(),
+        "casos": casos,
         "pauta": pauta,
         "rankings": montar_rankings(conn, dep, custos, parlamentares),
         "dias": dias_de_trabalho(conn, ano, fim),

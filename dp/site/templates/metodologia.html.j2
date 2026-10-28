@@ -35,6 +35,17 @@
 <p>A página <a href="{{ raiz }}votos.html">Como votou</a> traz todas as votações nominais do Plenário da Câmara desde fevereiro de 2023, dos arquivos anuais de votações da Câmara. Cada votação fica ligada ao projeto em votação; num pedido de urgência, ao projeto que o pedido quer acelerar. O tipo de votação sai da descrição oficial: "Urgência" quando ela fala em urgência; "Pedido de andamento" para outros requerimentos, preferências e recursos; "Mudança no texto" para emendas, destaques, "mantido o texto" e "suprimido o texto"; e "Texto principal" para o resto (projeto, substitutivo, medida provisória, PEC, redação final).</p>
 <p>Os rankings "Quem mais vota Não" e "Quem mais vota Sim" usam só os votos Sim e Não, de quem votou ao menos {{ rankings.minimo_votos }} vezes. Abstenção, obstrução e o voto do presidente da sessão ficam de fora da porcentagem.</p>
 
+<h2 id="processos">Processos e reportagens</h2>
+<p>A página <a href="{{ raiz }}processos.html">Processos e reportagens</a> é revisada à mão, caso a caso, no arquivo <code>dp/casos.json</code>. Entram:</p>
+<ul>
+  <li>inquéritos, operações policiais autorizadas pela Justiça, denúncias, ações penais e condenações, no STF, no STJ, na Justiça comum ou na Justiça Eleitoral;</li>
+  <li>pedidos de cassação julgados pela Justiça Eleitoral, inclusive os rejeitados;</li>
+  <li>reportagens de veículos de imprensa, mesmo sem processo aberto, marcadas como "Reportagem".</li>
+</ul>
+<p>Cada caso tem pelo menos uma reportagem, de veículos de linhas diferentes (por exemplo Agência Pública, CNN Brasil, Congresso em Foco, Estadão, Folha, Gazeta do Povo, g1, Intercept Brasil, Metrópoles, O Globo, piauí, Poder360, SBT News e UOL). Não entram colunas de opinião, postagens em redes sociais nem boatos.</p>
+<p>O resumo é escrito por nós, sem adjetivos e sem copiar manchetes. Cada caso diz a situação atual (investigado, denunciado, réu, condenado, acusação rejeitada, provas anuladas, arquivado ou encerrado por acordo), a data da última conferência e a resposta da pessoa quando a reportagem publicou. Casos encerrados sem condenação continuam na lista, com a situação atualizada, para que se saiba como terminaram.</p>
+<p>Ser investigado não é ser culpado: pela Constituição (art. 5º, inciso LVII), ninguém é considerado culpado antes da condenação definitiva. A lista começou em outubro de 2026 e cresce aos poucos; não estar nela não quer dizer que não exista caso.</p>
+
 <h2 id="dias">Dias de trabalho</h2>
 <p><strong>Trabalhador</strong>: dias de segunda a sexta, sem os feriados nacionais definidos em lei federal, menos 30 dias corridos de férias por ano (em média, 30 × 5/7 dias úteis). Carnaval, Sexta-feira Santa e Corpus Christi não entram porque não são feriados nacionais por lei federal. Fontes: {% for nome, url in dias.fontes %}<a href="{{ url }}" target="_blank" rel="noopener">{{ nome }}</a>{% if not loop.last %}; {% endif %}{% endfor %}.</p>
 <p><strong>Câmara</strong>: dias com sessão deliberativa realizada no Plenário, contados na API de Dados Abertos da Câmara (sessões encerradas). O número de {{ dias.atual.ano }} confere com o total oficial da página de presença dos deputados. Deputados também trabalham em comissões, no gabinete e nos estados; esses dias não entram na conta porque a Câmara só registra presença oficial no Plenário.</p>

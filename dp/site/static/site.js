@@ -256,12 +256,21 @@
           var linha = el("div", "voto");
           linha.appendChild(el("span", "v v-" + classe(v[1]), ROTULO[v[1]] || v[1]));
           var p = el("p");
+          var ex = vt[8] != null ? indice.explicacoes[vt[8]] : null;
           p.appendChild(el("b", "cv-tipo", T[vt[3]][0]));
-          p.appendChild(document.createTextNode(" " + vt[1] + " "));
-          var info = dataBr(vt[0]) + ", placar Sim " + vt[6] + " × Não " + vt[7];
-          if (partidos[v[0]]) info += ", votou pelo " + partidos[v[0]];
-          p.appendChild(el("span", "secundario", "(" + info + ")"));
-          if (vt[5]) { p.appendChild(document.createTextNode(" · ")); p.appendChild(linkExterno("dados oficiais", vt[5])); }
+          var info = dataBr(vt[0]) + (partidos[v[0]] ? ", votou pelo " + partidos[v[0]] : "");
+          if (ex) {
+            p.appendChild(document.createTextNode(" "));
+            p.appendChild(el("b", null, ex[0]));
+            p.appendChild(document.createTextNode(" " + ex[1] + (vt[2] ? " Resultado: " + vt[2] + ", " + vt[6] + " a " + vt[7] + "." : "")));
+            var oficial = el("span", "voto-oficial", "Texto oficial: " + vt[1] + " (" + info + ")");
+            if (vt[5]) { oficial.appendChild(document.createTextNode(" · ")); oficial.appendChild(linkExterno("dados oficiais", vt[5])); }
+            p.appendChild(oficial);
+          } else {
+            p.appendChild(document.createTextNode(" " + vt[1] + " "));
+            p.appendChild(el("span", "secundario", "(" + info + ", placar Sim " + vt[6] + " × Não " + vt[7] + ")"));
+            if (vt[5]) { p.appendChild(document.createTextNode(" · ")); p.appendChild(linkExterno("dados oficiais", vt[5])); }
+          }
           linha.appendChild(p);
           caixa.appendChild(linha);
         });

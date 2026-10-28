@@ -45,6 +45,7 @@
 <section class="secao" aria-labelledby="t-custo">
   <div class="ladrilho pilha">
     <h2 id="t-custo">De onde vem esse custo</h2>
+    {% if p.explica_custo %}{{ c.por_que_custo(p.explica_custo) }}{% endif %}
     {{ c.cada_100(p.custo) }}
     <p class="secundario">Na mesma escala: este mandato, a média da Câmara e um salário mínimo.</p>
     {{ grafico_custo|safe }}
@@ -135,7 +136,7 @@
       {% for v in p.votos %}
       <div class="voto">
         <span class="v {% if v.voto == 'Sim' %}v-sim{% elif not v.voto %}v-vazio{% endif %}">{{ v.voto|rotulo_voto }}</span>
-        <p>{{ v.descricao }} <span class="secundario">({{ v.data|data }}{% if v.aprovada == 1 %}, aprovada{% elif v.aprovada == 0 %}, rejeitada{% endif %})</span>{% if v.url %} · <a href="{{ v.url }}" target="_blank" rel="noopener">fonte</a>{% endif %}</p>
+        {{ c.voto_explicado(v.descricao, v.data, v.url, p.casa) }}
       </div>
       {% endfor %}
     </div>
@@ -163,7 +164,8 @@
         {% for i in item.votos %}
           <div class="voto">
             <span class="v {% if i.voto == 'Sim' %}v-sim{% elif i.voto == 'Não' %}v-nao{% endif %}">{{ i.voto|rotulo_voto }}</span>
-            <p>{{ i.votacao.descricao }} <span class="secundario">({{ i.votacao.data|data }}{% if i.partido_epoca and i.partido_epoca != p.partido %}, votou pelo {{ i.partido_epoca }}{% endif %})</span>{% if i.votacao.url %} · <a href="{{ i.votacao.url }}" target="_blank" rel="noopener">fonte</a>{% endif %}</p>
+            {{ c.voto_explicado(i.votacao.descricao, i.votacao.data, i.votacao.url, p.casa,
+                                ", votou pelo " ~ i.partido_epoca if i.partido_epoca and i.partido_epoca != p.partido else "") }}
           </div>
         {% endfor %}
         </div>
@@ -174,6 +176,21 @@
     <p>Não há voto registrado desta pessoa nas votações nominais sobre trabalho e renda desde 2023.</p>
     {% endif %}
     <a class="carimbo" href="{{ raiz }}trabalho.html">Ver todas as votações e como cada partido votou<svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+  </div>
+</section>
+
+<section class="secao" aria-labelledby="t-casos">
+  <div class="ladrilho pilha">
+    <h2 id="t-casos">Processos e reportagens</h2>
+    {% if p.casos %}
+    <p class="secundario">Ser investigado não é ser culpado: cada caso diz em que fase está.</p>
+    <div class="pilha">
+    {% for caso in p.casos %}{{ c.caso(caso, casos.situacoes, casos.assuntos, raiz, com_pessoa=False) }}{% endfor %}
+    </div>
+    {% else %}
+    <p>Nenhum caso registrado aqui{% if casos.conferido_em %} até {{ casos.conferido_em|data_caso }}{% endif %}. A lista é feita aos poucos, só com processo ou reportagem de veículo de imprensa: não estar aqui não quer dizer que não exista caso.</p>
+    {% endif %}
+    <a class="carimbo" href="{{ raiz }}processos.html">Ver todos os processos e reportagens<svg aria-hidden="true"><use href="#i-seta"/></svg></a>
   </div>
 </section>
 

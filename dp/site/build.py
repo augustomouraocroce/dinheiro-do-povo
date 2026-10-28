@@ -62,6 +62,14 @@ def normalizar(t: str) -> str:
     return senado.normalizar_nome(t).lower()
 
 
+def data_caso(v: str) -> str:
+    """Data de um caso: dia/mês/ano, ou mês/ano quando a fonte só dá o mês."""
+    if len(v) == 7:
+        ano, mes = v.split("-")
+        return f"{dados.MESES[int(mes) - 1]}/{ano}"
+    return relatorio.data_br(v)
+
+
 def groupby_mes(dias):
     return [(mes, list(itens)) for mes, itens in groupby(dias, key=lambda d: int(d["data"][5:7]))]
 
@@ -74,7 +82,8 @@ def ambiente() -> Environment:
         brl=relatorio.brl, pct=relatorio.pct, num=relatorio.num, data=relatorio.data_br,
         dia_mes=relatorio.dia_mes, plural=relatorio.plural, brl_partes=brl_partes, qtd=qtd,
         compacto=graficos.brl_compacto, slug=slug, normalizar=normalizar, groupby_mes=groupby_mes,
-        rotulo_voto=lambda v: ROTULO_VOTO.get(v, v), cada100=dados.cada_100)
+        rotulo_voto=lambda v: ROTULO_VOTO.get(v, v), cada100=dados.cada_100, data_caso=data_caso,
+        explica_voto=dados.explicar_votacao, sem_placar=dados.sem_placar)
     return env
 
 
@@ -290,6 +299,7 @@ def construir(conn, sabado: date, saida: Path = SAIDA, artefato: bool = False):
     escrever("votos.html", "votos.html.j2", "", "votos", votos_deputados=votos_deputados,
              tipos_votacao=dados.TIPOS_VOTACAO, votos_ate=escrever_votos(saida, conn, d) or "")
     escrever("posts.html", "posts.html.j2", "", "posts", posts=copiar_posts(saida))
+    escrever("processos.html", "processos.html.j2", "", "processos")
     escrever("metodologia.html", "metodologia.html.j2", "", "metodologia")
     escrever(f"semana/{sabado.isoformat()}.html", "semana.html.j2", "../", "semana",
              corpo=Markup(corpo_semana))

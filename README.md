@@ -18,6 +18,9 @@ Tom de portal de transparência: sem opinião, sem adjetivos sobre pessoas. Todo
 - **A cada R$ 100**: o custo do mandato dividido em partes, em linguagem simples, com porcentagens; e o quadro **Além do salário**, que compara o que vem com o cargo (segundo a Câmara) com o que a lei garante a quem ganha um salário mínimo ([`dp/beneficios.json`](dp/beneficios.json)).
 - **Cards para as redes**: carrossel 1080×1350 (Instagram, Kwai) e telas 1080×1920 (Stories, TikTok, Reels), gerados do relatório de sábado, com rascunho de legenda. Ficam também no site, em **Posts da semana** (`posts.html`), para baixar, compartilhar pelo celular e copiar a legenda.
 - **Dias de trabalho**: dias úteis de quem trabalha com carteira assinada (feriados nacionais por lei federal e 30 dias de férias da CLT) ao lado dos dias de sessão deliberativa no Plenário da Câmara.
+- **Por que esse valor?**: em cada perfil, onde o custo fica acima ou abaixo da média da Câmara, parte por parte: limite da cota do estado (estimado pelos números oficiais), quanto do limite foi usado, tamanho da equipe e imóvel funcional.
+- **Votações em linguagem simples**: cada voto diz o que foi votado (texto principal, emenda, destaque, mudanças do Senado, urgência, pedido de andamento) e o que o "Sim" quer dizer, com o texto oficial logo abaixo.
+- **Processos e reportagens** (`processos.html`): investigações, processos e reportagens de veículos de linhas diferentes, revisados à mão em [`dp/casos.json`](dp/casos.json), com a situação atual de cada caso, a resposta da pessoa e o aviso de que ser investigado não é ser culpado.
 - **Busca** por nome ou sigla, com foto oficial e logo do partido.
 - **Relatório semanal** (sábado a sexta) em Markdown e HTML.
 

@@ -31,6 +31,7 @@
       <a href="{{ raiz }}partidos.html" {% if ativa == "partidos" %}aria-current="page"{% endif %}>Partidos</a>
       <a href="{{ raiz }}rankings.html" {% if ativa == "rankings" %}aria-current="page"{% endif %}>Rankings</a>
       <a href="{{ raiz }}votos.html" {% if ativa == "votos" %}aria-current="page"{% endif %}>Votos</a>
+      <a href="{{ raiz }}processos.html" {% if ativa == "processos" %}aria-current="page"{% endif %}>Processos</a>
       <a href="{{ raiz }}trabalho.html" {% if ativa == "trabalho" %}aria-current="page"{% endif %}>Trabalho</a>
       <a href="{{ raiz }}semana/{{ sabado.isoformat() }}.html" {% if ativa == "semana" %}aria-current="page"{% endif %}>Semana</a>
       <a href="{{ raiz }}posts.html" {% if ativa == "posts" %}aria-current="page"{% endif %}>Posts</a>
@@ -45,7 +46,7 @@
 
 <footer class="rodape">
   <p><strong>Só dados oficiais.</strong> Câmara dos Deputados, Senado Federal e TSE, com o link de cada número. Referências do dia a dia: Planalto, DIEESE/Conab, ANAC, FipeZAP e Renault, com a data de cada valor.</p>
-  <p class="secundario"><a href="{{ raiz }}posts.html">Posts da semana para compartilhar</a> · <a href="{{ raiz }}votos.html">Como votou cada deputado</a></p>
+  <p class="secundario"><a href="{{ raiz }}posts.html">Posts da semana para compartilhar</a> · <a href="{{ raiz }}votos.html">Como votou cada deputado</a> · <a href="{{ raiz }}processos.html">Processos e reportagens</a></p>
   <p class="secundario">Dados da semana de {{ inicio|data }} a {{ fim|data }}. Encontrou um erro? Toda correção é publicada em <a href="{{ raiz }}metodologia.html#correcoes">Correções</a>, com data.</p>
   <p class="secundario">Fotos: oficiais da Câmara e do Senado. Logos de PL, PP, MDB e Podemos: Wikimedia Commons, domínio público; os demais partidos aparecem com a sigla. Fonte tipográfica Archivo (SIL Open Font License).</p>
 </footer>

@@ -1,0 +1,260 @@
+{
+  "_leia": "Processos e reportagens sobre os parlamentares acompanhados. Cada caso tem a situação atual, a data da última conferência e pelo menos uma reportagem de veículo de imprensa. O resumo é escrito por nós, sem adjetivos e sem copiar manchetes. Ser investigado não é ser culpado. Regras em dp/site/templates/metodologia.html.j2 (#processos).",
+  "situacoes": {
+    "reportagem": ["Reportagem", "Fato revelado por reportagem, sem processo conhecido."],
+    "investigado": ["Investigado", "Há inquérito ou operação policial autorizada pela Justiça. Ainda não há acusação formal."],
+    "denunciado": ["Denunciado", "O Ministério Público fez a acusação formal; a Justiça ainda não decidiu se abre o processo."],
+    "reu": ["Réu", "A Justiça aceitou a acusação e o processo está em andamento."],
+    "condenado": ["Condenado", "Houve condenação. Pode caber recurso: o detalhe diz em que fase está."],
+    "rejeitado": ["Acusação rejeitada", "A Justiça julgou o caso e rejeitou a acusação."],
+    "anulado": ["Provas anuladas", "A Justiça anulou as provas, sem julgar se a acusação era verdadeira."],
+    "arquivado": ["Arquivado", "O caso foi encerrado sem condenação."],
+    "acordo": ["Encerrado por acordo", "O caso terminou com um acordo previsto em lei, sem condenação."]
+  },
+  "assuntos": {
+    "dinheiro": "Dinheiro público",
+    "eleicao": "Eleição",
+    "democracia": "Ataques à democracia",
+    "falas": "Falas e publicações",
+    "outros": "Outros"
+  },
+  "casos": [
+    {
+      "id": "josimar-emendas-ribamar",
+      "parlamentar": "camara:204563",
+      "assunto": "dinheiro",
+      "titulo": "Emendas para São José de Ribamar (MA)",
+      "resumo": "Segundo a Procuradoria-Geral da República, deputados enviaram R$ 6,7 milhões em emendas à prefeitura de São José de Ribamar (MA) em troca de 25% do valor, cerca de R$ 1,6 milhão. A Primeira Turma do STF condenou Josimar Maranhãozinho por corrupção passiva a 6 anos e 5 meses de prisão em regime semiaberto. A acusação de organização criminosa foi afastada.",
+      "situacao": "condenado",
+      "detalhe": "Condenado pela Primeira Turma do STF em 17/03/2026, por 4 votos a 0. A Câmara decide se a pena é compatível com o mandato.",
+      "orgao": "STF",
+      "data": "2026-03-17",
+      "resposta": "A defesa negou irregularidades e disse que não há prova de benefício direto a ele.",
+      "fontes": [
+        {"veiculo": "Poder360", "data": "2026-03-17", "url": "https://www.poder360.com.br/poder-justica/stf-condena-deputados-do-pl-acusados-de-desviar-emendas/"},
+        {"veiculo": "Metrópoles", "url": "https://www.metropoles.com/brasil/quem-sao-os-deputados-do-pl-condenados-por-desvio-de-emendas"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "josimar-orcamento-secreto-2026",
+      "parlamentar": "camara:204563",
+      "assunto": "dinheiro",
+      "titulo": "Nova investigação sobre emendas do “orçamento secreto”",
+      "resumo": "Três meses depois da condenação, a Polícia Federal fez buscas contra o deputado numa investigação sobre desvio de emendas do chamado orçamento secreto e pagamento de propina a parlamentares. As buscas foram autorizadas pelo ministro Flávio Dino, do STF.",
+      "situacao": "investigado",
+      "detalhe": "Alvo de busca e apreensão em 25/06/2026. Não há denúncia nesta investigação até a última conferência.",
+      "orgao": "STF",
+      "data": "2026-06-25",
+      "fontes": [
+        {"veiculo": "O Tempo", "data": "2026-06-25", "url": "https://www.otempo.com.br/politica/judiciario/2026/6/25/deputado-federal-do-pl-e-alvo-de-buscas-da-pf-em-operacao-contra-desvio-de-emendas"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "pastor-gil-emendas-ribamar",
+      "parlamentar": "camara:204570",
+      "assunto": "dinheiro",
+      "titulo": "Emendas para São José de Ribamar (MA)",
+      "resumo": "Segundo a Procuradoria-Geral da República, deputados enviaram R$ 6,7 milhões em emendas à prefeitura de São José de Ribamar (MA) em troca de 25% do valor, cerca de R$ 1,6 milhão. A Primeira Turma do STF condenou Pastor Gil por corrupção passiva a 5 anos e 6 meses de prisão em regime semiaberto. A acusação de organização criminosa foi afastada.",
+      "situacao": "condenado",
+      "detalhe": "Condenado pela Primeira Turma do STF em 17/03/2026, por 4 votos a 0. A Câmara decide se a pena é compatível com o mandato.",
+      "orgao": "STF",
+      "data": "2026-03-17",
+      "resposta": "A defesa disse que ele não tinha controle sobre o uso final do dinheiro.",
+      "fontes": [
+        {"veiculo": "Poder360", "data": "2026-03-17", "url": "https://www.poder360.com.br/poder-justica/stf-condena-deputados-do-pl-acusados-de-desviar-emendas/"},
+        {"veiculo": "Metrópoles", "url": "https://www.metropoles.com/brasil/quem-sao-os-deputados-do-pl-condenados-por-desvio-de-emendas"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "frias-make-up",
+      "parlamentar": "camara:220655",
+      "assunto": "dinheiro",
+      "titulo": "Emendas e o filme “Dark Horse”",
+      "resumo": "A Polícia Federal e a CGU investigam se R$ 2 milhões em emendas do deputado enviados ao Instituto Conhecer Brasil foram desviados para a produtora do filme “Dark Horse”, sobre Jair Bolsonaro, do qual Mario Frias é produtor-executivo. Na Operação Make Up, autorizada pelo ministro Flávio Dino, do STF, a PF apreendeu o celular e armas do deputado, e Dino o proibiu de deixar o país.",
+      "situacao": "investigado",
+      "detalhe": "Alvo de busca e apreensão em 10/09/2026. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2026-09-10",
+      "resposta": "O deputado negou desvio e chamou a operação de “cortina de fumaça” em ano de eleição.",
+      "fontes": [
+        {"veiculo": "Congresso em Foco", "url": "https://www.congressoemfoco.com.br/noticia/122133/pf-apreende-sete-armas-de-mario-frias-em-operacao-sobre-dark-horse"},
+        {"veiculo": "SBT News", "url": "https://sbtnews.sbt.com.br/noticia/politica/pf-faz-operacao-sobre-financiamento-de-dark-horse"},
+        {"veiculo": "SBT News", "url": "https://sbtnews.sbt.com.br/noticia/politica/mario-frias-chama-operacao-da-pf-de-cortina-de-fumaca"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "cezinha-transparencia",
+      "parlamentar": "camara:204504",
+      "assunto": "dinheiro",
+      "titulo": "Suspeita de venda de influência em processos judiciais",
+      "resumo": "Na terceira fase da Operação Transparência, a Polícia Federal fez buscas contra o deputado por suspeita de exploração de prestígio, tráfico de influência, corrupção passiva e lavagem de dinheiro. Segundo a PF, o grupo negociava pagamentos condicionados ao resultado de processos na Justiça. A investigação começou em dezembro de 2025, sobre emendas parlamentares. A PF diz não haver indício de participação de integrantes do Judiciário.",
+      "situacao": "investigado",
+      "detalhe": "Alvo de busca e apreensão em 14/09/2026, com autorização do ministro Flávio Dino, do STF. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2026-09-14",
+      "resposta": "Em nota, a defesa disse que nenhuma irregularidade foi cometida e que os fatos serão esclarecidos.",
+      "fontes": [
+        {"veiculo": "Poder360", "data": "2026-09-14", "url": "https://www.poder360.com.br/poder-justica/cezinha-de-madureira-e-alvo-da-pf-em-operacao-sobre-desvio-de-emendas/"},
+        {"veiculo": "Gazeta do Povo", "url": "https://www.gazetadopovo.com.br/republica/policia-federal-investiga-cezinha-de-madureira-por-negociar-influencia-no-stf/"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "gayer-cota",
+      "parlamentar": "camara:220568",
+      "assunto": "dinheiro",
+      "titulo": "Uso da cota parlamentar",
+      "resumo": "A Polícia Federal investiga suspeita de desvio de dinheiro da cota parlamentar do gabinete e de documentos falsos usados para criar uma organização social (Oscip). Na Operação Discalculia, em outubro de 2024, autorizada pelo STF, houve buscas contra o deputado e assessores. Em dezembro de 2025, a PF indiciou o deputado.",
+      "situacao": "investigado",
+      "detalhe": "Indiciado pela PF em dezembro de 2025. Indiciamento não é acusação formal: a PGR ainda não apresentou denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2025-12",
+      "resposta": "O deputado nega irregularidades e diz ser alvo de perseguição política.",
+      "fontes": [
+        {"veiculo": "O Povo", "data": "2024-10-28", "url": "https://www.opovo.com.br/noticias/politica/2024/10/28/entenda-a-operacao-da-pf-contra-o-deputado-gustavo-gayer.html"},
+        {"veiculo": "IstoÉ", "url": "https://istoe.com.br/pf-indicia-deputado-gustavo-gayer-por-suspeita-de-desvio-de-cota-parlamentar"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "euclydes-inss",
+      "parlamentar": "camara:204482",
+      "assunto": "dinheiro",
+      "titulo": "Descontos não autorizados em aposentadorias do INSS",
+      "resumo": "Na quarta fase da Operação Sem Desconto, a Polícia Federal e a CGU fizeram buscas contra o deputado. Segundo a PF, ele recebeu ao menos R$ 14,7 milhões, por meio de um assessor, para dar proteção política a um esquema de descontos não autorizados em aposentadorias e pensões. A PF depois o indiciou por organização criminosa, lavagem de dinheiro e corrupção passiva. O relatório da CPMI do INSS que também pedia o indiciamento dele foi rejeitado pela comissão em março de 2026.",
+      "situacao": "investigado",
+      "detalhe": "Alvo de busca e apreensão em 13/11/2025 e indiciado pela PF. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2025-11-13",
+      "resposta": "Ele nega participação e diz que o indiciamento é um ato unilateral da polícia.",
+      "fontes": [
+        {"veiculo": "Band", "data": "2025-11-13", "url": "https://www.band.com.br/noticias/fraudes-no-inss-ex-ministro-de-bolsonaro-e-deputados-sao-alvos-da-pf-202511131133"},
+        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/poder-justica/pf-diz-que-deputado-citado-em-esquema-do-inss-recebeu-r-147-mi/"},
+        {"veiculo": "Gazeta do Povo", "data": "2026-03-27", "url": "https://www.gazetadopovo.com.br/republica/o-que-acontece-com-lulinha-vorcaro-careca-do-inss-e-parlamentares-indiciados-pela-cpmi/"},
+        {"veiculo": "SBT News", "url": "https://sbtnews.sbt.com.br/noticia/politica/relatorio-rejeitado-veja-como-deputados-e-senadores-votaram-na-ultima-sessao-da-cpmi-do-inss"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "lira-kits-robotica",
+      "parlamentar": "camara:160541",
+      "assunto": "dinheiro",
+      "titulo": "Compra de kits de robótica em Alagoas",
+      "resumo": "A Operação Hefesto, da Polícia Federal, investigou suspeita de fraude numa licitação de R$ 8 milhões para kits de robótica comprados com emendas de relator para escolas de Alagoas, caso revelado por reportagem da Folha de S.Paulo em 2022. O nome de Arthur Lira apareceu em documentos ligados a um ex-assessor dele, e o caso foi enviado ao STF. Em agosto de 2023, o ministro Gilmar Mendes anulou as provas, porque a investigação deveria ter começado no STF.",
+      "situacao": "anulado",
+      "detalhe": "Provas anuladas pelo ministro Gilmar Mendes, do STF, em agosto de 2023. Não há denúncia contra Lira até a última conferência.",
+      "orgao": "STF",
+      "data": "2023-08-10",
+      "resposta": "A defesa disse que a decisão reconhece “manobras na investigação” para evitar que o caso fosse ao STF.",
+      "fontes": [
+        {"veiculo": "Poder360", "data": "2023-08-10", "url": "https://www.poder360.com.br/justica/gilmar-mendes-anula-provas-de-investigacao-contra-lira/"},
+        {"veiculo": "Agência Pública", "url": "https://apublica.org/nota/gilmar-anula-provas-sobre-assessor-de-lira-arquiva-inqueritos-e-manda-inutilizar-dados/"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "silas-salarios-assessores",
+      "parlamentar": "camara:74356",
+      "assunto": "dinheiro",
+      "titulo": "Salários de assessores em 2000 e 2001 (“rachadinha”)",
+      "resumo": "A PGR acusou o deputado de peculato por ficar com parte dos salários de assessores da Câmara em 2000 e 2001. No julgamento no STF, o placar estava em 5 votos a 1 pela condenação quando pedidos de vista suspenderam o caso, em novembro de 2022. Depois, a PGR e o deputado fecharam um acordo de não persecução penal: ele pagou multa de R$ 242 mil, e o processo foi encerrado sem condenação.",
+      "situacao": "acordo",
+      "detalhe": "Acordo homologado pelo ministro Luís Roberto Barroso, do STF, em dezembro de 2022. O processo foi encerrado depois do pagamento.",
+      "orgao": "STF",
+      "data": "2022-12",
+      "fontes": [
+        {"veiculo": "Agência Brasil", "data": "2022-11-10", "url": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-11/pedido-de-vista-suspende-julgamento-de-deputado-pelo-stf"},
+        {"veiculo": "Migalhas", "url": "https://www.migalhas.com.br/quentes/377999/rachadinhas-barroso-homologa-acordo-e-silas-camara-pagara-r-242-mil"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "ciro-master",
+      "parlamentar": "senado:739",
+      "assunto": "dinheiro",
+      "titulo": "Banco Master",
+      "resumo": "Na quinta fase da Operação Compliance Zero, a Polícia Federal fez buscas contra o senador por suspeita de receber vantagens do Banco Master em troca de atuar a favor do banco, como pagamentos mensais de R$ 300 mil por meio de uma empresa. A PF também apura se uma emenda do senador à PEC 65/2023 foi escrita antes por pessoas ligadas ao banco. A operação foi autorizada pelo ministro André Mendonça, do STF.",
+      "situacao": "investigado",
+      "detalhe": "Alvo de busca e apreensão em 07/05/2026. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2026-05-07",
+      "resposta": "O senador nega participação em atividades ilícitas e diz ser alvo de perseguição política.",
+      "fontes": [
+        {"veiculo": "Exame", "url": "https://exame.com/brasil/por-que-ciro-nogueira-foi-alvo-da-operacao-da-pf-sobre-o-banco-master/"},
+        {"veiculo": "Agência Pública", "url": "https://apublica.org/nota/banco-master-pf-revela-detalhes-sobre-ciro-nogueira-o-amigo-de-vida-de-vorcaro/"},
+        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/poder-congresso/apos-acao-da-pf-ciro-nogueira-diz-ser-alvo-de-perseguicao-politica/"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "flavio-lavagem-advogado",
+      "parlamentar": "senado:5894",
+      "assunto": "dinheiro",
+      "titulo": "Suspeita de lavagem de dinheiro ligada a advogado",
+      "resumo": "A Polícia Federal enviou ao STF um inquérito sobre suspeita de lavagem de dinheiro ligada à relação do senador com o advogado Willer Tomaz, investigado por operações com casas de apostas. Segundo a reportagem, a PF cita viagens pagas por empresas ligadas ao advogado e uma conta de uma empresa dele em que o senador aparecia com acesso de administrador. A investigação não estabeleceu que o dinheiro movimentado seja do senador. O ministro Alexandre de Moraes foi sorteado relator.",
+      "situacao": "investigado",
+      "detalhe": "Inquérito da PF enviado ao STF em outubro de 2026. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2026-10-18",
+      "resposta": "O senador nega relação financeira irregular e diz ter apenas amizade com o advogado.",
+      "fontes": [
+        {"veiculo": "Congresso em Foco", "data": "2026-10-18", "url": "https://www.congressoemfoco.com.br/noticia/123352/flavio-e-alvo-de-inquerito-na-pf-por-suspeita-de-lavagem-de-dinheiro"},
+        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/poder-justica/pf-envia-ao-stf-nova-investigacao-sobre-flavio-segundo-jornal/"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "flavio-rachadinha-alerj",
+      "parlamentar": "senado:5894",
+      "assunto": "dinheiro",
+      "titulo": "Salários de assessores na Alerj (“rachadinha”)",
+      "resumo": "O Ministério Público do Rio denunciou o então deputado estadual por peculato, lavagem de dinheiro, apropriação indébita e organização criminosa, sob suspeita de ficar com parte dos salários de assessores. O STJ anulou as provas, e o Tribunal de Justiça do Rio arquivou a denúncia, sem julgar se as acusações eram verdadeiras.",
+      "situacao": "arquivado",
+      "detalhe": "Denúncia arquivada pelo Órgão Especial do TJ-RJ em 16/05/2022, depois que o STJ anulou as provas.",
+      "orgao": "TJ-RJ",
+      "data": "2022-05-16",
+      "fontes": [
+        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/justica/justica-arquiva-denuncia-contra-flavio-bolsonaro-por-rachadinhas/"},
+        {"veiculo": "Correio Braziliense", "url": "https://www.correiobraziliense.com.br/politica/2022/10/5043990-rachadinha-o-que-aconteceu-com-caso-que-envolve-filho-de-bolsonaro.html"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "moro-pre-campanha",
+      "parlamentar": "senado:6331",
+      "assunto": "eleicao",
+      "titulo": "Gastos na pré-campanha de 2022",
+      "resumo": "O PL e a federação PT/PCdoB/PV pediram a cassação do mandato por abuso de poder econômico, uso indevido de meios de comunicação e caixa dois na pré-campanha de 2022. O TRE do Paraná rejeitou o pedido, e o TSE confirmou a decisão por 7 votos a 0.",
+      "situacao": "rejeitado",
+      "detalhe": "Cassação rejeitada pelo TSE em maio de 2024, por unanimidade.",
+      "orgao": "TSE",
+      "data": "2024-05",
+      "fontes": [
+        {"veiculo": "SBT News", "data": "2024-05-22", "url": "https://sbtnews.sbt.com.br/noticia/politica/julgamento-do-tse-foi-unanime-tecnico-e-independente-comemora-moro-apos-se-livrar-de-cassacao"},
+        {"veiculo": "Congresso em Foco", "url": "https://congressoemfoco.com.br/noticia/18945/apos-escapar-da-cassacao-moro-pede-fim-da-polarizacao-nao-faz-bem-a-ninguem"}
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "seif-havan",
+      "parlamentar": "senado:6342",
+      "assunto": "eleicao",
+      "titulo": "Uso de estrutura da Havan na campanha de 2022",
+      "resumo": "A ação pedia a cassação do mandato por abuso de poder econômico, pelo suposto uso de aeronaves e estrutura da Havan na campanha de 2022. O TRE de Santa Catarina rejeitou o pedido em novembro de 2023. O TSE afastou a cassação por unanimidade, por falta de provas robustas.",
+      "situacao": "rejeitado",
+      "detalhe": "Cassação rejeitada pelo TSE em 12/02/2026, por unanimidade.",
+      "orgao": "TSE",
+      "data": "2026-02-12",
+      "fontes": [
+        {"veiculo": "Consultor Jurídico", "data": "2026-02-12", "url": "https://www.conjur.com.br/2026-fev-12/sem-provas-cabais-de-abuso-tse-afasta-cassacao-de-jorge-seif/"},
+        {"veiculo": "Congresso em Foco", "url": "https://www.congressoemfoco.com.br/noticia/116390/tse-afasta-cassacao-de-jorge-seif-por-falta-de-provas-robustas"},
+        {"veiculo": "CNN Brasil", "url": "https://www.cnnbrasil.com.br/politica/por-unanimidade-tse-mantem-mandato-do-senador-jorge-seif/"}
+      ],
+      "conferido_em": "2026-10-27"
+    }
+  ]
+}

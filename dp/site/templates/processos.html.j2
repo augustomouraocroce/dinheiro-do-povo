@@ -1,0 +1,45 @@
+{% extends "base.html.j2" %}
+{% import "componentes.html.j2" as c with context %}
+{% set cs = casos %}
+{% block titulo %}Processos e reportagens · Dinheiro do Povo{% endblock %}
+{% block descricao %}Investigações, processos e reportagens sobre os parlamentares acompanhados, com a situação atual de cada caso, a resposta de cada um e o link das reportagens.{% endblock %}
+{% block conteudo %}
+<section class="ladrilho pilha" aria-labelledby="t-proc">
+  <h1 id="t-proc">Processos e reportagens</h1>
+  <p>Investigações, processos e reportagens sobre os parlamentares acompanhados. Cada caso diz em que fase está, traz a resposta da pessoa quando a reportagem publicou e o link de cada reportagem.</p>
+  <div class="aviso-inocencia">
+    <p><b>Ser investigado não é ser culpado.</b> Pela Constituição (art. 5º, inciso LVII), ninguém é considerado culpado antes da condenação definitiva. Investigação, indiciamento e denúncia são etapas, não sentenças.</p>
+  </div>
+  <p class="secundario">A lista começou em outubro de 2026 e cresce aos poucos, sempre com reportagem de veículos de linhas diferentes. Não estar aqui não quer dizer que não exista caso. Regras em <a href="{{ raiz }}metodologia.html#processos">Como ler</a>.</p>
+  <details class="tabela-dados">
+    <summary><svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg>O que quer dizer cada situação</summary>
+    <dl class="cv-glossario">
+      {% for chave, s in cs.situacoes.items() %}<div><dt><span class="caso-sit sit-{{ chave }}">{{ s[0] }}</span></dt><dd>{{ s[1] }}</dd></div>{% endfor %}
+    </dl>
+  </details>
+</section>
+
+<section class="secao" id="processos" aria-labelledby="t-proc-lista">
+  <h2 id="t-proc-lista" class="visivel-leitor">Casos</h2>
+  <div class="ladrilho pilha">
+    <fieldset class="cv-chips">
+      <legend>Assunto</legend>
+      <label><input type="radio" name="assunto" value="todos" checked><span>Todos</span></label>
+      {% for chave, nome in cs.assuntos.items() if cs.casos|selectattr("assunto", "equalto", chave)|list %}
+      <label><input type="radio" name="assunto" value="{{ chave }}"><span>{{ nome }}</span></label>
+      {% endfor %}
+    </fieldset>
+    <label class="filtro"><svg class="ic" aria-hidden="true"><use href="#i-busca"/></svg><span class="visivel-leitor">Filtrar por nome, partido ou assunto</span>
+      <input type="search" placeholder="Filtrar: nome, partido, emendas…" data-filtro="lista-casos" data-contador="n-casos"></label>
+  </div>
+  <p class="no-amarelo cv-contagem"><span id="n-casos">{{ cs.casos|length }}</span> casos sobre {{ cs.por_pessoa|length }} parlamentares{% if cs.conferido_em %}, conferidos até {{ cs.conferido_em|data_caso }}{% endif %}. Do mais recente para o mais antigo.</p>
+  <div class="pilha" id="lista-casos">
+  {% for caso in cs.casos %}
+    {{ c.caso(caso, cs.situacoes, cs.assuntos, raiz) }}
+  {% endfor %}
+  </div>
+  <div class="ladrilho pilha">
+    <p>Viu um erro, uma situação desatualizada ou um caso com reportagem que não está aqui? Toda correção é publicada com data em <a href="{{ raiz }}metodologia.html#correcoes">Correções</a>.</p>
+  </div>
+</section>
+{% endblock %}

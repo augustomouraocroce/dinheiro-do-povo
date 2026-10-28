@@ -59,11 +59,12 @@
 <section class="secao" id="rk-custo" aria-labelledby="t-rk-custo">
   <div class="ladrilho pilha">
     <h2 id="t-rk-custo">Deputado que mais gasta</h2>
-    <p class="secundario">Custo médio do mandato por mês. O limite da cota muda conforme o estado, porque as passagens para Brasília custam diferente.</p>
+    <p class="secundario">Custo médio do mandato por mês. O salário é igual para todos; a diferença vem da cota, cujo limite muda conforme o estado porque as passagens para Brasília custam diferente, e de quanto cada um usa da verba para a equipe do gabinete.</p>
     <ol class="rk-lista">
     {% for p in r.mais_custo %}
       <li>{{ pessoa(loop.index, p) }}
-        <span class="rk-valor"><span class="tag">{{ p.custo.total|compacto }}</span><small>= {{ (p.custo.total / refs.salario_minimo.valor)|qtd }} sal. mínimos</small></span></li>
+        <span class="rk-valor"><span class="tag">{{ p.custo.total|compacto }}</span><small>= {{ (p.custo.total / refs.salario_minimo.valor)|qtd }} sal. mínimos</small></span>
+        {% set e = p.explica_custo %}{% if e and e.maior %}<p class="rk-motivo">Maior diferença: {{ e.maior.nome|lower }}, {{ c.diferenca(e.maior.diferenca) }}{% if e.maior.chave == "cota" and e.maior.posicao_estado %} (a cota de {{ p.uf }} é {% if e.maior.posicao_estado == 1 %}a maior do país{% else %}a {{ e.maior.posicao_estado }}ª maior{% endif %}){% endif %}. <a href="{{ raiz }}p/{{ p.slug }}.html#t-custo">Entenda</a></p>{% endif %}</li>
     {% endfor %}
     </ol>
     <p class="secundario">Média da Câmara: {{ camara.media_custo.total|brl }} por mês.</p>

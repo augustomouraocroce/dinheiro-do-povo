@@ -569,3 +569,44 @@ a.botao:hover { color: var(--papel); }
 #rk-partidos:has(input[value="total"]:checked) .v-total { order: -1; }
 .rk-porque { display: grid; gap: 8px; background: var(--papel-2); border-radius: 8px; padding: 14px; }
 .rk-porque h3 { font-size: 1.1rem; }
+
+/* Processos e reportagens: situação em selo neutro (o vermelho fica só para o ✕ de falta) */
+.aviso-inocencia { border-left: 5px solid var(--tinta); background: var(--papel-2); padding: 10px 14px; border-radius: 0 8px 8px 0; }
+.caso h3 { font-size: 1.2rem; line-height: 1.25; }
+.caso-pessoa { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: center; text-decoration: none; }
+.caso-pessoa b { display: block; font-weight: 800; line-height: 1.2; }
+.caso-pessoa small { display: block; font-size: .875rem; color: var(--tinta-2); font-weight: 600; }
+.caso-foto { width: 44px; height: 58px; object-fit: cover; border: 1.5px solid var(--tinta); border-radius: 5px; display: block; }
+span.caso-foto { background-size: var(--mosaico-tamanho, 2000% 1500%); }
+.caso-cab { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.caso-sit { display: inline-block; font-stretch: 72%; font-weight: 850; font-size: .85rem; text-transform: uppercase; letter-spacing: .04em;
+  padding: 2px 8px; border: 2px solid var(--tinta); border-radius: 5px; background: var(--papel); white-space: nowrap; }
+.sit-condenado, .sit-reu { background: var(--tinta); color: var(--papel); }
+.sit-denunciado, .sit-investigado { background: var(--amarelo); }
+.sit-rejeitado, .sit-arquivado, .sit-anulado, .sit-acordo { border-color: var(--s-referencia); color: var(--tinta-2); }
+.sit-reportagem { border-style: dashed; }
+.caso-assunto { font-size: .85rem; font-weight: 700; color: var(--tinta-2); }
+.caso-detalhe, .caso-resposta { font-size: .95rem; }
+.caso-resposta { background: var(--papel-2); border-radius: 8px; padding: 8px 12px; }
+.caso-fontes { font-size: .95rem; }
+.caso-fontes a { color: var(--carimbo); font-weight: 700; }
+.caso-conferido { font-size: .85rem; }
+#processos:has(input[value="dinheiro"]:checked) .caso:not([data-assunto="dinheiro"]),
+#processos:has(input[value="eleicao"]:checked) .caso:not([data-assunto="eleicao"]),
+#processos:has(input[value="democracia"]:checked) .caso:not([data-assunto="democracia"]),
+#processos:has(input[value="falas"]:checked) .caso:not([data-assunto="falas"]),
+#processos:has(input[value="outros"]:checked) .caso:not([data-assunto="outros"]) { display: none; }
+
+/* Por que esse custo */
+.porque { background: var(--papel-2); border-radius: 8px; padding: 14px; }
+.porque h3 { font-size: 1.15rem; }
+.porque-total { font-size: 1.05rem; }
+.porque-lista { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.porque-lista li { line-height: 1.45; }
+.rk-motivo { grid-column: 3 / -1; font-size: .9rem; color: var(--tinta-2); margin: 0; }
+.rk-motivo a { color: var(--carimbo); font-weight: 700; }
+@media (max-width: 480px) { .rk-motivo { grid-column: 2 / -1; } }
+
+/* Voto explicado: a frase simples primeiro, o texto oficial menor embaixo */
+.voto-oficial { display: block; margin-top: 4px; font-size: .85rem; color: var(--tinta-2); }
+.voto-oficial a { color: var(--carimbo); }

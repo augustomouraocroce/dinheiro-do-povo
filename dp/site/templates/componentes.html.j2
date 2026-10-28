@@ -158,3 +158,68 @@
   </ul>
 </div>
 {%- endmacro %}
+
+{# Um caso de processo ou reportagem: situação atual, resumo nosso, resposta e fontes #}
+{% macro caso(c, situacoes, assuntos, raiz, com_pessoa=True) -%}
+<article class="ladrilho caso pilha" id="caso-{{ c.id }}" data-assunto="{{ c.assunto }}"
+         data-busca="{{ (c.p.nome ~ ' ' ~ c.p.partido ~ ' ' ~ c.p.uf ~ ' ' ~ c.titulo ~ ' ' ~ c.resumo)|normalizar }}">
+  {% if com_pessoa %}
+  <a class="caso-pessoa" href="{{ raiz }}p/{{ c.p.slug }}.html">
+    {%- if artefato %}<span class="foto-s caso-foto" style="background-position: {{ sprite[c.p.slug] }}" aria-hidden="true"></span>
+    {%- else %}<img class="caso-foto" src="{{ raiz }}fotos/mini/{{ c.p.slug }}.jpg" alt="" loading="lazy" width="120" height="160">{% endif %}
+    <span><b>{{ c.p.nome }}</b><small>{{ c.p.cargo }} · {{ c.p.partido }}-{{ c.p.uf }}</small></span>
+  </a>
+  {% endif %}
+  <div class="caso-cab">
+    <span class="caso-sit sit-{{ c.situacao }}" title="{{ situacoes[c.situacao][1] }}">{{ situacoes[c.situacao][0] }}</span>
+    <span class="caso-assunto">{{ assuntos[c.assunto] }}</span>
+    <span class="secundario">{{ c.data|data_caso }}</span>
+  </div>
+  <h3>{{ c.titulo }}</h3>
+  <p>{{ c.resumo }}</p>
+  <p class="caso-detalhe"><b>Situação:</b> {{ c.detalhe }}</p>
+  {% if c.get("resposta") %}<p class="caso-resposta"><b>Resposta:</b> {{ c.resposta }}</p>{% endif %}
+  <p class="caso-fontes"><b>Reportagens:</b>
+    {% for f in c.fontes %}<a href="{{ f.url }}" target="_blank" rel="noopener">{{ f.veiculo }}{% if f.get("data") %}, {{ f.data|data_caso }}{% endif %}</a>{% if not loop.last %} · {% endif %}{% endfor %}
+  </p>
+  <p class="secundario caso-conferido">Conferido em {{ c.conferido_em|data_caso }}.</p>
+</article>
+{%- endmacro %}
+
+{# Por que esse custo: diferença para a média da Câmara, parte por parte #}
+{% macro diferenca(v) -%}
+{%- if v|abs < 1000 %}perto da média{% else %}{{ (v|abs)|compacto }} {{ "a mais" if v > 0 else "a menos" }} que a média{% endif -%}
+{%- endmacro %}
+{% macro por_que_custo(e) -%}
+<div class="porque pilha">
+  <h3>Por que esse valor?</h3>
+  <p class="porque-total"><b>{{ e.total|compacto }} por mês</b>, {{ diferenca(e.diferenca) }} da Câmara ({{ e.media|compacto }}).</p>
+  <ul class="porque-lista">
+  {% for pt in e.partes %}
+    <li><b>{{ pt.nome }}:</b>
+    {% if pt.chave == "auxilio" %}
+      {% if pt.valor > 0 %}recebe, em média, {{ pt.valor|brl }} por mês.{% else %}não recebe{% if pt.imovel and pt.imovel.startswith("Faz uso") %}, porque usa um imóvel funcional da Câmara{% endif %}.{% endif %}
+    {% else %}
+      {{ pt.valor|compacto }} por mês, {{ diferenca(pt.diferenca) }}.
+      {% if pt.chave == "cota" %}
+        {%- if pt.limite_estado %} O limite da cota depende do estado, porque as passagens para Brasília custam diferente: em {{ e.uf }} é de cerca de {{ pt.limite_estado|compacto }} por mês, {% if pt.posicao_estado == 1 %}o maior{% elif pt.posicao_estado == pt.estados %}o menor{% else %}o {{ pt.posicao_estado }}º maior{% endif %} entre os {{ pt.estados }} estados.{% endif %}
+        {%- if pt.uso %} Usou {{ pt.uso.pct|pct }} do limite do ano até agora.{% endif %}
+      {% else %}
+        {%- if pt.uso %} Usou {{ pt.uso.pct|pct }} do limite{% if pt.limite %}, que é de cerca de {{ pt.limite|compacto }} por mês{% endif %}.{% endif %}
+        {%- if pt.equipe %} Equipe: {{ pt.equipe }}.{% endif %}
+      {% endif %}
+    {% endif %}
+    </li>
+  {% endfor %}
+    <li>O salário é igual para todos os deputados: {{ e.salario|brl }} por mês.</li>
+  </ul>
+</div>
+{%- endmacro %}
+
+{# Um voto explicado: o que foi votado e o que o "Sim" quer dizer; o texto oficial vem embaixo #}
+{% macro voto_explicado(descricao, data, url=None, casa="camara", extra="") -%}
+{%- set e = descricao|explica_voto if casa == "camara" else None -%}
+<p>{% if e %}<b>{{ e.o_que }}</b> {{ e.sim }}{% if e.resultado %} Resultado: {{ e.resultado }}{% if e.placar %}, {{ e.placar[0] }} a {{ e.placar[1] }}{% endif %}.{% endif %}
+  <span class="voto-oficial">Texto oficial: {{ descricao|sem_placar }} ({{ data|data }}{{ extra }}){% if url %} · <a href="{{ url }}" target="_blank" rel="noopener">fonte</a>{% endif %}</span>
+{%- else %}{{ descricao }} <span class="secundario">({{ data|data }}{{ extra }})</span>{% if url %} · <a href="{{ url }}" target="_blank" rel="noopener">fonte</a>{% endif %}{% endif %}</p>
+{%- endmacro %}

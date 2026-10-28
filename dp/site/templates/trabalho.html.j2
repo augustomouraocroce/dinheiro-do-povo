@@ -37,9 +37,11 @@
             <span class="vt-data">{{ v.data|data }}</span>
             <span class="vt-res">{% if v.aprovada == 1 %}aprovada{% elif v.aprovada == 0 %}rejeitada{% endif %}</span>
             {% set tv = (v.placar.sim + v.placar.nao + v.placar.outros) or 1 %}<span class="vt-placar">Sim {{ v.placar.sim }} ({{ (v.placar.sim / tv * 100)|round|int }}%) · Não {{ v.placar.nao }} ({{ (v.placar.nao / tv * 100)|round|int }}%)</span>
-            <span class="vt-desc">{{ v.descricao|truncate(140) }}</span>
+            {% set e = v.descricao|explica_voto if g.casa == "camara" else None %}
+            <span class="vt-desc">{% if e %}{{ e.o_que }}{% else %}{{ v.descricao|truncate(140) }}{% endif %}</span>
           </summary>
-          <p>{{ v.descricao }}</p>
+          {% if e %}<p><b>{{ e.sim }}</b> {% if e.resultado %}Resultado: {{ e.resultado }}.{% endif %}</p>
+          <p class="voto-oficial">Texto oficial: {{ v.descricao|sem_placar }}</p>{% else %}<p>{{ v.descricao }}</p>{% endif %}
           {% if v.por_partido %}
           <table class="tabela tabela-votos">
             <thead><tr><th>Partido na época</th><th class="n">Sim</th><th class="n">Não</th><th class="n">Outros</th></tr></thead>
