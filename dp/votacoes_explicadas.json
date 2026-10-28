@@ -55,17 +55,17 @@
       ]
     },
     "camara:2196833-386": {
-      "texto": "O PL queria tirar do texto um trecho sobre o Imposto Seletivo, o imposto mais alto, para produtos que fazem mal à saúde, como cigarro e bebida alcoólica. A Câmara manteve o trecho, por 336 a 132.",
+      "texto": "O texto diz que o Imposto Seletivo, cobrado de produtos que fazem mal à saúde ou ao meio ambiente, entra na base de cálculo de outros impostos (ICMS, ISS, IBS e CBS). O PL queria tirar essa regra. A Câmara manteve o trecho, por 336 a 132.",
       "fontes": [
+        {
+          "veiculo": "Agência Brasil",
+          "data": "2023-07-07",
+          "url": "https://agenciabrasil.ebc.com.br/politica/noticia/2023-07/camara-conclui-votacao-da-reforma-tributaria"
+        },
         {
           "veiculo": "IstoÉ",
           "data": "2023-07-07",
           "url": "https://istoe.com.br/camara-conclui-votacao-da-reforma-tributaria"
-        },
-        {
-          "veiculo": "Brasil de Fato",
-          "data": "2023-07-07",
-          "url": "https://www.brasildefato.com.br/2023/07/07/reforma-tributaria-camara-nega-tres-destaques-do-pl-de-bolsonaro-e-aprova-apenas-um"
         }
       ]
     },
@@ -111,6 +111,115 @@
           "veiculo": "Brasil de Fato",
           "data": "2023-07-07",
           "url": "https://www.brasildefato.com.br/2023/07/07/reforma-tributaria-camara-nega-tres-destaques-do-pl-de-bolsonaro-e-aprova-apenas-um"
+        }
+      ]
+    },
+    "camara:2196833-331": {
+      "texto": "O texto torna progressivo o imposto sobre herança e doação (ITCMD): quanto maior o valor herdado ou doado, maior a alíquota. PP e União queriam tirar essa regra. A Câmara manteve o trecho, por 317 a 170.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2023-07-07",
+          "url": "https://www.camara.leg.br/noticias/978320-camara-conclui-votacao-da-reforma-tributaria-em-1o-turno-votacao-em-2o-turno-ocorrera-em-seguida"
+        }
+      ]
+    },
+    "camara:2196833-349": {
+      "texto": "O texto proíbe dar incentivos e benefícios do novo imposto (IBS) além dos previstos na própria PEC. O PL queria tirar essa proibição. A Câmara manteve o trecho, por 390 a 108.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2023-07-07",
+          "url": "https://www.camara.leg.br/noticias/978320-camara-conclui-votacao-da-reforma-tributaria-em-1o-turno-votacao-em-2o-turno-ocorrera-em-seguida"
+        }
+      ]
+    },
+    "camara:2196833-353": {
+      "texto": "O texto cria regras de imposto específicas para serviços financeiros, compra e venda de imóveis, planos de saúde e loterias (concursos de prognósticos). O PL queria tirar esse trecho inteiro. A Câmara manteve, por 379 a 116.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2023-07-07",
+          "url": "https://www.camara.leg.br/noticias/978320-camara-conclui-votacao-da-reforma-tributaria-em-1o-turno-votacao-em-2o-turno-ocorrera-em-seguida"
+        }
+      ]
+    },
+    "camara:2196833-356": {
+      "texto": "O pedido queria tirar só as loterias (concursos de prognósticos) da lista de regras específicas de imposto. A Câmara manteve as loterias no texto, por 383 a 103.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2023-07-07",
+          "url": "https://www.camara.leg.br/noticias/978320-camara-conclui-votacao-da-reforma-tributaria-em-1o-turno-votacao-em-2o-turno-ocorrera-em-seguida"
+        }
+      ]
+    },
+    "camara:2196833-359": {
+      "texto": "O texto cria o Conselho Federativo, que vai administrar a cobrança, a fiscalização e a divisão do IBS entre estados e municípios. O PL queria tirar o Conselho do texto. A Câmara manteve, por 379 a 114.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2023-07-07",
+          "url": "https://www.camara.leg.br/noticias/978320-camara-conclui-votacao-da-reforma-tributaria-em-1o-turno-votacao-em-2o-turno-ocorrera-em-seguida"
+        }
+      ]
+    },
+    "camara:2196833-362": {
+      "texto": "O texto prevê que, na transição de 2029 a 2032, os incentivos fiscais de ICMS e ISS diminuam na mesma proporção em que esses impostos forem sendo reduzidos. PP e União queriam tirar essa regra. A Câmara manteve, por 344 a 147.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2023-07-07",
+          "url": "https://www.camara.leg.br/noticias/978320-camara-conclui-votacao-da-reforma-tributaria-em-1o-turno-votacao-em-2o-turno-ocorrera-em-seguida"
+        }
+      ]
+    },
+    "camara:2196833-365": {
+      "texto": "O texto dá desconto de 60% nos novos impostos (IBS e CBS) para insumos agropecuários. PSOL e Rede queriam tirar esse desconto. A Câmara manteve, por 461 a 24.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2023-07-07",
+          "url": "https://www.camara.leg.br/noticias/978320-camara-conclui-votacao-da-reforma-tributaria-em-1o-turno-votacao-em-2o-turno-ocorrera-em-seguida"
+        }
+      ]
+    },
+    "camara:2196833-380": {
+      "texto": "O texto estende a imunidade de impostos dos templos de qualquer culto às entidades ligadas a eles. PSOL e Rede queriam tirar essa extensão. A Câmara manteve, por 423 a 37.",
+      "fontes": [
+        {
+          "veiculo": "Movimento Econômico (Agência Câmara)",
+          "data": "2023-07-07",
+          "url": "https://movimentoeconomico.com.br/economia/2023/07/07/camara-vai-concluir-votacao-da-reforma-tributaria-nesta-sexta-feira/"
+        }
+      ]
+    },
+    "camara:408349-216": {
+      "texto": "O projeto aumenta a licença-paternidade de 5 para 20 dias, aos poucos, com o salário pago pelo INSS. Se a mãe ou o bebê ficar internado, a licença é prorrogada pelo tempo da internação, desde que comprovada a ligação com o parto. Avante, Solidariedade e PRD queriam tirar essa exigência de comprovar a ligação com o parto. A Câmara manteve, por 377 a 50.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2025-11-04",
+          "url": "https://www.camara.leg.br/noticias/1219148-camara-aprova-projeto-que-aumenta-gradualmente-para-20-dias-a-licenca-paternidade/"
+        }
+      ]
+    },
+    "camara:575585-99": {
+      "texto": "O projeto cria um contrato de trabalho com prazo determinado para jovens de 16 a 24 anos que nunca tiveram emprego com carteira. Este trecho (art. 441-G) reduz a contribuição do empregador para a Previdência nesses contratos, segundo a nota oficial da votação. PT, PCdoB e PV queriam tirar a redução. A Câmara manteve, por 312 a 104.",
+      "fontes": [
+        {
+          "veiculo": "Câmara dos Deputados (ficha do projeto)",
+          "url": "https://www.camara.leg.br/propostas-legislativas/575585"
+        }
+      ]
+    },
+    "camara:2234260-164": {
+      "texto": "O Estatuto do Aprendiz muda as regras de contratação de aprendizes de 14 a 24 anos e de pessoas com deficiência. Este trecho altera o artigo 434 da CLT, que trata das multas para quem descumpre as regras; segundo a Agência Câmara, o projeto fixa em R$ 3 mil a multa para empresas que não contratam aprendizes. O Novo queria tirar o trecho. A Câmara manteve, por 252 a 161.",
+      "fontes": [
+        {
+          "veiculo": "Agência Câmara",
+          "data": "2026-04-22",
+          "url": "https://www.camara.leg.br/noticias/1265214-CAMARA-APROVA-ESTATUTO-DO-APRENDIZ"
         }
       ]
     }
