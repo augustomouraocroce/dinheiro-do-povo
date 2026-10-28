@@ -84,8 +84,9 @@
 {%- endmacro %}
 
 {# Cartão de pessoa em listas #}
-{% macro cartao_pessoa(p, raiz, valor_texto) -%}
-<a class="pessoa" href="{{ raiz }}p/{{ p.slug }}.html" data-busca="{{ (p.nome ~ ' ' ~ p.partido ~ ' ' ~ p.uf)|normalizar }}">
+{% macro cartao_pessoa(p, raiz, valor_texto, ordem=None) -%}
+<a class="pessoa" href="{{ raiz }}p/{{ p.slug }}.html" data-busca="{{ (p.nome ~ ' ' ~ p.partido ~ ' ' ~ p.uf)|normalizar }}"
+   {%- if ordem %}{% for k, v in ordem.items() %} data-o-{{ k }}="{{ v }}"{% endfor %}{% endif %}>
   {% if artefato %}<span class="foto-s" style="background-position: {{ sprite[p.slug] }}" aria-hidden="true"></span>
   {% else %}<img src="{{ raiz }}fotos/mini/{{ p.slug }}.jpg" alt="" loading="lazy" width="120" height="160">{% endif %}
   <span class="p-nome">{{ p.nome }}</span>
@@ -217,9 +218,12 @@
 {%- endmacro %}
 
 {# Um voto explicado: o que foi votado e o que o "Sim" quer dizer; o texto oficial vem embaixo #}
-{% macro voto_explicado(descricao, data, url=None, casa="camara", extra="") -%}
+{% macro voto_explicado(descricao, data, url=None, casa="camara", extra="", vid=None) -%}
 {%- set e = descricao|explica_voto if casa == "camara" else None -%}
+{%- set mudou = votacoes_explicadas.get(vid) if vid else None -%}
+{%- set documento = documentos_votacao.get(vid) if vid else None -%}
 <p>{% if e %}<b>{{ e.o_que }}</b> {{ e.sim }}{% if e.resultado %} Resultado: {{ e.resultado }}{% if e.placar %}, {{ e.placar[0] }} a {{ e.placar[1] }}{% endif %}.{% endif %}
-  <span class="voto-oficial">Texto oficial: {{ descricao|sem_placar }} ({{ data|data }}{{ extra }}){% if url %} · <a href="{{ url }}" target="_blank" rel="noopener">fonte</a>{% endif %}</span>
+  {% if mudou %}<span class="voto-mudou"><b>O que mudou:</b> {{ mudou.texto }} {% for f in mudou.fontes %}<a href="{{ f.url }}" target="_blank" rel="noopener">{{ f.veiculo }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</span>{% endif %}
+  <span class="voto-oficial">Texto oficial: {{ descricao|sem_placar }} ({{ data|data }}{{ extra }}){% if url %} · <a href="{{ url }}" target="_blank" rel="noopener">fonte</a>{% endif %}{% if documento %} · <a href="{{ documento }}" target="_blank" rel="noopener">documento do relator</a>{% endif %}</span>
 {%- else %}{{ descricao }} <span class="secundario">({{ data|data }}{{ extra }})</span>{% if url %} · <a href="{{ url }}" target="_blank" rel="noopener">fonte</a>{% endif %}{% endif %}</p>
 {%- endmacro %}

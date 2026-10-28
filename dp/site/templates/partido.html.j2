@@ -46,10 +46,35 @@
   <h2 id="t-membros">Parlamentares do {{ pt.sigla }}</h2>
   <label class="filtro"><svg class="ic" aria-hidden="true"><use href="#i-busca"/></svg><span class="visivel-leitor">Filtrar por nome ou estado</span>
     <input type="search" placeholder="Filtrar por nome ou estado" data-filtro="lista-membros" data-contador="n-membros"></label>
-  <p class="secundario no-amarelo"><span id="n-membros">{{ pt.membros|length }}</span> parlamentares. Valor de cada cartão: custo médio do mandato por mês (deputados) ou cota média por mês (senadores).</p>
+  <label class="cv-campo ordem-campo no-amarelo"><span>Ordenar por</span>
+    <select data-ordenar="lista-membros" data-nota="nota-ordem">
+      <option value="nome">Nome (A a Z)</option>
+      <option value="mais-gasta">Quem mais gasta</option>
+      <option value="menos-gasta">Quem menos gasta</option>
+      <option value="mais-faltas">Mais faltas sem justificativa</option>
+      <option value="mais-presenca">Mais presença no Plenário</option>
+      <option value="mais-projetos">Mais projetos apresentados</option>
+      <option value="menos-projetos">Menos projetos apresentados</option>
+      <option value="mais-casos">Mais processos e reportagens</option>
+    </select>
+  </label>
+  <p class="secundario no-amarelo"><span id="n-membros">{{ pt.membros|length }}</span> parlamentares. <span id="nota-ordem">Valor de cada cartão: custo médio do mandato por mês (deputados) ou cota média por mês (senadores).</span></p>
   <div class="lista-pessoas" id="lista-membros">
     {% for p in pt.membros %}
-      {{ c.cartao_pessoa(p, raiz, (p.custo.total if p.casa == "camara" and p.custo else p.ceaps_media)|compacto ~ "/mês") }}
+      {% set pres = p.presenca if p.casa == "camara" else None %}
+      {{ c.cartao_pessoa(p, raiz, (p.custo.total if p.casa == "camara" and p.custo else p.ceaps_media)|compacto ~ "/mês", {
+           "nome": p.nome|normalizar,
+           "gasto": (p.custo.total if p.casa == "camara" and p.custo else ""),
+           "t-gasto": ((p.custo.total if p.casa == "camara" and p.custo else p.ceaps_media)|compacto ~ "/mês"),
+           "faltas": (pres.contagem.ausencia_nao_justificada if pres else ""),
+           "t-faltas": ((pres.contagem.ausencia_nao_justificada ~ " " ~ pres.contagem.ausencia_nao_justificada|plural("falta", "faltas")) if pres else "Senado: sem dado"),
+           "presenca": (pres.pct_presente if pres and pres.pct_presente is not none else ""),
+           "t-presenca": ((pres.pct_presente|pct ~ " presente") if pres and pres.pct_presente is not none else "Senado: sem dado"),
+           "projetos": (p.projetos if p.projetos is not none else ""),
+           "t-projetos": ((p.projetos ~ " " ~ p.projetos|plural("projeto", "projetos")) if p.projetos is not none else "Senado: sem dado"),
+           "casos": p.casos|length,
+           "t-casos": (p.casos|length ~ " " ~ p.casos|length|plural("caso", "casos")),
+         }) }}
     {% endfor %}
   </div>
 </section>

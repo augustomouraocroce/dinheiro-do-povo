@@ -21,6 +21,8 @@ Tom de portal de transparência: sem opinião, sem adjetivos sobre pessoas. Todo
 - **Por que esse valor?**: em cada perfil, onde o custo fica acima ou abaixo da média da Câmara, parte por parte: limite da cota do estado (estimado pelos números oficiais), quanto do limite foi usado, tamanho da equipe e imóvel funcional.
 - **Votações em linguagem simples**: cada voto diz o que foi votado (texto principal, emenda, destaque, mudanças do Senado, urgência, pedido de andamento) e o que o "Sim" quer dizer, com o texto oficial logo abaixo.
 - **Processos e reportagens** (`processos.html`): investigações, processos e reportagens de veículos de linhas diferentes, revisados à mão em [`dp/casos.json`](dp/casos.json), com a situação atual de cada caso, a resposta da pessoa e o aviso de que ser investigado não é ser culpado.
+- **Ordenar parlamentares** na página de cada partido: quem mais e menos gasta, mais faltas sem justificativa, mais presença, mais e menos projetos e mais processos e reportagens (a ordem fica no endereço, `?ordem=mais-faltas`).
+- **O que mudou** em votações importantes, em palavras simples e com a reportagem ([`dp/votacoes_explicadas.json`](dp/votacoes_explicadas.json)); nas demais, o link do documento do relator.
 - **Busca** por nome ou sigla, com foto oficial e logo do partido.
 - **Relatório semanal** (sábado a sexta) em Markdown e HTML.
 

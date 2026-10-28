@@ -80,9 +80,10 @@ def coletar_votos_plenario(conn, anos) -> dict:
         v, p = plenario[vid], proposicao_principal(vid, props[vid])
         if p:
             proposicoes[p["proposicao_id"]] = (p["proposicao_id"], p["proposicao_titulo"], p["proposicao_ementa"])
+        documento = v.get("ultimaApresentacaoProposicao_idProposicao") or ""
         votacoes.append((f"camara:{vid}", v["data"], v["descricao"],
                          int(v["aprovacao"]) if v["aprovacao"] not in ("", None) else None,
-                         p["proposicao_id"] if p else None, v["uri"]))
+                         p["proposicao_id"] if p else None, v["uri"], documento if documento not in ("", "0") else None))
 
     contagem = defaultdict(Counter)
     for _, dep, voto, _ in votos:
@@ -90,7 +91,8 @@ def coletar_votos_plenario(conn, anos) -> dict:
 
     for tabela in ("plenario_voto", "plenario_votacao", "plenario_proposicao"):
         conn.execute(f"DELETE FROM {tabela}")
-    conn.executemany("INSERT INTO plenario_votacao VALUES (?, ?, ?, ?, ?, ?)", votacoes)
+    conn.executemany("""INSERT INTO plenario_votacao (id, data, descricao, aprovada, proposicao_id, url_fonte, documento_id)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)""", votacoes)
     conn.executemany("INSERT INTO plenario_proposicao VALUES (?, ?, ?)", proposicoes.values())
     conn.executemany("INSERT OR REPLACE INTO plenario_voto VALUES (?, ?, ?, ?)", votos)
     conn.execute("DELETE FROM resumo_votos WHERE casa = 'camara'")

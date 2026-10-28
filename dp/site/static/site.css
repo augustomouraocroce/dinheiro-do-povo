@@ -610,3 +610,9 @@ span.caso-foto { background-size: var(--mosaico-tamanho, 2000% 1500%); }
 /* Voto explicado: a frase simples primeiro, o texto oficial menor embaixo */
 .voto-oficial { display: block; margin-top: 4px; font-size: .85rem; color: var(--tinta-2); }
 .voto-oficial a { color: var(--carimbo); }
+
+/* Ordenar cartões da página de partido */
+.ordem-campo { max-width: 420px; }
+.voto-mudou { display: block; margin-top: 6px; font-size: .95rem; background: var(--papel-2); border-left: 4px solid var(--tinta);
+  border-radius: 0 6px 6px 0; padding: 6px 10px; }
+.voto-mudou a { color: var(--carimbo); font-weight: 700; }

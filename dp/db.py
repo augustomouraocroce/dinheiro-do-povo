@@ -194,7 +194,8 @@ CREATE TABLE IF NOT EXISTS plenario_votacao (
     descricao     TEXT,
     aprovada      INTEGER,
     proposicao_id TEXT,
-    url_fonte     TEXT
+    url_fonte     TEXT,
+    documento_id  TEXT                       -- parecer ou emenda votada (última apresentação)
 );
 
 CREATE TABLE IF NOT EXISTS plenario_proposicao (
@@ -232,4 +233,6 @@ def conectar(path: Path = None) -> sqlite3.Connection:
     colunas_voto = {r[1] for r in conn.execute("PRAGMA table_info(voto)")}
     if "partido" not in colunas_voto:  # partido do parlamentar na data do voto
         conn.execute("ALTER TABLE voto ADD COLUMN partido TEXT")
+    if "documento_id" not in {r[1] for r in conn.execute("PRAGMA table_info(plenario_votacao)")}:
+        conn.execute("ALTER TABLE plenario_votacao ADD COLUMN documento_id TEXT")
     return conn

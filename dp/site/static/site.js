@@ -142,6 +142,48 @@
     });
   });
 
+  // ---------- Ordenar cartões (página de partido) ----------
+  // Cada opção: [atributo do valor, maior primeiro?, atributo do texto, nota]. Quem não tem o
+  // dado (senadores, para presença e projetos) vai para o fim.
+  var ORDENS = {
+    "nome": ["nome", false, "t-gasto", "Valor de cada cartão: custo médio do mandato por mês (deputados) ou cota média por mês (senadores)."],
+    "mais-gasta": ["gasto", true, "t-gasto", "Custo médio do mandato por mês. Senadores ficam no fim: o Senado só publica a cota."],
+    "menos-gasta": ["gasto", false, "t-gasto", "Custo médio do mandato por mês. Senadores ficam no fim: o Senado só publica a cota."],
+    "mais-faltas": ["faltas", true, "t-faltas", "Faltas sem justificativa no Plenário da Câmara neste ano."],
+    "mais-presenca": ["presenca", true, "t-presenca", "Presença no Plenário da Câmara neste ano."],
+    "mais-projetos": ["projetos", true, "t-projetos", "Projetos apresentados desde 2023 (PL, PLP, PDL e PRC)."],
+    "menos-projetos": ["projetos", false, "t-projetos", "Projetos apresentados desde 2023 (PL, PLP, PDL e PRC)."],
+    "mais-casos": ["casos", true, "t-casos", "Processos e reportagens na página Processos. Ser investigado não é ser culpado."]
+  };
+  document.querySelectorAll("[data-ordenar]").forEach(function (sel) {
+    var lista = document.getElementById(sel.getAttribute("data-ordenar"));
+    var nota = document.getElementById(sel.getAttribute("data-nota"));
+    var cartoes = Array.prototype.slice.call(lista.children);
+    var ordenar = function () {
+      var o = ORDENS[sel.value] || ORDENS.nome, chave = "data-o-" + o[0];
+      var valor = function (c) { var v = c.getAttribute(chave); return v === "" || v === null ? null : (o[0] === "nome" ? v : parseFloat(v)); };
+      cartoes.slice().sort(function (a, b) {
+        var va = valor(a), vb = valor(b);
+        if (va === null || vb === null) return (va === null) - (vb === null);
+        if (o[0] === "nome") return va.localeCompare(vb);
+        return (o[1] ? vb - va : va - vb) || a.getAttribute("data-o-nome").localeCompare(b.getAttribute("data-o-nome"));
+      }).forEach(function (c) {
+        lista.appendChild(c);
+        var alvo = c.querySelector(".p-valor");
+        if (alvo) alvo.textContent = c.getAttribute("data-o-" + o[2]);
+      });
+      if (nota) nota.textContent = o[3];
+      var u = new URLSearchParams(window.location.search);
+      if (sel.value === "nome") u.delete("ordem"); else u.set("ordem", sel.value);
+      var q = u.toString();
+      window.history.replaceState(null, "", window.location.pathname + (q ? "?" + q : "") + window.location.hash);
+    };
+    var pedida = new URLSearchParams(window.location.search).get("ordem");
+    if (pedida && ORDENS[pedida]) sel.value = pedida;
+    sel.addEventListener("change", ordenar);
+    if (sel.value !== "nome") ordenar();
+  });
+
   function el(tag, classe, texto) {
     var e = document.createElement(tag);
     if (classe) e.className = classe;
@@ -263,8 +305,21 @@
             p.appendChild(document.createTextNode(" "));
             p.appendChild(el("b", null, ex[0]));
             p.appendChild(document.createTextNode(" " + ex[1] + (vt[2] ? " Resultado: " + vt[2] + ", " + vt[6] + " a " + vt[7] + "." : "")));
+            var mudou = indice.mudou && indice.mudou[v[0]];
+            if (mudou) {
+              var m = el("span", "voto-mudou");
+              m.appendChild(el("b", null, "O que mudou: "));
+              m.appendChild(document.createTextNode(mudou.texto + " "));
+              mudou.fontes.forEach(function (f, n) {
+                if (n) m.appendChild(document.createTextNode(" · "));
+                m.appendChild(linkExterno(f.veiculo, f.url));
+              });
+              p.appendChild(m);
+            }
             var oficial = el("span", "voto-oficial", "Texto oficial: " + vt[1] + " (" + info + ")");
             if (vt[5]) { oficial.appendChild(document.createTextNode(" · ")); oficial.appendChild(linkExterno("dados oficiais", vt[5])); }
+            var doc = indice.documentos && indice.documentos[v[0]];
+            if (doc) { oficial.appendChild(document.createTextNode(" · ")); oficial.appendChild(linkExterno("documento do relator", doc)); }
             p.appendChild(oficial);
           } else {
             p.appendChild(document.createTextNode(" " + vt[1] + " "));

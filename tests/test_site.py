@@ -174,9 +174,9 @@ def test_proposicao_principal_prefere_o_codigo_da_votacao():
 def test_votos_plenario_indice_e_arquivo_por_deputado(tmp_path):
     from dp import db
     conn = db.conectar(tmp_path / "t.db")
-    conn.executemany("INSERT INTO plenario_votacao VALUES (?, ?, ?, ?, ?, ?)", [
-        ("camara:1-1", "2025-03-01", "Rejeitado o Requerimento. Sim: 1; Não: 2", 0, "1", "u1"),
-        ("camara:1-2", "2025-05-01", "Aprovado o Projeto de Lei nº 1, de 2025.", 1, "1", "u2"),
+    conn.executemany("INSERT INTO plenario_votacao VALUES (?, ?, ?, ?, ?, ?, ?)", [
+        ("camara:1-1", "2025-03-01", "Rejeitado o Requerimento. Sim: 1; Não: 2", 0, "1", "u1", None),
+        ("camara:1-2", "2025-05-01", "Aprovado o Projeto de Lei nº 1, de 2025.", 1, "1", "u2", "77"),
     ])
     conn.execute("INSERT INTO plenario_proposicao VALUES ('1', 'PL 1/2025', 'Ementa')")
     conn.executemany("INSERT INTO plenario_voto VALUES (?, ?, ?, ?)", [
@@ -192,6 +192,7 @@ def test_votos_plenario_indice_e_arquivo_por_deputado(tmp_path):
     assert indice["votacoes"][1][2] == "rejeitado"
     assert indice["explicacoes"][indice["votacoes"][1][8]][1] == "Sim = a favor do pedido."
     assert indice["proposicoes"][indice["votacoes"][0][4]][0] == "PL 1/2025"
+    assert indice["documentos"] == {0: "https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=77"}
     assert set(por_pessoa) == {"fulano"}                                         # só deputados
     assert por_pessoa["fulano"]["votos"] == [[0, "S"], [1, "N"]]
     assert por_pessoa["fulano"]["partidos"] == {"1": "PSD"}                      # votou por outro partido

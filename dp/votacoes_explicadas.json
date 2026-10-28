@@ -1,0 +1,18 @@
+{
+  "_leia": "O que mudou em votações importantes, em palavras simples, quando a descrição oficial da Câmara só cita artigos e anexos. Cada texto é escrito por nós a partir de reportagens, com o link de cada uma. A chave é o código da votação na Câmara ('camara:ID').",
+  "votacoes": {
+    "camara:2430143-140": {
+      "texto": "A Câmara ficou com parte das mudanças do Senado, as que o relator recomendou manter. Entre elas: os benefícios para empresas da Zona Franca de Manaus, a devolução de imposto (cashback) para famílias de baixa renda nos serviços de internet e telefone, e a exportação de minérios fora do Imposto Seletivo.",
+      "fontes": [
+        {"veiculo": "Gazeta do Povo", "data": "2024-12-17", "url": "https://www.gazetadopovo.com.br/economia/camara-aprova-regulamentacao-de-reforma-tributaria-e-rejeita-parte-das-mudancas-do-senado/"}
+      ]
+    },
+    "camara:2430143-142": {
+      "texto": "Aqui foram votadas as mudanças do Senado que o relator recomendou derrubar, e elas caíram. Entre elas: desconto de 60% no imposto para saneamento e água, para segurança da informação e para atividades como esporte e cursos de idiomas; imposto menor para água mineral e para biscoitos e bolachas populares; desconto de 60% para serviços veterinários (ficou 30%); e a retirada dos refrigerantes e outras bebidas açucaradas do Imposto Seletivo, que voltaram a pagar esse imposto. Também voltou a lista de remédios com imposto zero ou reduzido aprovada antes pela Câmara.",
+      "fontes": [
+        {"veiculo": "Agência Brasil", "data": "2024-12-17", "url": "https://agenciabrasil.ebc.com.br/politica/noticia/2024-12/camara-rejeita-mudancas-do-senado-e-aprova-reforma-tributaria"},
+        {"veiculo": "Gazeta do Povo", "data": "2024-12-17", "url": "https://www.gazetadopovo.com.br/economia/camara-aprova-regulamentacao-de-reforma-tributaria-e-rejeita-parte-das-mudancas-do-senado/"}
+      ]
+    }
+  }
+}

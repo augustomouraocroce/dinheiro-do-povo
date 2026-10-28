@@ -136,7 +136,7 @@
       {% for v in p.votos %}
       <div class="voto">
         <span class="v {% if v.voto == 'Sim' %}v-sim{% elif not v.voto %}v-vazio{% endif %}">{{ v.voto|rotulo_voto }}</span>
-        {{ c.voto_explicado(v.descricao, v.data, v.url, p.casa) }}
+        {{ c.voto_explicado(v.descricao, v.data, v.url, p.casa, vid=v.id) }}
       </div>
       {% endfor %}
     </div>
@@ -165,7 +165,8 @@
           <div class="voto">
             <span class="v {% if i.voto == 'Sim' %}v-sim{% elif i.voto == 'Não' %}v-nao{% endif %}">{{ i.voto|rotulo_voto }}</span>
             {{ c.voto_explicado(i.votacao.descricao, i.votacao.data, i.votacao.url, p.casa,
-                                ", votou pelo " ~ i.partido_epoca if i.partido_epoca and i.partido_epoca != p.partido else "") }}
+                                ", votou pelo " ~ i.partido_epoca if i.partido_epoca and i.partido_epoca != p.partido else "",
+                                vid=i.votacao.id) }}
           </div>
         {% endfor %}
         </div>

@@ -1,15 +1,46 @@
 {
   "_leia": "Processos e reportagens sobre os parlamentares acompanhados. Cada caso tem a situação atual, a data da última conferência e pelo menos uma reportagem de veículo de imprensa. O resumo é escrito por nós, sem adjetivos e sem copiar manchetes. Ser investigado não é ser culpado. Regras em dp/site/templates/metodologia.html.j2 (#processos).",
   "situacoes": {
-    "reportagem": ["Reportagem", "Fato revelado por reportagem, sem processo conhecido."],
-    "investigado": ["Investigado", "Há inquérito ou operação policial autorizada pela Justiça. Ainda não há acusação formal."],
-    "denunciado": ["Denunciado", "O Ministério Público fez a acusação formal; a Justiça ainda não decidiu se abre o processo."],
-    "reu": ["Réu", "A Justiça aceitou a acusação e o processo está em andamento."],
-    "condenado": ["Condenado", "Houve condenação. Pode caber recurso: o detalhe diz em que fase está."],
-    "rejeitado": ["Acusação rejeitada", "A Justiça julgou o caso e rejeitou a acusação."],
-    "anulado": ["Provas anuladas", "A Justiça anulou as provas, sem julgar se a acusação era verdadeira."],
-    "arquivado": ["Arquivado", "O caso foi encerrado sem condenação."],
-    "acordo": ["Encerrado por acordo", "O caso terminou com um acordo previsto em lei, sem condenação."]
+    "reportagem": [
+      "Reportagem",
+      "Fato revelado por reportagem, sem processo conhecido."
+    ],
+    "pedido": [
+      "Pedido de investigação",
+      "A polícia ou o Ministério Público pediu para investigar; a Justiça ainda não decidiu ou não tornou pública a decisão."
+    ],
+    "investigado": [
+      "Investigado",
+      "Há inquérito ou operação policial autorizada pela Justiça. Ainda não há acusação formal."
+    ],
+    "denunciado": [
+      "Denunciado",
+      "O Ministério Público fez a acusação formal; a Justiça ainda não decidiu se abre o processo."
+    ],
+    "reu": [
+      "Réu",
+      "A Justiça aceitou a acusação e o processo está em andamento."
+    ],
+    "condenado": [
+      "Condenado",
+      "Houve condenação. Pode caber recurso: o detalhe diz em que fase está."
+    ],
+    "rejeitado": [
+      "Acusação rejeitada",
+      "A Justiça julgou o caso e rejeitou a acusação."
+    ],
+    "anulado": [
+      "Provas anuladas",
+      "A Justiça anulou as provas, sem julgar se a acusação era verdadeira."
+    ],
+    "arquivado": [
+      "Arquivado",
+      "O caso foi encerrado sem condenação."
+    ],
+    "acordo": [
+      "Encerrado por acordo",
+      "O caso terminou com um acordo previsto em lei, sem condenação."
+    ]
   },
   "assuntos": {
     "dinheiro": "Dinheiro público",
@@ -31,8 +62,15 @@
       "data": "2026-03-17",
       "resposta": "A defesa negou irregularidades e disse que não há prova de benefício direto a ele.",
       "fontes": [
-        {"veiculo": "Poder360", "data": "2026-03-17", "url": "https://www.poder360.com.br/poder-justica/stf-condena-deputados-do-pl-acusados-de-desviar-emendas/"},
-        {"veiculo": "Metrópoles", "url": "https://www.metropoles.com/brasil/quem-sao-os-deputados-do-pl-condenados-por-desvio-de-emendas"}
+        {
+          "veiculo": "Poder360",
+          "data": "2026-03-17",
+          "url": "https://www.poder360.com.br/poder-justica/stf-condena-deputados-do-pl-acusados-de-desviar-emendas/"
+        },
+        {
+          "veiculo": "Metrópoles",
+          "url": "https://www.metropoles.com/brasil/quem-sao-os-deputados-do-pl-condenados-por-desvio-de-emendas"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -47,7 +85,11 @@
       "orgao": "STF",
       "data": "2026-06-25",
       "fontes": [
-        {"veiculo": "O Tempo", "data": "2026-06-25", "url": "https://www.otempo.com.br/politica/judiciario/2026/6/25/deputado-federal-do-pl-e-alvo-de-buscas-da-pf-em-operacao-contra-desvio-de-emendas"}
+        {
+          "veiculo": "O Tempo",
+          "data": "2026-06-25",
+          "url": "https://www.otempo.com.br/politica/judiciario/2026/6/25/deputado-federal-do-pl-e-alvo-de-buscas-da-pf-em-operacao-contra-desvio-de-emendas"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -63,8 +105,15 @@
       "data": "2026-03-17",
       "resposta": "A defesa disse que ele não tinha controle sobre o uso final do dinheiro.",
       "fontes": [
-        {"veiculo": "Poder360", "data": "2026-03-17", "url": "https://www.poder360.com.br/poder-justica/stf-condena-deputados-do-pl-acusados-de-desviar-emendas/"},
-        {"veiculo": "Metrópoles", "url": "https://www.metropoles.com/brasil/quem-sao-os-deputados-do-pl-condenados-por-desvio-de-emendas"}
+        {
+          "veiculo": "Poder360",
+          "data": "2026-03-17",
+          "url": "https://www.poder360.com.br/poder-justica/stf-condena-deputados-do-pl-acusados-de-desviar-emendas/"
+        },
+        {
+          "veiculo": "Metrópoles",
+          "url": "https://www.metropoles.com/brasil/quem-sao-os-deputados-do-pl-condenados-por-desvio-de-emendas"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -80,9 +129,18 @@
       "data": "2026-09-10",
       "resposta": "O deputado negou desvio e chamou a operação de “cortina de fumaça” em ano de eleição.",
       "fontes": [
-        {"veiculo": "Congresso em Foco", "url": "https://www.congressoemfoco.com.br/noticia/122133/pf-apreende-sete-armas-de-mario-frias-em-operacao-sobre-dark-horse"},
-        {"veiculo": "SBT News", "url": "https://sbtnews.sbt.com.br/noticia/politica/pf-faz-operacao-sobre-financiamento-de-dark-horse"},
-        {"veiculo": "SBT News", "url": "https://sbtnews.sbt.com.br/noticia/politica/mario-frias-chama-operacao-da-pf-de-cortina-de-fumaca"}
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/noticia/122133/pf-apreende-sete-armas-de-mario-frias-em-operacao-sobre-dark-horse"
+        },
+        {
+          "veiculo": "SBT News",
+          "url": "https://sbtnews.sbt.com.br/noticia/politica/pf-faz-operacao-sobre-financiamento-de-dark-horse"
+        },
+        {
+          "veiculo": "SBT News",
+          "url": "https://sbtnews.sbt.com.br/noticia/politica/mario-frias-chama-operacao-da-pf-de-cortina-de-fumaca"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -98,8 +156,15 @@
       "data": "2026-09-14",
       "resposta": "Em nota, a defesa disse que nenhuma irregularidade foi cometida e que os fatos serão esclarecidos.",
       "fontes": [
-        {"veiculo": "Poder360", "data": "2026-09-14", "url": "https://www.poder360.com.br/poder-justica/cezinha-de-madureira-e-alvo-da-pf-em-operacao-sobre-desvio-de-emendas/"},
-        {"veiculo": "Gazeta do Povo", "url": "https://www.gazetadopovo.com.br/republica/policia-federal-investiga-cezinha-de-madureira-por-negociar-influencia-no-stf/"}
+        {
+          "veiculo": "Poder360",
+          "data": "2026-09-14",
+          "url": "https://www.poder360.com.br/poder-justica/cezinha-de-madureira-e-alvo-da-pf-em-operacao-sobre-desvio-de-emendas/"
+        },
+        {
+          "veiculo": "Gazeta do Povo",
+          "url": "https://www.gazetadopovo.com.br/republica/policia-federal-investiga-cezinha-de-madureira-por-negociar-influencia-no-stf/"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -115,8 +180,15 @@
       "data": "2025-12",
       "resposta": "O deputado nega irregularidades e diz ser alvo de perseguição política.",
       "fontes": [
-        {"veiculo": "O Povo", "data": "2024-10-28", "url": "https://www.opovo.com.br/noticias/politica/2024/10/28/entenda-a-operacao-da-pf-contra-o-deputado-gustavo-gayer.html"},
-        {"veiculo": "IstoÉ", "url": "https://istoe.com.br/pf-indicia-deputado-gustavo-gayer-por-suspeita-de-desvio-de-cota-parlamentar"}
+        {
+          "veiculo": "O Povo",
+          "data": "2024-10-28",
+          "url": "https://www.opovo.com.br/noticias/politica/2024/10/28/entenda-a-operacao-da-pf-contra-o-deputado-gustavo-gayer.html"
+        },
+        {
+          "veiculo": "IstoÉ",
+          "url": "https://istoe.com.br/pf-indicia-deputado-gustavo-gayer-por-suspeita-de-desvio-de-cota-parlamentar"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -132,10 +204,24 @@
       "data": "2025-11-13",
       "resposta": "Ele nega participação e diz que o indiciamento é um ato unilateral da polícia.",
       "fontes": [
-        {"veiculo": "Band", "data": "2025-11-13", "url": "https://www.band.com.br/noticias/fraudes-no-inss-ex-ministro-de-bolsonaro-e-deputados-sao-alvos-da-pf-202511131133"},
-        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/poder-justica/pf-diz-que-deputado-citado-em-esquema-do-inss-recebeu-r-147-mi/"},
-        {"veiculo": "Gazeta do Povo", "data": "2026-03-27", "url": "https://www.gazetadopovo.com.br/republica/o-que-acontece-com-lulinha-vorcaro-careca-do-inss-e-parlamentares-indiciados-pela-cpmi/"},
-        {"veiculo": "SBT News", "url": "https://sbtnews.sbt.com.br/noticia/politica/relatorio-rejeitado-veja-como-deputados-e-senadores-votaram-na-ultima-sessao-da-cpmi-do-inss"}
+        {
+          "veiculo": "Band",
+          "data": "2025-11-13",
+          "url": "https://www.band.com.br/noticias/fraudes-no-inss-ex-ministro-de-bolsonaro-e-deputados-sao-alvos-da-pf-202511131133"
+        },
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/poder-justica/pf-diz-que-deputado-citado-em-esquema-do-inss-recebeu-r-147-mi/"
+        },
+        {
+          "veiculo": "Gazeta do Povo",
+          "data": "2026-03-27",
+          "url": "https://www.gazetadopovo.com.br/republica/o-que-acontece-com-lulinha-vorcaro-careca-do-inss-e-parlamentares-indiciados-pela-cpmi/"
+        },
+        {
+          "veiculo": "SBT News",
+          "url": "https://sbtnews.sbt.com.br/noticia/politica/relatorio-rejeitado-veja-como-deputados-e-senadores-votaram-na-ultima-sessao-da-cpmi-do-inss"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -151,8 +237,15 @@
       "data": "2023-08-10",
       "resposta": "A defesa disse que a decisão reconhece “manobras na investigação” para evitar que o caso fosse ao STF.",
       "fontes": [
-        {"veiculo": "Poder360", "data": "2023-08-10", "url": "https://www.poder360.com.br/justica/gilmar-mendes-anula-provas-de-investigacao-contra-lira/"},
-        {"veiculo": "Agência Pública", "url": "https://apublica.org/nota/gilmar-anula-provas-sobre-assessor-de-lira-arquiva-inqueritos-e-manda-inutilizar-dados/"}
+        {
+          "veiculo": "Poder360",
+          "data": "2023-08-10",
+          "url": "https://www.poder360.com.br/justica/gilmar-mendes-anula-provas-de-investigacao-contra-lira/"
+        },
+        {
+          "veiculo": "Agência Pública",
+          "url": "https://apublica.org/nota/gilmar-anula-provas-sobre-assessor-de-lira-arquiva-inqueritos-e-manda-inutilizar-dados/"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -167,8 +260,15 @@
       "orgao": "STF",
       "data": "2022-12",
       "fontes": [
-        {"veiculo": "Agência Brasil", "data": "2022-11-10", "url": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-11/pedido-de-vista-suspende-julgamento-de-deputado-pelo-stf"},
-        {"veiculo": "Migalhas", "url": "https://www.migalhas.com.br/quentes/377999/rachadinhas-barroso-homologa-acordo-e-silas-camara-pagara-r-242-mil"}
+        {
+          "veiculo": "Agência Brasil",
+          "data": "2022-11-10",
+          "url": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-11/pedido-de-vista-suspende-julgamento-de-deputado-pelo-stf"
+        },
+        {
+          "veiculo": "Migalhas",
+          "url": "https://www.migalhas.com.br/quentes/377999/rachadinhas-barroso-homologa-acordo-e-silas-camara-pagara-r-242-mil"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -184,9 +284,18 @@
       "data": "2026-05-07",
       "resposta": "O senador nega participação em atividades ilícitas e diz ser alvo de perseguição política.",
       "fontes": [
-        {"veiculo": "Exame", "url": "https://exame.com/brasil/por-que-ciro-nogueira-foi-alvo-da-operacao-da-pf-sobre-o-banco-master/"},
-        {"veiculo": "Agência Pública", "url": "https://apublica.org/nota/banco-master-pf-revela-detalhes-sobre-ciro-nogueira-o-amigo-de-vida-de-vorcaro/"},
-        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/poder-congresso/apos-acao-da-pf-ciro-nogueira-diz-ser-alvo-de-perseguicao-politica/"}
+        {
+          "veiculo": "Exame",
+          "url": "https://exame.com/brasil/por-que-ciro-nogueira-foi-alvo-da-operacao-da-pf-sobre-o-banco-master/"
+        },
+        {
+          "veiculo": "Agência Pública",
+          "url": "https://apublica.org/nota/banco-master-pf-revela-detalhes-sobre-ciro-nogueira-o-amigo-de-vida-de-vorcaro/"
+        },
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/poder-congresso/apos-acao-da-pf-ciro-nogueira-diz-ser-alvo-de-perseguicao-politica/"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -202,8 +311,15 @@
       "data": "2026-10-18",
       "resposta": "O senador nega relação financeira irregular e diz ter apenas amizade com o advogado.",
       "fontes": [
-        {"veiculo": "Congresso em Foco", "data": "2026-10-18", "url": "https://www.congressoemfoco.com.br/noticia/123352/flavio-e-alvo-de-inquerito-na-pf-por-suspeita-de-lavagem-de-dinheiro"},
-        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/poder-justica/pf-envia-ao-stf-nova-investigacao-sobre-flavio-segundo-jornal/"}
+        {
+          "veiculo": "Congresso em Foco",
+          "data": "2026-10-18",
+          "url": "https://www.congressoemfoco.com.br/noticia/123352/flavio-e-alvo-de-inquerito-na-pf-por-suspeita-de-lavagem-de-dinheiro"
+        },
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/poder-justica/pf-envia-ao-stf-nova-investigacao-sobre-flavio-segundo-jornal/"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -218,8 +334,14 @@
       "orgao": "TJ-RJ",
       "data": "2022-05-16",
       "fontes": [
-        {"veiculo": "Poder360", "url": "https://www.poder360.com.br/justica/justica-arquiva-denuncia-contra-flavio-bolsonaro-por-rachadinhas/"},
-        {"veiculo": "Correio Braziliense", "url": "https://www.correiobraziliense.com.br/politica/2022/10/5043990-rachadinha-o-que-aconteceu-com-caso-que-envolve-filho-de-bolsonaro.html"}
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/justica/justica-arquiva-denuncia-contra-flavio-bolsonaro-por-rachadinhas/"
+        },
+        {
+          "veiculo": "Correio Braziliense",
+          "url": "https://www.correiobraziliense.com.br/politica/2022/10/5043990-rachadinha-o-que-aconteceu-com-caso-que-envolve-filho-de-bolsonaro.html"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -234,8 +356,15 @@
       "orgao": "TSE",
       "data": "2024-05",
       "fontes": [
-        {"veiculo": "SBT News", "data": "2024-05-22", "url": "https://sbtnews.sbt.com.br/noticia/politica/julgamento-do-tse-foi-unanime-tecnico-e-independente-comemora-moro-apos-se-livrar-de-cassacao"},
-        {"veiculo": "Congresso em Foco", "url": "https://congressoemfoco.com.br/noticia/18945/apos-escapar-da-cassacao-moro-pede-fim-da-polarizacao-nao-faz-bem-a-ninguem"}
+        {
+          "veiculo": "SBT News",
+          "data": "2024-05-22",
+          "url": "https://sbtnews.sbt.com.br/noticia/politica/julgamento-do-tse-foi-unanime-tecnico-e-independente-comemora-moro-apos-se-livrar-de-cassacao"
+        },
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://congressoemfoco.com.br/noticia/18945/apos-escapar-da-cassacao-moro-pede-fim-da-polarizacao-nao-faz-bem-a-ninguem"
+        }
       ],
       "conferido_em": "2026-10-27"
     },
@@ -250,9 +379,307 @@
       "orgao": "TSE",
       "data": "2026-02-12",
       "fontes": [
-        {"veiculo": "Consultor Jurídico", "data": "2026-02-12", "url": "https://www.conjur.com.br/2026-fev-12/sem-provas-cabais-de-abuso-tse-afasta-cassacao-de-jorge-seif/"},
-        {"veiculo": "Congresso em Foco", "url": "https://www.congressoemfoco.com.br/noticia/116390/tse-afasta-cassacao-de-jorge-seif-por-falta-de-provas-robustas"},
-        {"veiculo": "CNN Brasil", "url": "https://www.cnnbrasil.com.br/politica/por-unanimidade-tse-mantem-mandato-do-senador-jorge-seif/"}
+        {
+          "veiculo": "Consultor Jurídico",
+          "data": "2026-02-12",
+          "url": "https://www.conjur.com.br/2026-fev-12/sem-provas-cabais-de-abuso-tse-afasta-cassacao-de-jorge-seif/"
+        },
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/noticia/116390/tse-afasta-cassacao-de-jorge-seif-por-falta-de-provas-robustas"
+        },
+        {
+          "veiculo": "CNN Brasil",
+          "url": "https://www.cnnbrasil.com.br/politica/por-unanimidade-tse-mantem-mandato-do-senador-jorge-seif/"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "sostenes-galho-fraco",
+      "parlamentar": "camara:178947",
+      "assunto": "dinheiro",
+      "titulo": "Uso da cota parlamentar com locadora de veículos",
+      "resumo": "Na Operação Galho Fraco, autorizada pelo ministro Flávio Dino, do STF, a Polícia Federal investiga suspeita de desvio da cota parlamentar por meio de uma locadora de veículos que, segundo a investigação, simulava contratos. Os crimes apurados são peculato, lavagem de dinheiro e organização criminosa. Num endereço do deputado em Brasília, a PF apreendeu cerca de R$ 430 mil em dinheiro vivo. Segundo reportagem, a escritura da venda de imóvel citada por ele foi registrada em cartório 11 dias depois da operação.",
+      "situacao": "investigado",
+      "detalhe": "Alvo de busca e apreensão em 19/12/2025. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2025-12-19",
+      "resposta": "O deputado disse que o dinheiro veio da venda de um imóvel em Minas Gerais, declarada no Imposto de Renda.",
+      "fontes": [
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/noticia/115042/sostenes-e-jordy-sao-alvos-de-operacao-da-pf-sobre-cota-parlamentar"
+        },
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/noticia/115063/dinheiro-apreendido-pela-pf-era-de-venda-de-imovel-diz-sostenes"
+        },
+        {
+          "veiculo": "Bahia Notícias",
+          "url": "https://www.bahianoticias.com.br/noticia/312694-sostenes-formalizou-venda-de-imovel-11-dias-apos-apreensao-de-r-430-mil-pela-pf"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "jordy-galho-fraco",
+      "parlamentar": "camara:204460",
+      "assunto": "dinheiro",
+      "titulo": "Uso da cota parlamentar com locadora de veículos",
+      "resumo": "Na Operação Galho Fraco, autorizada pelo ministro Flávio Dino, do STF, a Polícia Federal investiga suspeita de desvio da cota parlamentar por meio de uma locadora de veículos que, segundo a investigação, simulava contratos. Os crimes apurados são peculato, lavagem de dinheiro e organização criminosa. Dino disse ver indícios robustos de participação dos deputados.",
+      "situacao": "investigado",
+      "detalhe": "Alvo de busca e apreensão em 19/12/2025. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2025-12-19",
+      "resposta": "Ele nega irregularidades, chamou a operação de perseguição e disse que a locadora atende vários parlamentares há anos.",
+      "fontes": [
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/poder-justica/alvo-de-operacao-da-pf-jordy-fala-em-perseguicao/"
+        },
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/noticia/115042/sostenes-e-jordy-sao-alvos-de-operacao-da-pf-sobre-cota-parlamentar"
+        },
+        {
+          "veiculo": "Gazeta do Povo",
+          "url": "https://www.gazetadopovo.com.br/republica/dino-indicios-robustos-desvio-cota-parlamentar-sostenes-dino/"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "salles-madeira",
+      "parlamentar": "camara:220633",
+      "assunto": "dinheiro",
+      "titulo": "Exportação de madeira quando era ministro",
+      "resumo": "A Operação Akuanduba, de 2021, investigou a exportação de madeira sem autorização do Ibama quando ele era ministro do Meio Ambiente. Em agosto de 2023, a Justiça Federal do Pará aceitou a denúncia do Ministério Público Federal, e ele virou réu com outras 21 pessoas, entre elas o ex-presidente do Ibama Eduardo Bim. As acusações incluem facilitação de contrabando e advocacia administrativa.",
+      "situacao": "reu",
+      "detalhe": "Réu desde agosto de 2023 na 4ª Vara Federal Criminal do Pará. Não encontramos sentença até a última conferência.",
+      "orgao": "Justiça Federal (PA)",
+      "data": "2023-08-28",
+      "resposta": "Salles diz que a denúncia tem motivação política.",
+      "fontes": [
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/noticia/9275/justica-torna-ricardo-salles-reu-em-caso-de-contrabando-de-madeira"
+        },
+        {
+          "veiculo": "Gazeta do Povo",
+          "url": "https://www.gazetadopovo.com.br/republica/salles-vira-reu-em-acao-que-investiga-suposta-exportacao-ilegal-de-madeira/"
+        },
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/congresso/denuncia-do-mpf-tem-motivacao-politica-diz-salles/"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "renan-inqueritos-stf",
+      "parlamentar": "senado:70",
+      "assunto": "dinheiro",
+      "titulo": "Investigações da Lava Jato e outras no STF",
+      "resumo": "O senador foi alvo de 40 investigações criminais no STF ao longo dos anos, 26 delas da Lava Jato. Em 2019, virou réu por corrupção e lavagem de dinheiro no caso Transpetro, mas em 2023 a Segunda Turma do STF rejeitou a denúncia por inteiro. Em fevereiro de 2025, o último inquérito foi arquivado a pedido da PGR, por falta de provas.",
+      "situacao": "arquivado",
+      "detalhe": "Último inquérito arquivado pelo ministro Luiz Fux em fevereiro de 2025. Segundo a reportagem, era o último inquérito contra ele no STF.",
+      "orgao": "STF",
+      "data": "2025-02-26",
+      "fontes": [
+        {
+          "veiculo": "Consultor Jurídico",
+          "data": "2025-02-26",
+          "url": "https://www.conjur.com.br/2025-fev-26/ultimo-inquerito-contra-renan-calheiros-e-arquivado-no-stf/"
+        },
+        {
+          "veiculo": "Lex",
+          "data": "2023-04-05",
+          "url": "https://www.lex.com.br/2a-turma-rejeita-denuncia-contra-renan-calheiros-por-corrupcao-e-lavagem-de-dinheiro/"
+        },
+        {
+          "veiculo": "Jovem Pan",
+          "url": "https://jovempan.com.br/brasil/renan-calheiros-vira-reu-no-stf-corrupcao-na-transpetro/"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "marinho-servidora-natal",
+      "parlamentar": "senado:4694",
+      "assunto": "dinheiro",
+      "titulo": "Servidora da Câmara Municipal de Natal",
+      "resumo": "A Justiça do Rio Grande do Norte condenou o senador em primeira instância, numa ação de improbidade, por manter uma servidora que, segundo o juiz, não trabalhava de fato na Câmara Municipal de Natal, quando ele presidia a Casa. A sentença prevê perda do cargo, multa e oito anos sem direitos políticos.",
+      "situacao": "condenado",
+      "detalhe": "Condenado em primeira instância em 31/05/2023 (6ª Vara da Fazenda Pública de Natal). Ele recorreu; pela lei, perda do cargo e dos direitos políticos só valem depois da decisão final. Não encontramos decisão do recurso até a última conferência.",
+      "orgao": "Justiça do RN",
+      "data": "2023-05-31",
+      "resposta": "Ele nega e diz que a servidora era médica e trabalhava atendendo o público fora do gabinete.",
+      "fontes": [
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/justica/justica-do-rn-condena-rogerio-marinho-por-funcionario-fantasma/"
+        },
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/noticia/9785/justica-do-rn-condena-rogerio-marinho-a-perda-de-mandato"
+        },
+        {
+          "veiculo": "Metrópoles",
+          "data": "2026-10-09",
+          "url": "https://www.metropoles.com/colunas/andreza-matais/mais-da-metade-da-bancada-pro-impeachment-do-stf-e-citada-em-investigacoes"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "gomes-emendas-maranhao",
+      "parlamentar": "senado:3777",
+      "assunto": "dinheiro",
+      "titulo": "Mensagens sobre divisão de emendas",
+      "resumo": "A Polícia Federal pediu para investigar o senador por suspeita de desvio de emendas, a partir de mensagens encontradas na investigação sobre Josimar Maranhãozinho e Pastor Gil. Nas mensagens, um ex-assessor do senador cobra de um secretário de Maranhãozinho um “saldo devedor” de R$ 1,3 milhão. Para a PF, a conversa sugere divisão de percentuais de emendas.",
+      "situacao": "pedido",
+      "detalhe": "Pedido de investigação feito pela PF em fevereiro de 2025. Não encontramos decisão pública sobre o pedido até a última conferência.",
+      "orgao": "STF",
+      "data": "2025-02-10",
+      "resposta": "O gabinete disse que as emendas individuais dele foram para o Tocantins e que as enviadas a outros estados saíram quando ele era relator do orçamento, a pedido de parlamentares desses estados.",
+      "fontes": [
+        {
+          "veiculo": "Poder360",
+          "data": "2025-02-10",
+          "url": "https://www.poder360.com.br/poder-justica/pf-pede-investigacao-de-senador-do-pl-por-desvios-de-emendas/"
+        },
+        {
+          "veiculo": "Folha de Pernambuco",
+          "url": "https://www.folhape.com.br/politica/desvio-de-emendas-conversa-de-ex-assessor-levou-pf-a-investigar/390772/"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "vanhattem-delegado",
+      "parlamentar": "camara:156190",
+      "assunto": "falas",
+      "titulo": "Discurso contra delegado da Polícia Federal",
+      "resumo": "A PGR denunciou o deputado ao STF por crime contra a honra, por um discurso na Câmara, em agosto de 2024, em que ele acusou o delegado da PF Fábio Shor de produzir relatórios fraudulentos. Para a PGR, houve abuso da liberdade de expressão. Em 2024, a PF já tinha indiciado o deputado pelo mesmo discurso.",
+      "situacao": "denunciado",
+      "detalhe": "Denunciado pela PGR em abril de 2026. O STF ainda decide se abre o processo.",
+      "orgao": "STF",
+      "data": "2026-04-28",
+      "resposta": "Ele disse que foi denunciado por apontar uma ilegalidade de um delegado; o Novo chamou a denúncia de perseguição política.",
+      "fontes": [
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/poder-justica/pgr-denuncia-marcel-van-hattem-por-discurso-contra-delegado-da-pf/"
+        },
+        {
+          "veiculo": "Gazeta do Povo",
+          "url": "https://www.gazetadopovo.com.br/republica/pgr-denuncia-van-hattem-por-acusar-delegado-da-pf-de-fraude/"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "gayer-injuria-lula",
+      "parlamentar": "camara:220568",
+      "assunto": "falas",
+      "titulo": "Imagem de Lula com suástica feita por inteligência artificial",
+      "resumo": "A Primeira Turma do STF aceitou denúncia da PGR por injúria contra o presidente Lula, por uma imagem feita com inteligência artificial que o deputado publicou em fevereiro de 2024, mostrando Lula com roupa militar e uma braçadeira com suástica. A Turma entendeu que a imunidade parlamentar não protege esse tipo de publicação. Em outro caso, a PGR o denunciou por racismo, por uma fala sobre a população africana; não encontramos decisão do STF sobre essa denúncia.",
+      "situacao": "reu",
+      "detalhe": "Réu no STF desde 28/04/2026, por injúria.",
+      "orgao": "STF",
+      "data": "2026-04-28",
+      "fontes": [
+        {
+          "veiculo": "Poder360",
+          "url": "https://www.poder360.com.br/poder-justica/1a-turma-do-stf-torna-gayer-reu-por-injuria-contra-lula/"
+        },
+        {
+          "veiculo": "Gazeta do Povo",
+          "url": "https://www.gazetadopovo.com.br/republica/primeira-turma-do-stf-torna-gustavo-gayer-reu-por-injuria-contra-lula/"
+        },
+        {
+          "veiculo": "SBT News",
+          "url": "https://sbtnews.sbt.com.br/noticia/congresso/266264-pgr-denuncia-deputado-bolsonarista-por-racismo-contra-silvio-almeida-e-por-injuria-contra-lula"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "nikolas-adolescente",
+      "parlamentar": "camara:209787",
+      "assunto": "falas",
+      "titulo": "Vídeo que expôs adolescente trans numa escola",
+      "resumo": "Em 2022, quando era vereador em Belo Horizonte, o deputado publicou um vídeo que expôs uma adolescente trans de 14 anos no banheiro feminino de uma escola. O Ministério Público de Minas o denunciou com base no Estatuto da Criança e do Adolescente e por LGBTfobia, e a Justiça aceitou a denúncia em setembro de 2023.",
+      "situacao": "reu",
+      "detalhe": "Réu na Justiça de Minas Gerais desde setembro de 2023. Até novembro de 2025, o caso não tinha sentença.",
+      "orgao": "Justiça de MG",
+      "data": "2023-09-21",
+      "resposta": "Ele diz ser perseguido por falar o que chama de verdade biológica.",
+      "fontes": [
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://www.congressoemfoco.com.br/area/justica/nikolas-ferreira-vira-reu-em-caso-de-transfobia-em-mg/"
+        },
+        {
+          "veiculo": "O Povo",
+          "data": "2023-09-21",
+          "url": "https://www.opovo.com.br/noticias/politica/2023/09/21/nikolas-ferreira-vira-reu-por-expor-adolescente-trans-nas-redes-sociais.html"
+        },
+        {
+          "veiculo": "SBT News",
+          "data": "2025-11-24",
+          "url": "https://sbtnews.sbt.com.br/noticia/pol%C3%ADtica/virou-crime-chamar-homem-de-homem-diz-nikolas-ferreira-apos-ser-condenado-por-transfobia"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "nikolas-indenizacoes",
+      "parlamentar": "camara:209787",
+      "assunto": "falas",
+      "titulo": "Indenizações por falas sobre pessoas trans",
+      "resumo": "Na Justiça cível, o deputado foi condenado a indenizar a deputada Duda Salabert por se referir a ela no masculino numa entrevista de 2020. Em dezembro de 2023, o Tribunal de Justiça de Minas confirmou a condenação e reduziu o valor de R$ 80 mil para R$ 30 mil. Em novembro de 2025, a Justiça de São Paulo o condenou a pagar R$ 40 mil a uma mulher trans por comentários num vídeo que ele publicou em 2022.",
+      "situacao": "condenado",
+      "detalhe": "Condenações cíveis, a pagar indenização, não criminais.",
+      "orgao": "Justiça de MG e de SP",
+      "data": "2025-11-24",
+      "resposta": "Ele diz ser perseguido por falar o que chama de verdade biológica e que só criticou a ideologia de gênero.",
+      "fontes": [
+        {
+          "veiculo": "Congresso em Foco",
+          "data": "2023-12-05",
+          "url": "https://congressoemfoco.com.br/noticia/7869/nikolas-ferreira-perde-na-segunda-instancia-em-processo-por-transfobia"
+        },
+        {
+          "veiculo": "SBT News",
+          "data": "2025-11-24",
+          "url": "https://sbtnews.sbt.com.br/noticia/pol%C3%ADtica/virou-crime-chamar-homem-de-homem-diz-nikolas-ferreira-apos-ser-condenado-por-transfobia"
+        }
+      ],
+      "conferido_em": "2026-10-27"
+    },
+    {
+      "id": "flavio-dark-horse",
+      "parlamentar": "senado:5894",
+      "assunto": "dinheiro",
+      "titulo": "Dinheiro do Banco Master para o filme “Dark Horse”",
+      "resumo": "Reportagem do Intercept Brasil, em maio de 2026, publicou mensagens e um áudio em que o senador pede ao banqueiro Daniel Vorcaro, dono do Banco Master, dinheiro para o filme “Dark Horse”, sobre o pai dele. Segundo a Agência Brasil, o senador passou a ser alvo formal do inquérito do caso no STF em julho de 2026.",
+      "situacao": "investigado",
+      "detalhe": "Investigado em inquérito no STF desde julho de 2026. Não há denúncia até a última conferência.",
+      "orgao": "STF",
+      "data": "2026-07",
+      "resposta": "Ele nega ter combinado qualquer vantagem com Vorcaro e diz que o dinheiro do filme é privado.",
+      "fontes": [
+        {
+          "veiculo": "Agência Brasil",
+          "data": "2026-10-27",
+          "url": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/entenda-investigacoes-contra-flavio-continuam-no-stf-apos-fuga"
+        },
+        {
+          "veiculo": "InfoMoney",
+          "url": "https://www.infomoney.com.br/?p=3330424"
+        }
       ],
       "conferido_em": "2026-10-27"
     }

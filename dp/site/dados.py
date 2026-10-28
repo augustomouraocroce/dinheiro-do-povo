@@ -17,6 +17,7 @@ from dp.fontes import senado
 ARQUIVO_REFERENCIAS = config.ROOT / "dp" / "referencias.json"
 ARQUIVO_ERRATA = config.ROOT / "dp" / "errata.json"
 ARQUIVO_CASOS = config.ROOT / "dp" / "casos.json"
+ARQUIVO_VOTACOES_EXPLICADAS = config.ROOT / "dp" / "votacoes_explicadas.json"
 JANELA_MESES = 3  # a Câmara aceita notas até 90 dias depois do gasto
 
 PARTES_CUSTO = (
@@ -236,7 +237,7 @@ def votos_da_semana(conn, casa: str, de: str, ate: str) -> list:
     for v in votacoes:
         votos = dict(conn.execute("SELECT parlamentar_id, voto FROM voto WHERE votacao_id = ?",
                                   (v["id"],)).fetchall())
-        saida.append({"data": v["data"], "descricao": v["descricao"], "aprovada": v["aprovada"],
+        saida.append({"id": v["id"], "data": v["data"], "descricao": v["descricao"], "aprovada": v["aprovada"],
                       "url": v["url_fonte"], "votos": votos})
     return saida
 
@@ -533,6 +534,17 @@ def explicar_votacao(descricao: str):
     return None
 
 
+def carregar_votacoes_explicadas() -> dict:
+    """O que mudou em votações importantes, escrito por nós a partir de reportagens."""
+    return json.loads(ARQUIVO_VOTACOES_EXPLICADAS.read_text(encoding="utf-8"))["votacoes"]
+
+
+def documentos_votacao(conn) -> dict:
+    """{id da votação: página oficial do parecer ou da emenda que estava em votação}."""
+    return {vid: trabalho.URL_PROPOSICAO_CAMARA.format(id=doc) for vid, doc in conn.execute(
+        "SELECT id, documento_id FROM plenario_votacao WHERE documento_id IS NOT NULL")}
+
+
 def votos_plenario(conn, pessoas) -> tuple:
     """(índice das votações, {slug: votos}) para a página "Como votou".
 
@@ -559,7 +571,10 @@ def votos_plenario(conn, pessoas) -> tuple:
                          placar[v["id"]]["Sim"], placar[v["id"]]["Não"],
                          pos_exp[(e["o_que"], e["sim"])] if e else None])
     indice = {"tipos": {k: list(t) for k, t in TIPOS_VOTACAO.items()}, "explicacoes": explicacoes,
-              "proposicoes": proposicoes, "votacoes": votacoes}
+              "proposicoes": proposicoes, "votacoes": votacoes,
+              # documento votado e "o que mudou" revisado, pela posição da votação
+              "documentos": {pos[vid]: url for vid, url in documentos_votacao(conn).items() if vid in pos},
+              "mudou": {pos[vid]: e for vid, e in carregar_votacoes_explicadas().items() if vid in pos}}
 
     por_pessoa = {}
     deputados = {p["id"]: p for p in pessoas if p["casa"] == "camara"}
@@ -658,9 +673,11 @@ def montar(conn, sabado: date) -> dict:
     parlamentares.sort(key=lambda x: senado.normalizar_nome(x["nome"]))
     pauta = pauta_trabalho(conn, [s for s in config.PARTIDOS_MONITORADOS])
     casos = carregar_casos(parlamentares)
+    producao = dict(conn.execute("SELECT parlamentar_id, projetos FROM producao"))
     for item in parlamentares:
         item["trabalho"] = votos_trabalho_da_pessoa(pauta, item["id"])
         item["casos"] = casos["por_pessoa"].get(item["id"], [])
+        item["projetos"] = producao.get(item["id"])
 
     # Partidos
     partidos_info = []
@@ -688,6 +705,8 @@ def montar(conn, sabado: date) -> dict:
         "errata": carregar_errata(),
         "beneficios": carregar_beneficios(),
         "casos": casos,
+        "votacoes_explicadas": carregar_votacoes_explicadas(),
+        "documentos_votacao": documentos_votacao(conn),
         "pauta": pauta,
         "rankings": montar_rankings(conn, dep, custos, parlamentares),
         "dias": dias_de_trabalho(conn, ano, fim),
