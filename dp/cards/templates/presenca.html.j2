@@ -1,0 +1,26 @@
+{% extends "card.html.j2" %}
+{% block corpo %}
+{% set ps = semana.camara.presenca_semana %}
+<h2>Presença no Plenário</h2>
+{% if ps.dias_com_sessao %}
+<p class="sub">{{ ps.dias_com_sessao|length }} {{ ps.dias_com_sessao|length|plural("dia", "dias") }} de sessão deliberativa: {{ ps.dias_com_sessao|map("dia_mes")|join(", ") }}</p>
+<div class="tile">
+  <p class="texto" style="margin-bottom:18px">Presença registrada na Câmara, por partido:</p>
+  <div class="barras">
+  {% for l in ps.por_partido %}
+    <div class="barra-linha"><span class="barra-rot">{{ "Câmara toda" if l.partido == "Todos" else l.partido }}</span>
+      <span class="barra-trilho"><span class="barra{% if l.partido == 'Todos' %} todos{% endif %}" style="--f:{{ '%.4f'|format(l.pct_presenca or 0) }}"></span><span class="barra-val">{{ l.pct_presenca|pct }}</span></span></div>
+  {% endfor %}
+  </div>
+</div>
+{% set n_aus = ps.ausencias_nao_justificadas|length %}
+<p class="sub">{% if n_aus %}<strong>{{ n_aus }} {{ n_aus|plural("deputado faltou", "deputados faltaram") }} sem justificativa</strong> em pelo menos um dia. {{ "Veja os nomes a seguir." if formato == "carrossel" else "" }}{% else %}Nenhum deputado dos partidos acompanhados faltou sem justificativa.{% endif %}</p>
+{% else %}
+<div class="vazio">
+  <p class="frase">Não houve sessão deliberativa no Plenário da Câmara nesta semana.</p>
+  {% set b = dias.atual %}
+  {% if b.camara %}<div class="tile"><p class="texto">Em {{ b.ano }}, até {{ b.camara.ate|dia_mes }}, foram <strong>{{ b.camara.dias }} dias de sessão</strong>. No mesmo período, um trabalhador com carteira trabalhou cerca de <strong>{{ b.trabalhador.trabalhados }} dias</strong>.</p></div>{% endif %}
+</div>
+{% endif %}
+{% endblock %}
+{% block fonte %}Câmara dos Deputados, página "Presença em Plenário" de cada deputado{% endblock %}

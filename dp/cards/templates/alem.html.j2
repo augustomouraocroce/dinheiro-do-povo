@@ -1,0 +1,16 @@
+{% extends "card.html.j2" %}
+{% block corpo %}
+<h2>Além do salário</h2>
+<div class="alem-cab"><span></span><span>Deputado federal</span><span>Trabalhador com 1 salário mínimo</span></div>
+<div class="tile alem">
+  <ul>
+  {% for b in beneficios.itens if b.get("card") %}
+    <li><svg class="alem-ic" aria-hidden="true"><use href="#{{ b.icone }}"/></svg>
+      <span class="alem-tit">{{ b.titulo }}</span>
+      <span class="alem-lado"><svg aria-hidden="true"><use href="#{{ 'm-tem' if b.deputado_tem else 'm-nao-tem' }}"/></svg>{{ b.deputado_curto }}</span>
+      <span class="alem-lado"><svg aria-hidden="true"><use href="#{{ 'm-tem' if b.trabalhador_tem else 'm-nao-tem' }}"/></svg>{{ b.trabalhador_curto }}</span></li>
+  {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+{% block fonte %}Câmara dos Deputados; CLT; Decreto 12.797/2025{% endblock %}

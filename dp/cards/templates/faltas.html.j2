@@ -1,0 +1,16 @@
+{% extends "card.html.j2" %}
+{% block corpo %}
+<h2>Faltaram sem justificativa{% if partes > 1 %} ({{ parte }}/{{ partes }}){% endif %}</h2>
+<p class="texto secundario">Ausência registrada pela Câmara sem motivo informado, em dia de sessão deliberativa. A fonte de cada nome está no site.</p>
+<div class="tile">
+  <ul class="nomes">
+  {% for p in nomes %}
+    <li><svg aria-hidden="true"><use href="#m-nao-justificada"/></svg>
+      <span><span class="n-nome">{{ p.nome }}</span> <span class="n-pt">{{ p.partido }}-{{ p.uf }}</span></span>
+      <span class="n-dias">{{ p.dias|map("dia_mes")|join(", ") }}</span></li>
+  {% endfor %}
+  </ul>
+  {% if restantes is defined and restantes %}<p class="texto" style="margin-top:18px">E mais {{ restantes }} no site.</p>{% endif %}
+</div>
+{% endblock %}
+{% block fonte %}Câmara dos Deputados, página "Presença em Plenário" de cada deputado{% endblock %}

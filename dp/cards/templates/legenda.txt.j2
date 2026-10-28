@@ -1,0 +1,15 @@
+{% set custo = camara.media_custo %}{% set ps = semana.camara.presenca_semana %}
+Dinheiro do Povo · semana de {{ inicio|data }} a {{ fim|data }}
+
+Em média, cada deputado federal custa {{ custo.total|brl }} por mês, o mesmo que {{ (custo.total / refs.salario_minimo.valor)|qtd }} salários mínimos. A cada R$ 100, {% for parte in custo|cada100 %}R$ {{ parte.reais }} {{ "vão para" if loop.first else "para" }} {{ parte.nome|lower }}{% if not loop.last %}, {% endif %}{% endfor %}.
+
+{% if ps.dias_com_sessao %}Presença: a Câmara teve {{ ps.dias_com_sessao|length }} {{ ps.dias_com_sessao|length|plural("dia", "dias") }} de sessão deliberativa. {{ ps.ausencias_nao_justificadas|length }} deputados dos partidos acompanhados faltaram sem justificativa em pelo menos um dia.{% else %}Presença: não houve sessão deliberativa no Plenário da Câmara nesta semana.{% endif %}
+
+{% if votacoes_semana %}Votações nominais da semana: {{ votacoes_semana|length }}.{% else %}Não houve votação nominal no Plenário da Câmara ou do Senado nesta semana.{% endif %}
+
+Em {{ dias.anterior.ano }}, um trabalhador com carteira trabalhou cerca de {{ dias.anterior.trabalhador.trabalhados }} dias; o Plenário da Câmara teve {{ dias.anterior.camara.dias if dias.anterior.camara else "?" }} dias de sessão deliberativa.
+
+Confira cada número, com o link da fonte oficial: {{ site_url }}
+
+Fontes: Câmara dos Deputados, Senado Federal, TSE, DIEESE, ANAC, FipeZAP.
+#DinheiroDoPovo #Transparência #CâmaraDosDeputados #SenadoFederal

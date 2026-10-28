@@ -1,0 +1,20 @@
+{% extends "card.html.j2" %}
+{% block corpo %}
+{% set a = dias.anterior %}
+<h2>Quantos dias se trabalha</h2>
+<div class="tile">
+  <div class="barras">
+    <div class="barra-linha dia"><span class="barra-rot">Trabalhador com carteira, {{ a.ano }}</span>
+      <span class="barra-trilho"><span class="barra" style="--f:1"></span><span class="barra-val">{{ a.trabalhador.trabalhados }} dias</span></span></div>
+    {% if a.camara %}
+    <div class="barra-linha dia"><span class="barra-rot">Sessões no Plenário da Câmara, {{ a.ano }}</span>
+      <span class="barra-trilho"><span class="barra cam" style="--f:{{ '%.4f'|format(a.camara.dias / a.trabalhador.trabalhados) }}"></span><span class="barra-val">{{ a.camara.dias }} dias</span></span></div>
+    {% endif %}
+  </div>
+</div>
+{% if a.camara %}
+<p class="frase">Sessão em {{ (a.camara.dias / a.trabalhador.trabalhados)|pct }} dos dias de um trabalhador: cerca de {{ (a.camara.dias / a.trabalhador.trabalhados * 10)|round|int }} em cada 10.</p>
+{% endif %}
+<p class="texto">Deputados também trabalham em comissões, no gabinete e nos estados. A Câmara só registra presença oficial nos dias de sessão deliberativa do Plenário.</p>
+{% endblock %}
+{% block fonte %}Câmara dos Deputados (sessões); dias úteis sem feriados nacionais, menos 30 dias de férias da CLT{% endblock %}

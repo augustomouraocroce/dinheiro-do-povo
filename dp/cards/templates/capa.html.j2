@@ -1,0 +1,13 @@
+{% extends "card.html.j2" %}
+{% import "cmacros.html.j2" as m with context %}
+{% block corpo %}
+{% set custo = camara.media_custo %}
+<h1>Quanto custa, por mês, um deputado federal?</h1>
+<div class="tile" style="display:grid; gap:24px">
+  <p class="sub">Em média, cada um dos {{ camara.total }} deputados custa</p>
+  <div>{{ m.preco(custo.total) }}</div>
+  <p class="sub">por mês, o mesmo que <span class="tag" style="font-size:54px">{{ (custo.total / refs.salario_minimo.valor)|qtd }} salários mínimos</span></p>
+  <span class="carimbo">Fonte: Câmara dos Deputados</span>
+</div>
+<p class="sub" style="display:flex; align-items:center; gap:14px">Arraste para ver a semana <svg style="width:52px;height:52px" aria-hidden="true"><use href="#i-seta"/></svg></p>
+{% endblock %}

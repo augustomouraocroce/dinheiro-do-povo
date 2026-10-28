@@ -1,0 +1,159 @@
+/* Cards do Dinheiro do Povo: o mesmo "Encarte do Povo" do site, em escala de post
+   (a imagem de 1080px aparece com ~390px no celular: tudo é desenhado ~2,8x maior). */
+
+@font-face {
+  font-family: "Archivo";
+  src: url("archivo-var.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+}
+
+:root {
+  --amarelo: #ffd60a;
+  --tinta: #111111;
+  --tinta-2: #3d3d3d;
+  --tinta-amarelo: #4a3d00;
+  --papel: #ffffff;
+  --papel-2: #f6f5f0;
+  --linha: #dedbd0;
+  --carimbo: #1e40af;
+  --verde: #12803f;
+  --vermelho: #c81e1e;
+  --s-salario: #2348c9;
+  --s-cota: #c08a00;
+  --s-verba: #11845a;
+  --s-auxilio: #8a3fb0;
+  --s-referencia: #8a8a8a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; }
+body { background: var(--amarelo); color: var(--tinta); font-family: "Archivo", sans-serif; font-stretch: 100%;
+  -webkit-font-smoothing: antialiased; overflow: hidden; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.card { width: 100%; height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+
+/* Faixa preta do topo */
+.c-topo { background: var(--tinta); color: var(--papel); display: flex; justify-content: space-between; align-items: center;
+  padding: 30px 60px; gap: 24px; }
+.c-marca { font-stretch: 62%; font-weight: 900; font-size: 62px; line-height: .9; text-transform: uppercase; letter-spacing: -.005em; }
+.c-semana { font-weight: 650; font-size: 30px; text-align: right; line-height: 1.15; }
+
+/* Corpo */
+.c-corpo { padding: 46px 60px 30px; display: flex; flex-direction: column; gap: 30px; min-height: 0; }
+.tile { background: var(--papel); border: 4px solid var(--tinta); border-radius: 22px; padding: 38px 42px; }
+h1, h2, .display { font-stretch: 66%; font-weight: 880; line-height: 1; letter-spacing: -.01em; word-spacing: .08em; }
+h1 { font-size: 104px; }
+h2 { font-size: 82px; }
+.sub { font-stretch: 74%; font-weight: 800; font-size: 44px; line-height: 1.12; }
+.texto { font-size: 36px; line-height: 1.35; font-weight: 500; }
+.texto strong, .sub strong { font-weight: 850; }
+.secundario { color: var(--tinta-2); }
+.no-amarelo .secundario, .c-corpo > .secundario { color: var(--tinta-amarelo); }
+.pequeno { font-size: 30px; line-height: 1.3; }
+
+/* Etiqueta de preço */
+.etiqueta { display: inline-flex; align-items: flex-start; background: var(--amarelo); border: 7px solid var(--tinta);
+  border-radius: 22px; padding: 18px 30px 10px 26px; font-stretch: 62%; font-weight: 900; line-height: .84; letter-spacing: -.015em;
+  white-space: nowrap; }
+.etiqueta .moeda { font-size: .42em; margin: .12em .1em 0 0; }
+.etiqueta .centavos { font-size: .36em; margin-top: .08em; margin-left: .04em; }
+.preco-g { font-size: 230px; }
+.preco-m { font-size: 150px; }
+.tag { display: inline-block; background: var(--amarelo); border: 4px solid var(--tinta); border-radius: 12px;
+  padding: 6px 16px 4px; font-stretch: 62%; font-weight: 900; line-height: 1; white-space: nowrap; }
+
+/* Carimbo de fonte */
+.carimbo { display: inline-flex; align-items: center; gap: 12px; color: var(--carimbo); border: 5px solid var(--carimbo);
+  border-radius: 14px; padding: 10px 24px; font-stretch: 75%; font-weight: 800; font-size: 34px; transform: rotate(-2deg);
+  background: rgba(255,255,255,.6); width: fit-content; }
+
+/* A cada R$ 100 */
+.cada100 ul { list-style: none; border-top: 4px solid var(--tinta); }
+.cada100 li { display: grid; grid-template-columns: 30px 210px 1fr; gap: 0 26px; align-items: center; padding: 22px 0;
+  border-bottom: 2px solid var(--linha); }
+.cada100 li:last-child { border-bottom: 0; }
+.cada100 i { width: 30px; height: 30px; border-radius: 7px; }
+.cada100 .c-reais { font-stretch: 62%; font-weight: 900; font-size: 92px; line-height: .9; }
+.cada100 .c-nome { font-weight: 780; font-size: 38px; line-height: 1.15; }
+.cada100 .c-nome small { display: block; font-weight: 500; font-size: 28px; color: var(--tinta-2); margin-top: 4px; }
+
+/* Equivalências */
+.equivale { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.eq { background: var(--papel); border: 4px solid var(--tinta); border-radius: 22px; padding: 30px 32px;
+  display: grid; grid-template-columns: 1fr; gap: 10px; align-items: start; }
+.eq svg { width: 130px; height: 130px; }
+.eq .qtd { font-stretch: 62%; font-weight: 900; font-size: 140px; line-height: .86; }
+.eq .oque { font-stretch: 75%; font-weight: 800; font-size: 40px; line-height: 1.05; }
+
+/* Barras simples (presença por partido, dias) */
+.barras { display: grid; gap: 12px; }
+.barra-linha { display: grid; grid-template-columns: 250px 1fr; align-items: center; gap: 22px; }
+.barra-rot { font-stretch: 72%; font-weight: 850; font-size: 36px; line-height: 1.05; }
+.barra-trilho { display: flex; align-items: center; gap: 18px; }
+.barra { height: 42px; border-radius: 0 10px 10px 0; background: var(--carimbo); width: calc((100% - 200px) * var(--f)); min-width: 8px; }
+.barra.todos { background: var(--tinta); }
+.barra.cam { background: var(--tinta); }
+.barra-val { font-stretch: 70%; font-weight: 900; font-size: 42px; white-space: nowrap; }
+.barra-linha.dia { grid-template-columns: 1fr; gap: 10px; }
+.barra-linha.dia .barra { height: 64px; }
+
+/* Lista de nomes (faltas) */
+.nomes { list-style: none; display: grid; gap: 0; border-top: 4px solid var(--tinta); }
+.nomes li { display: grid; grid-template-columns: 50px 1fr auto; gap: 18px; align-items: center; padding: 16px 0;
+  border-bottom: 2px solid var(--linha); }
+.nomes svg { width: 46px; height: 46px; }
+.nomes .n-nome { font-weight: 780; font-size: 38px; line-height: 1.1; }
+.nomes .n-pt { font-stretch: 70%; font-weight: 850; font-size: 34px; color: var(--tinta-2); }
+.nomes .n-dias { font-stretch: 72%; font-weight: 850; font-size: 34px; text-align: right; white-space: nowrap; }
+
+/* Votações */
+.votacao { background: var(--papel); border: 4px solid var(--tinta); border-radius: 22px; padding: 26px 32px; display: grid; gap: 14px; }
+.vt-cab { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.casa { font-stretch: 70%; font-weight: 900; font-size: 28px; text-transform: uppercase; letter-spacing: .04em;
+  background: var(--amarelo); border: 3px solid var(--tinta); border-radius: 8px; padding: 2px 12px; }
+.vt-data { font-weight: 800; font-size: 30px; }
+.vt-res { font-weight: 650; font-size: 30px; color: var(--tinta-2); }
+.vt-desc { font-size: 31px; line-height: 1.25; }
+.vt-placar { font-stretch: 70%; font-weight: 900; font-size: 50px; line-height: 1; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px 12px; }
+.chip { font-stretch: 72%; font-weight: 800; font-size: 28px; border: 3px solid var(--tinta); border-radius: 10px; padding: 4px 12px;
+  background: var(--papel-2); white-space: nowrap; }
+
+/* Destaque grande de uma frase */
+.frase { font-stretch: 70%; font-weight: 880; font-size: 76px; line-height: 1.02; }
+.vazio { display: grid; gap: 30px; align-content: center; flex: 1; }
+
+/* Rodapé */
+.c-rodape { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 60px 30px;
+  border-top: 5px solid var(--tinta); margin: 0 60px; padding-left: 0; padding-right: 0; }
+.c-site { font-stretch: 70%; font-weight: 900; font-size: 40px; }
+.c-fonte { font-size: 26px; font-weight: 600; color: var(--tinta-amarelo); text-align: right; flex: 1; line-height: 1.2; }
+.c-num { font-stretch: 70%; font-weight: 900; font-size: 34px; background: var(--tinta); color: var(--amarelo);
+  border-radius: 10px; padding: 4px 14px; }
+
+/* Vertical (1080×1920): mais respiro e números ainda maiores */
+.formato-vertical .c-corpo { padding: 70px 60px 50px; gap: 46px; justify-content: center; }
+.formato-vertical .c-topo { padding: 44px 60px; }
+.formato-vertical h1 { font-size: 118px; }
+.formato-vertical .preco-g { font-size: 250px; }
+
+/* No vertical, as equivalências voltam a ter ícone ao lado do número */
+.formato-vertical .eq { grid-template-columns: 110px 1fr; gap: 0 20px; align-items: center; padding: 24px 28px; }
+.formato-vertical .eq svg { width: 110px; height: 110px; grid-row: span 2; }
+.formato-vertical .eq .qtd { font-size: 112px; }
+.formato-vertical .eq .oque { font-size: 34px; }
+
+/* Além do salário */
+.alem-cab { display: grid; grid-template-columns: 78px 230px 1fr 1fr; gap: 18px; font-stretch: 72%; font-weight: 900; font-size: 30px;
+  line-height: 1.05; padding: 0 42px; margin-bottom: -14px; }
+.alem { padding: 10px 42px; }
+.alem ul { list-style: none; }
+.alem li { display: grid; grid-template-columns: 78px 230px 1fr 1fr; gap: 18px; align-items: center; padding: 16px 0;
+  border-bottom: 2px solid var(--linha); }
+.alem li:last-child { border-bottom: 0; }
+.alem-ic { width: 78px; height: 78px; }
+.alem-tit { font-stretch: 72%; font-weight: 850; font-size: 32px; line-height: 1.05; }
+.alem-lado { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; font-size: 30px; line-height: 1.2; font-weight: 600; }
+.alem-lado svg { width: 38px; height: 38px; }

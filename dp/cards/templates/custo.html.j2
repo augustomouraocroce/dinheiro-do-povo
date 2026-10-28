@@ -1,0 +1,9 @@
+{% extends "card.html.j2" %}
+{% import "cmacros.html.j2" as m with context %}
+{% block corpo %}
+{% set custo = camara.media_custo %}
+<h2>A cada <span class="tag" style="font-size:78px">R$ 100</span> que um deputado custa:</h2>
+<div class="tile">{{ m.cada_100(custo) }}</div>
+<p class="sub">O salário é só uma parte. A maior parte paga a equipe do gabinete, escolhida pelo próprio deputado.</p>
+{% endblock %}
+{% block fonte %}Câmara dos Deputados, página de cada deputado{% endblock %}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Dinheiro do Povo · card</title>
+<link rel="stylesheet" href="cards.css">
+</head>
+<body class="formato-{{ formato }}">
+{% include "icones.svg.j2" %}
+<div class="card">
+  <header class="c-topo">
+    <span class="c-marca">Dinheiro do Povo</span>
+    <span class="c-semana">Semana de {{ inicio|dia_mes }}<br>a {{ fim|data }}</span>
+  </header>
+  <main class="c-corpo">
+{% block corpo %}{% endblock %}
+  </main>
+  <footer class="c-rodape">
+    <span class="c-site">{{ site_url }}</span>
+    <span class="c-fonte">{% block fonte %}Dados oficiais: Câmara dos Deputados, Senado Federal e TSE{% endblock %}</span>
+    {% if formato == "carrossel" %}<span class="c-num">{{ n }}/{{ total }}</span>{% endif %}
+  </footer>
+</div>
+</body>
+</html>

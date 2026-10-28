@@ -1,0 +1,26 @@
+{% extends "card.html.j2" %}
+{% block corpo %}
+{% set dn = semana.camara.despesas_novas %}
+<h2>Notas da cota publicadas nesta semana</h2>
+<p class="texto secundario">Notas que entraram nos dados oficiais desde {{ dn.desde|data }}. O deputado tem até 90 dias para apresentar cada nota.</p>
+<div class="tile">
+  <div class="barras">
+  {% set maximo = (dn.por_partido|map(attribute="valor")|max) or 1 %}
+  {% for l in dn.por_partido %}
+    <div class="barra-linha"><span class="barra-rot">{{ "Câmara toda" if l.partido == "Todos" else l.partido }}</span>
+      <span class="barra-trilho"><span class="barra{% if l.partido == 'Todos' %} todos{% endif %}" style="--f:{{ '%.4f'|format(l.valor / maximo) }}"></span><span class="barra-val">{{ l.valor|compacto }}</span></span></div>
+  {% endfor %}
+  </div>
+</div>
+{% if dn.maiores %}
+<div class="tile">
+  <p class="texto" style="margin-bottom:12px"><strong>Maiores notas novas</strong></p>
+  <ul class="nomes">
+  {% for d in dn.maiores[:4] %}
+    <li><span></span><span><span class="n-nome">{{ d.nome }}</span> <span class="n-pt">{{ d.partido }}-{{ d.uf }}</span><br><span class="pequeno secundario">{{ d.categoria|lower|truncate(48) }}</span></span><span class="n-dias">{{ d.valor|brl }}</span></li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endblock %}
+{% block fonte %}Câmara dos Deputados, cota parlamentar (CEAP){% endblock %}

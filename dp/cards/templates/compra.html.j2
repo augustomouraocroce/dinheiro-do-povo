@@ -1,0 +1,9 @@
+{% extends "card.html.j2" %}
+{% import "cmacros.html.j2" as m with context %}
+{% block corpo %}
+{% set custo = camara.media_custo %}
+<h2>Um mês de um deputado, <span style="white-space:nowrap">{{ custo.total|compacto }}</span>, compra:</h2>
+{{ m.equivale(custo.total, refs, ["salario_minimo", "cesta_basica", "passagem_aerea", "m2_apartamento"]) }}
+
+{% endblock %}
+{% block fonte %}Preços de set/2026: DIEESE, ANAC, FipeZAP; salário mínimo 2026{% endblock %}

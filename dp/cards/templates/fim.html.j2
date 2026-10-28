@@ -1,0 +1,13 @@
+{% extends "card.html.j2" %}
+{% block corpo %}
+<div class="vazio">
+  <h1>Confira cada número</h1>
+  <div class="tile" style="display:grid; gap:26px">
+    <p class="texto">No site, cada deputado e senador tem página própria: quanto custa, presença dia a dia, como votou e o patrimônio declarado ao TSE. Cada número tem o link da fonte oficial.</p>
+    <span class="tag" style="font-size:64px">{{ site_url }}</span>
+  </div>
+  <p class="sub">Dados oficiais, sem opinião.</p>
+  <p class="texto">Encontrou um erro? As correções são publicadas no site, com data.</p>
+</div>
+{% endblock %}
+{% block fonte %}Câmara dos Deputados, Senado Federal, TSE, DIEESE, ANAC, FipeZAP{% endblock %}

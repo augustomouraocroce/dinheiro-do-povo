@@ -1,0 +1,15 @@
+{% extends "card.html.j2" %}
+{% import "cmacros.html.j2" as m with context %}
+{% block corpo %}
+{% set custo = camara.media_custo %}
+<h1>Quanto custa, por mês, um deputado federal?</h1>
+<div class="tile" style="display:grid; gap:22px">
+  <p class="sub">Em média, cada um dos {{ camara.total }} deputados custa</p>
+  <div>{{ m.preco(custo.total) }}</div>
+  <p class="sub">por mês</p>
+</div>
+<p class="sub">Isso compra:</p>
+{{ m.equivale(custo.total, refs, ["salario_minimo", "cesta_basica", "passagem_aerea", "m2_apartamento"]) }}
+<p class="sub">Quanto custa o seu deputado? Veja no site.</p>
+{% endblock %}
+{% block fonte %}Câmara dos Deputados; DIEESE, ANAC, FipeZAP{% endblock %}

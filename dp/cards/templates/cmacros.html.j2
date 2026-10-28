@@ -1,0 +1,25 @@
+{% macro preco(valor, tamanho="g") -%}
+{%- set partes = valor|brl_partes -%}
+<span class="etiqueta preco-{{ tamanho }}"><span class="moeda">R$</span><span>{{ partes[0] }}</span><span class="centavos">,{{ partes[1] }}</span></span>
+{%- endmacro %}
+
+{% macro cada_100(custo) -%}
+<div class="cada100">
+  <ul>
+  {%- for parte in custo|cada100 %}
+    <li><i style="background: var(--s-{{ parte.chave }})"></i>
+      <span class="c-reais">{{ "< R$ 1" if parte.reais == 0 else "R$ " ~ parte.reais }}</span>
+      <span class="c-nome">{{ parte.nome }}<small>{{ parte.explica }}</small></span></li>
+  {%- endfor %}
+  </ul>
+</div>
+{%- endmacro %}
+
+{% macro equivale(valor, refs, chaves) -%}
+<div class="equivale">
+{%- for chave in chaves %}{% set r = refs[chave] %}{% set q = valor / r.valor %}
+  <div class="eq"><svg aria-hidden="true"><use href="#x-{{ chave }}"/></svg>
+    <span class="qtd">{{ q|qtd }}</span><span class="oque">{{ r.nome if q|qtd == "1" else r.plural }}</span></div>
+{%- endfor %}
+</div>
+{%- endmacro %}

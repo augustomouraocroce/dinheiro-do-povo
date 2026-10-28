@@ -1,0 +1,23 @@
+{% extends "card.html.j2" %}
+{% block corpo %}
+<h2>Votações nominais da semana</h2>
+{% if votos %}
+<p class="texto secundario">"Sim" e "Não" respondem à pergunta de cada votação. Placar de cada partido: Sim–Não.</p>
+{% for v in votos %}
+{% set tv = (v.sim + v.nao) or 1 %}
+<div class="votacao">
+  <div class="vt-cab"><span class="casa">{{ v.casa }}</span><span class="vt-data">{{ v.data|data }}</span><span class="vt-res">{% if v.aprovada == 1 %}aprovada{% elif v.aprovada == 0 %}rejeitada{% endif %}</span></div>
+  <p class="vt-desc">{{ v.descricao|truncate(115) }}</p>
+  <p class="vt-placar">Sim {{ v.sim }} ({{ (v.sim / tv * 100)|round|int }}%) · Não {{ v.nao }} ({{ (v.nao / tv * 100)|round|int }}%)</p>
+  <div class="chips">{% for b in v.bancadas %}<span class="chip">{{ b.partido }} {{ b.sim }}–{{ b.nao }}</span>{% endfor %}</div>
+</div>
+{% endfor %}
+{% if restantes %}<p class="texto"><strong>E mais {{ restantes }} {{ restantes|plural("votação", "votações") }} no site.</strong></p>{% endif %}
+{% else %}
+<div class="vazio">
+  <p class="frase">Nenhuma votação nominal no Plenário da Câmara ou do Senado nesta semana.</p>
+  <div class="tile"><p class="texto">Desde 2023 foram <strong>{{ pauta.camara }} votações na Câmara</strong> e <strong>{{ pauta.senado }} no Senado</strong> sobre trabalho, salário mínimo, imposto de renda e cesta básica. Veja como cada um votou no site.</p></div>
+</div>
+{% endif %}
+{% endblock %}
+{% block fonte %}Câmara dos Deputados e Senado Federal, votações nominais do Plenário{% endblock %}
