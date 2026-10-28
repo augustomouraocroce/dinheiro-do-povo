@@ -141,5 +141,55 @@ def test_carrossel_semana_sem_sessao():
 
 
 def test_descricao_sem_placar():
-    from dp.cards import gerar
-    assert gerar._sem_placar("Aprovado o Requerimento. Sim: 11; Não: 387; Total: 398.") == "Aprovado o Requerimento."
+    assert dados.sem_placar("Aprovado o Requerimento. Sim: 11; Não: 387; Total: 398.") == "Aprovado o Requerimento."
+
+
+@pytest.mark.parametrize("descricao,tipo", [
+    ("Aprovado o Projeto de Lei nº 3.292, de 2025. Sim: 265; Não: 33; Total: 298.", "principal"),
+    ("Aprovado o Projeto de Lei nº 1, de 2025, ressalvados os destaques.", "principal"),
+    ("Aprovada, em segundo turno, a Proposta de Emenda à Constituição nº 66, de 2023.", "principal"),
+    ("Aprovada a Subemenda Substitutiva Global ao Projeto de Lei nº 2, de 2024, adotada pelo relator.", "principal"),
+    ("Aprovada, em primeiro turno, a Emenda Aglutinativa Substitutiva à Proposta de Emenda à Constituição nº 3.", "principal"),
+    ("Rejeitada a Emenda de Plenário nº 4. Sim: 100; Não: 300.", "trecho"),
+    ("Mantido o texto. Sim: 313; Não: 119; Total: 433.", "trecho"),
+    ("Aprovado o Requerimento de Urgência (Art. 155 do RICD). Sim: 376; Não: 42.", "urgencia"),
+    ("Rejeitado o Requerimento. Sim: 110; Não: 159; Total: 269.", "pedido"),
+    ("Rejeitada a preferência.", "pedido"),
+])
+def test_tipo_votacao(descricao, tipo):
+    assert dados.tipo_votacao(descricao) == tipo
+
+
+def test_proposicao_principal_prefere_o_codigo_da_votacao():
+    from dp import rankings
+    props = [{"proposicao_id": "9", "proposicao_siglaTipo": "PL"}, {"proposicao_id": "2458405", "proposicao_siglaTipo": "PL"}]
+    assert rankings.proposicao_principal("2458405-38", props)["proposicao_id"] == "2458405"
+    assert rankings.proposicao_principal("777-1", props)["proposicao_id"] == "9"   # código fora da lista: a 1ª ligada
+    urgencia = [{"proposicao_id": "5", "proposicao_siglaTipo": "REQ"}, {"proposicao_id": "6", "proposicao_siglaTipo": "PDL"}]
+    assert rankings.proposicao_principal("5-1", urgencia)["proposicao_id"] == "6"  # o projeto, não o requerimento
+    assert rankings.proposicao_principal("5-1", urgencia[:1])["proposicao_id"] == "5"
+    assert rankings.proposicao_principal("777-1", []) is None
+
+
+def test_votos_plenario_indice_e_arquivo_por_deputado(tmp_path):
+    from dp import db
+    conn = db.conectar(tmp_path / "t.db")
+    conn.executemany("INSERT INTO plenario_votacao VALUES (?, ?, ?, ?, ?, ?)", [
+        ("camara:1-1", "2025-03-01", "Rejeitado o Requerimento. Sim: 1; Não: 2", 0, "1", "u1"),
+        ("camara:1-2", "2025-05-01", "Aprovado o Projeto de Lei nº 1, de 2025.", 1, "1", "u2"),
+    ])
+    conn.execute("INSERT INTO plenario_proposicao VALUES ('1', 'PL 1/2025', 'Ementa')")
+    conn.executemany("INSERT INTO plenario_voto VALUES (?, ?, ?, ?)", [
+        ("camara:1-1", "camara:10", "Não", "PSD"), ("camara:1-2", "camara:10", "Sim", "PL"),
+        ("camara:1-1", "camara:11", "Sim", "PT"), ("camara:1-1", "camara:12", "Obstrução", "PT"),
+    ])
+    pessoas = [{"id": "camara:10", "casa": "camara", "slug": "fulano", "partido": "PL"},
+               {"id": "senado:5", "casa": "senado", "slug": "beltrano", "partido": "PL"}]
+    indice, por_pessoa = dados.votos_plenario(conn, pessoas)
+    assert [v[0] for v in indice["votacoes"]] == ["2025-05-01", "2025-03-01"]   # mais recente primeiro
+    assert indice["votacoes"][1][1] == "Rejeitado o Requerimento."               # sem o placar
+    assert indice["votacoes"][1][3] == "pedido" and indice["votacoes"][1][6:] == [1, 1]
+    assert indice["proposicoes"][indice["votacoes"][0][4]][0] == "PL 1/2025"
+    assert set(por_pessoa) == {"fulano"}                                         # só deputados
+    assert por_pessoa["fulano"]["votos"] == [[0, "S"], [1, "N"]]
+    assert por_pessoa["fulano"]["partidos"] == {"1": "PSD"}                      # votou por outro partido

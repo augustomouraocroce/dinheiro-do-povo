@@ -420,7 +420,7 @@ def coletar_rankings(conn, fim):
     with Etapa(conn, "rankings.projetos") as e:
         e.detalhes = rankings.coletar_projetos(conn, camara.deputados_em_exercicio())
     with Etapa(conn, "rankings.votos") as e:
-        e.detalhes = rankings.coletar_resumo_votos(conn, list(range(INICIO_MANDATO, fim.year + 1)))
+        e.detalhes = rankings.coletar_votos_plenario(conn, list(range(INICIO_MANDATO, fim.year + 1)))
 
 
 def main(argv=None):

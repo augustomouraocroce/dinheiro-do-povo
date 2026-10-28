@@ -7,6 +7,7 @@ Regras de cálculo (repetidas na página de metodologia):
   que notas ainda podem entrar (ex.: em outubro, janeiro a julho).
 """
 import json
+import re
 from collections import Counter, defaultdict
 from datetime import date
 
@@ -287,7 +288,7 @@ def dias_de_trabalho(conn, ano: int, fim: date) -> dict:
 
 
 # --- Rankings ----------------------------------------------------------------------
-MINIMO_VOTOS = 100  # só entra no ranking de votos "Não" quem votou ao menos isso
+MINIMO_VOTOS = 100  # só entra nos rankings de votos Sim e Não quem votou ao menos isso
 
 
 def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
@@ -327,6 +328,7 @@ def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
     elegiveis = [p for p in deputados if p["id"] in resumo and resumo[p["id"]][1] + resumo[p["id"]][2] >= MINIMO_VOTOS]
     pct_nao = lambda pid: resumo[pid][2] / (resumo[pid][1] + resumo[pid][2])
     mais_nao = sorted(elegiveis, key=lambda p: (-pct_nao(p["id"]), nome(p)))[:top]
+    mais_sim = sorted(elegiveis, key=lambda p: (pct_nao(p["id"]), nome(p)))[:top]
     sim_total = sum(r[1] for k, r in resumo.items() if k in dep)
     nao_total = sum(r[2] for k, r in resumo.items() if k in dep)
 
@@ -341,10 +343,81 @@ def montar_rankings(conn, dep, custos, parlamentares, top=10) -> dict:
         "media_projetos": sum(todos_proj) / len(todos_proj) if todos_proj else None,
         "mais_nao": [{"p": p, "pct": pct_nao(p["id"]), "nao": resumo[p["id"]][2],
                       "votos": resumo[p["id"]][1] + resumo[p["id"]][2]} for p in mais_nao],
+        "mais_sim": [{"p": p, "pct": 1 - pct_nao(p["id"]), "sim": resumo[p["id"]][1],
+                      "votos": resumo[p["id"]][1] + resumo[p["id"]][2]} for p in mais_sim],
         "media_nao": nao_total / (sim_total + nao_total) if sim_total + nao_total else None,
+        "media_sim": sim_total / (sim_total + nao_total) if sim_total + nao_total else None,
         "minimo_votos": MINIMO_VOTOS,
         "tipos_projeto": "PL, PLP, PDL e PRC",
     }
+
+
+# --- Votos no Plenário (página "Como votou") ----------------------------------------
+
+TIPOS_VOTACAO = {
+    "principal": ("Texto principal", "o projeto, a medida provisória ou a PEC"),
+    "trecho": ("Mudança no texto", "emenda, destaque ou parte separada do texto"),
+    "urgencia": ("Urgência", "pedido para votar o projeto mais rápido"),
+    "pedido": ("Pedido de andamento", "adiar, retirar de pauta ou mudar a ordem da votação"),
+}
+
+
+def sem_placar(descricao: str) -> str:
+    """A Câmara repete o placar no fim da descrição; o site mostra o placar à parte."""
+    return re.sub(r"\s*Sim:\s*\d+.*$", "", descricao or "", flags=re.I | re.S).strip()
+
+
+def tipo_votacao(descricao: str) -> str:
+    """O que foi votado, pela descrição oficial: texto principal, mudança no texto,
+    urgência ou pedido de andamento."""
+    d = sem_placar(descricao).lower()
+    d = re.sub(r"proposta de emenda à constituição|(sub)?emenda (aglutinativa )?substitutiva( global)?|ressalvad[oa]s? (os |o |as |a )?destaques?",
+               "", d)
+    if "urgência" in d:
+        return "urgencia"
+    if re.search(r"requerimento|preferência|recurso", d):
+        return "pedido"
+    if re.search(r"emenda|destaque|texto|dispositivo", d):
+        return "trecho"
+    return "principal"
+
+
+def votos_plenario(conn, pessoas) -> tuple:
+    """(índice das votações, {slug: votos}) para a página "Como votou".
+
+    O índice traz cada votação nominal do Plenário desde 2023 uma vez só; o arquivo de
+    cada deputado guarda só a posição da votação no índice e o voto.
+    """
+    placar = defaultdict(Counter)
+    for vid, voto, n in conn.execute("SELECT votacao_id, voto, COUNT(*) FROM plenario_voto GROUP BY 1, 2"):
+        placar[vid][voto] = n
+    proposicoes, pos_prop = [], {}
+    for pid, titulo, ementa in conn.execute("SELECT id, titulo, ementa FROM plenario_proposicao"):
+        pos_prop[pid] = len(proposicoes)
+        proposicoes.append([titulo or f"Proposição {pid}", ementa or "", trabalho.URL_PROPOSICAO_CAMARA.format(id=pid)])
+    votacoes, pos = [], {}
+    for v in conn.execute("SELECT * FROM plenario_votacao ORDER BY data DESC, id DESC"):
+        pos[v["id"]] = len(votacoes)
+        votacoes.append([v["data"], sem_placar(v["descricao"]), v["aprovada"], tipo_votacao(v["descricao"]),
+                         pos_prop.get(v["proposicao_id"]), v["url_fonte"],
+                         placar[v["id"]]["Sim"], placar[v["id"]]["Não"]])
+    indice = {"tipos": {k: list(t) for k, t in TIPOS_VOTACAO.items()},
+              "proposicoes": proposicoes, "votacoes": votacoes}
+
+    por_pessoa = {}
+    deputados = {p["id"]: p for p in pessoas if p["casa"] == "camara"}
+    linhas = defaultdict(list)
+    for vid, pid, voto, partido in conn.execute("SELECT * FROM plenario_voto"):
+        if pid in deputados:
+            linhas[pid].append((pos[vid], voto, partido))
+    for pid, p in deputados.items():
+        votos = sorted(linhas.get(pid, []))
+        por_pessoa[p["slug"]] = {
+            "votos": [[i, "S" if voto == "Sim" else "N" if voto == "Não" else voto] for i, voto, _ in votos],
+            # partido na data do voto, só quando era outro
+            "partidos": {str(i): partido for i, _, partido in votos if partido and partido != p["partido"]},
+        }
+    return indice, por_pessoa
 
 
 # --- Montagem do site ------------------------------------------------------------

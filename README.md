@@ -13,9 +13,10 @@ Tom de portal de transparência: sem opinião, sem adjetivos sobre pessoas. Todo
 - **Patrimônio declarado ao TSE** em 2018, 2022 e 2026, por tipo de bem.
 - **Partidos lado a lado** e uma página por partido.
 - **Trabalho e renda**: todas as votações nominais do Plenário desde 2023 sobre trabalho, emprego, previdência, salário mínimo, imposto de renda e cesta básica com imposto zero, com a pergunta de cada votação, o resultado, o voto de cada parlamentar e a contagem por partido na época. A regra de seleção fica em [`dp/trabalho.json`](dp/trabalho.json); não classificamos votos como a favor ou contra ninguém.
-- **Rankings**: partido e deputado que mais gastam, senador com maior cota, mais faltas sem e com justificativa (com o motivo), menos projetos apresentados desde 2023 (PL, PLP, PDL e PRC; PEC fica de fora) e quem mais vota "Não". Cada ranking diz o que mede e o que não mede.
+- **Rankings**: partido e deputado que mais gastam, senador com maior cota, mais faltas sem e com justificativa (com o motivo), menos projetos apresentados desde 2023 (PL, PLP, PDL e PRC; PEC fica de fora) e quem mais vota "Não" e "Sim". Cada ranking diz o que mede e o que não mede, e os de votos levam direto aos votos daquela pessoa.
+- **Como votou** (`votos.html`): cada voto nominal de um deputado no Plenário desde 2023, agrupado pelo projeto votado, com filtros de Sim/Não, de tipo de votação (texto principal, mudança no texto, urgência, pedido de andamento) e busca por assunto. Os filtros ficam no endereço, por exemplo `votos.html?p=camara-220633&voto=nao`.
 - **A cada R$ 100**: o custo do mandato dividido em partes, em linguagem simples, com porcentagens; e o quadro **Além do salário**, que compara o que vem com o cargo (segundo a Câmara) com o que a lei garante a quem ganha um salário mínimo ([`dp/beneficios.json`](dp/beneficios.json)).
-- **Cards para as redes**: carrossel 1080×1350 (Instagram, Kwai) e telas 1080×1920 (Stories, TikTok, Reels), gerados do relatório de sábado, com rascunho de legenda.
+- **Cards para as redes**: carrossel 1080×1350 (Instagram, Kwai) e telas 1080×1920 (Stories, TikTok, Reels), gerados do relatório de sábado, com rascunho de legenda. Ficam também no site, em **Posts da semana** (`posts.html`), para baixar, compartilhar pelo celular e copiar a legenda.
 - **Dias de trabalho**: dias úteis de quem trabalha com carteira assinada (feriados nacionais por lei federal e 30 dias de férias da CLT) ao lado dos dias de sessão deliberativa no Plenário da Câmara.
 - **Busca** por nome ou sigla, com foto oficial e logo do partido.
 - **Relatório semanal** (sábado a sexta) em Markdown e HTML.
@@ -46,10 +47,16 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
-Rotina semanal (o sábado é a data do relatório; a semana coberta vai do sábado anterior até sexta):
+Rotina de sábado inteira (coleta, relatório, cards, site e publicação no Netlify). Se alguma coleta falhar, o site não é publicado. Está agendada no app do Claude para todo sábado às 7h:
 
 ```bash
-.venv/bin/python -m dp.coleta --semana 2026-10-24      # coleta tudo (~5 min)
+.venv/bin/python -m dp.sabado                 # ou --sem-publicar para só gerar
+```
+
+Passo a passo (o sábado é a data do relatório; a semana coberta vai do sábado anterior até sexta):
+
+```bash
+.venv/bin/python -m dp.coleta --semana 2026-10-24      # coleta tudo
 .venv/bin/python -m dp.relatorio --semana 2026-10-24   # relatorios/2026-10-24.md e .html
 .venv/bin/python -m dp.site.build --semana 2026-10-24  # site em public/
 .venv/bin/python -m dp.site.build --semana 2026-10-24 --artefato  # versão para artefato do claude.ai
@@ -102,7 +109,8 @@ dp/
   fontes/              leitura de cada fonte (camara, senado, tse, fotos)
   trabalho.py          votações sobre trabalho e renda (regra em trabalho.json)
   calendario.py        dias úteis e férias do trabalhador
-  rankings.py          projetos apresentados e resumo de votos (rankings)
+  rankings.py          projetos apresentados e cada voto no Plenário desde 2023
+  sabado.py            rotina de sábado: coleta, cards, site e publicação
   cards/               cards para as redes (templates e CSS)
   metricas.py          números do relatório semanal
   relatorio.py         relatório em Markdown e HTML
@@ -120,15 +128,13 @@ Ficam fora do repositório: `data/` (banco e downloads), `public/`, `artefato/` 
 
 - Senado: ainda sem subsídio, verba de gabinete e benefícios (não publicados num formato coletável); o custo do Senado é só a cota.
 - Republicanos, Novo e Missão não têm logo com licença livre no Wikimedia Commons e aparecem com o selo da sigla.
-- O site está no Netlify, mas a atualização ainda é manual: rodar a coleta, o build e o deploy.
+- A rotina de sábado roda no app do Claude: se o app estiver fechado na hora, ela roda quando ele abrir.
 
 ## Próximos passos
 
 - Senado completo (subsídio, gabinete, benefícios) quando houver fonte coletável.
 - Emendas parlamentares (Portal da Transparência).
 - Monitor de redes sociais dos parlamentares (contas públicas, APIs oficiais).
-- Cards prontos para Instagram, TikTok e Kwai a partir do relatório de sábado.
-- Coleta e publicação automáticas toda semana.
 - Nova legislatura em fevereiro de 2027: a filiação com data já preserva o histórico.
 
 ## Créditos e licenças

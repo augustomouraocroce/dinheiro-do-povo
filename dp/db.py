@@ -186,6 +186,31 @@ CREATE TABLE IF NOT EXISTS resumo_votos (
     PRIMARY KEY (parlamentar_id, casa)
 );
 
+-- Todas as votações nominais do Plenário da Câmara desde o início do mandato, com o
+-- projeto principal de cada uma (página "Como votou").
+CREATE TABLE IF NOT EXISTS plenario_votacao (
+    id            TEXT PRIMARY KEY,          -- 'camara:2458405-38'
+    data          TEXT NOT NULL,
+    descricao     TEXT,
+    aprovada      INTEGER,
+    proposicao_id TEXT,
+    url_fonte     TEXT
+);
+
+CREATE TABLE IF NOT EXISTS plenario_proposicao (
+    id     TEXT PRIMARY KEY,                 -- id da proposição na Câmara
+    titulo TEXT,                             -- 'PL 1087/2025'
+    ementa TEXT
+);
+
+CREATE TABLE IF NOT EXISTS plenario_voto (
+    votacao_id     TEXT NOT NULL,
+    parlamentar_id TEXT NOT NULL,
+    voto           TEXT NOT NULL,
+    partido        TEXT,                     -- partido na data do voto
+    PRIMARY KEY (votacao_id, parlamentar_id)
+) WITHOUT ROWID;
+
 CREATE TABLE IF NOT EXISTS coleta_log (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     etapa       TEXT NOT NULL,

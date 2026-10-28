@@ -1,7 +1,7 @@
 {% set custo = camara.media_custo %}{% set ps = semana.camara.presenca_semana %}
 Dinheiro do Povo · semana de {{ inicio|data }} a {{ fim|data }}
 
-Em média, cada deputado federal custa {{ custo.total|brl }} por mês, o mesmo que {{ (custo.total / refs.salario_minimo.valor)|qtd }} salários mínimos. A cada R$ 100, {% for parte in custo|cada100 %}R$ {{ parte.reais }} {{ "vão para" if loop.first else "para" }} {{ parte.nome|lower }}{% if not loop.last %}, {% endif %}{% endfor %}.
+Em média, cada deputado federal custa {{ custo.total|brl }} por mês, o mesmo que {{ (custo.total / refs.salario_minimo.valor)|qtd }} salários mínimos. A cada R$ 100, {% for parte in custo|cada100 %}{{ "R$ " ~ parte.reais if parte.reais else "menos de R$ 1" }} {{ "vão para" if loop.first else "para" }} {{ parte.nome|lower }}{% if not loop.last %}, {% endif %}{% endfor %}.
 
 {% if ps.dias_com_sessao %}Presença: a Câmara teve {{ ps.dias_com_sessao|length }} {{ ps.dias_com_sessao|length|plural("dia", "dias") }} de sessão deliberativa. {{ ps.ausencias_nao_justificadas|length }} deputados dos partidos acompanhados faltaram sem justificativa em pelo menos um dia.{% else %}Presença: não houve sessão deliberativa no Plenário da Câmara nesta semana.{% endif %}
 

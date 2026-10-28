@@ -1,0 +1,59 @@
+{% extends "base.html.j2" %}
+{% import "componentes.html.j2" as c with context %}
+{% block titulo %}Como votou no Plenário · Dinheiro do Povo{% endblock %}
+{% block descricao %}Cada voto de um deputado no Plenário da Câmara desde 2023, com o projeto votado. Filtre por Sim, Não e pelo que foi votado.{% endblock %}
+{% block conteudo %}
+<section class="ladrilho pilha" aria-labelledby="t-cv">
+  <h1 id="t-cv">Como votou no Plenário</h1>
+  <p>Todos os votos nominais de um deputado no Plenário da Câmara desde fevereiro de 2023, com o projeto que estava em votação. Escolha a pessoa e filtre por Sim, Não ou pelo tipo de votação.</p>
+  <form class="cv-filtros" id="cv-form" data-ate="{{ votos_ate }}">
+    <label class="cv-campo"><span>Deputado</span>
+      <select id="cv-pessoa" name="p">
+        <option value="">Escolha um deputado</option>
+        {% for sigla, grupo in votos_deputados|groupby("partido") %}
+        <optgroup label="{{ sigla }}">
+          {% for p in grupo %}<option value="{{ p.slug }}" data-nome="{{ p.nome }}" data-partido="{{ p.partido }}" data-uf="{{ p.uf }}">{{ p.nome }} ({{ p.uf }})</option>
+          {% endfor %}
+        </optgroup>
+        {% endfor %}
+      </select>
+    </label>
+    <fieldset class="cv-chips">
+      <legend>Voto</legend>
+      {% for valor, rotulo in [("todos", "Todos"), ("sim", "Sim"), ("nao", "Não"), ("outros", "Outros")] %}
+      <label><input type="radio" name="voto" value="{{ valor }}"{% if loop.first %} checked{% endif %}><span>{{ rotulo }}<b data-n-voto="{{ valor }}"></b></span></label>
+      {% endfor %}
+    </fieldset>
+    <fieldset class="cv-chips">
+      <legend>O que foi votado</legend>
+      <label><input type="radio" name="tipo" value="todos" checked><span>Tudo<b data-n-tipo="todos"></b></span></label>
+      {% for chave, t in tipos_votacao.items() %}
+      <label><input type="radio" name="tipo" value="{{ chave }}"><span>{{ t[0] }}<b data-n-tipo="{{ chave }}"></b></span></label>
+      {% endfor %}
+    </fieldset>
+    <label class="filtro"><svg class="ic" aria-hidden="true"><use href="#i-busca"/></svg><span class="visivel-leitor">Buscar no assunto</span>
+      <input type="search" id="cv-busca" name="q" placeholder="Buscar assunto: imposto, saúde, salário…" autocomplete="off"></label>
+  </form>
+</section>
+
+<section class="secao" aria-labelledby="t-cv-res">
+  <h2 id="t-cv-res" class="visivel-leitor">Votos encontrados</h2>
+  <div class="ladrilho pilha cv-cab" id="cv-cab" hidden></div>
+  <p class="cv-contagem no-amarelo" id="cv-contagem" aria-live="polite">Escolha um deputado para ver os votos.</p>
+  <noscript><p class="ladrilho">Esta página precisa de JavaScript ligado para filtrar os votos. Os votos da semana estão na página de cada deputado.</p></noscript>
+  <div class="pilha" id="cv-lista"></div>
+  <button type="button" class="botao" id="cv-mais" hidden>Mostrar mais</button>
+</section>
+
+<section class="secao" aria-labelledby="t-cv-ler">
+  <div class="ladrilho pilha">
+    <h2 id="t-cv-ler">Como ler</h2>
+    <p>"Sim" e "Não" respondem à pergunta de cada votação, que aparece ao lado do voto com as palavras da Câmara. Nem toda votação é sobre o projeto inteiro:</p>
+    <dl class="cv-glossario">
+      {% for chave, t in tipos_votacao.items() %}<div><dt>{{ t[0] }}</dt><dd>{{ t[1]|capitalize }}.</dd></div>{% endfor %}
+    </dl>
+    <p class="secundario">O tipo vem da descrição oficial da votação. "Outros" reúne abstenção, obstrução e o voto do presidente da sessão (art. 17). Quem não estava ou não votou não aparece naquela votação. O partido é o da data do voto.</p>
+    {{ c.carimbo("Fonte: votações nominais do Plenário, Câmara", "https://dadosabertos.camara.leg.br/swagger/api.html#staticfile") }}
+  </div>
+</section>
+{% endblock %}

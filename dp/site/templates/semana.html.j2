@@ -1,6 +1,10 @@
 {% extends "base.html.j2" %}
 {% block titulo %}Semana de {{ inicio|data }} a {{ fim|data }} · Dinheiro do Povo{% endblock %}
 {% block conteudo %}
+<section class="ladrilho posts-aviso" aria-label="Posts da semana">
+  <p><strong>Imagens desta semana para as redes</strong><br><span class="secundario">Carrossel, Stories, TikTok e Reels, com a legenda pronta.</span></p>
+  <a class="botao" href="{{ raiz }}posts.html">Ver os posts</a>
+</section>
 <article class="texto">
 {{ corpo|safe }}
 </article>

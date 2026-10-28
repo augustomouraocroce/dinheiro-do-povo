@@ -1,7 +1,7 @@
 {% extends "base.html.j2" %}
 {% import "componentes.html.j2" as c with context %}
 {% block titulo %}Rankings · Dinheiro do Povo{% endblock %}
-{% block descricao %}Quem mais gasta, quem mais falta, quem apresenta menos projetos e quem mais vota "Não", com dados oficiais e o mesmo critério para todos.{% endblock %}
+{% block descricao %}Quem mais gasta, quem mais falta, quem apresenta menos projetos e quem mais vota "Não" ou "Sim", com dados oficiais e o mesmo critério para todos.{% endblock %}
 {% set r = rankings %}
 {% macro foto(p) -%}
 {%- if artefato %}<span class="foto-s rk-foto" style="background-position: {{ sprite[p.slug] }}" aria-hidden="true"></span>
@@ -17,7 +17,7 @@
   <p>Os mesmos critérios para todos, com dados oficiais. Cada ranking diz o que mede e o que não mede. Os parlamentares listados são dos partidos acompanhados: PL, PP, Republicanos, MDB, Podemos, Novo e Missão.</p>
   <nav class="rk-indice" aria-label="Rankings nesta página">
     <a href="#rk-partidos">Partido que mais gasta</a><a href="#rk-custo">Deputado que mais gasta</a><a href="#rk-senado">Senador com maior cota</a>
-    <a href="#rk-sem">Mais faltas sem justificativa</a><a href="#rk-just">Mais faltas justificadas</a><a href="#rk-projetos">Menos projetos</a><a href="#rk-nao">Mais votos "Não"</a>
+    <a href="#rk-sem">Mais faltas sem justificativa</a><a href="#rk-just">Mais faltas justificadas</a><a href="#rk-projetos">Menos projetos</a><a href="#rk-nao">Mais votos "Não"</a><a href="#rk-sim">Mais votos "Sim"</a>
   </nav>
 </section>
 
@@ -115,15 +115,32 @@
 <section class="secao" id="rk-nao" aria-labelledby="t-rk-nao">
   <div class="ladrilho pilha">
     <h2 id="t-rk-nao">Quem mais vota "Não"</h2>
-    <p class="secundario">Parte dos votos "Não" entre os votos Sim e Não nas votações nominais do Plenário desde 2023. Só entra quem votou ao menos {{ r.minimo_votos }} vezes. Votar "Não" pode ser contra o texto principal, uma emenda ou um pedido de urgência; cada voto está na página do parlamentar.</p>
+    <p class="secundario">Parte dos votos "Não" entre os votos Sim e Não nas votações nominais do Plenário desde 2023. Só entra quem votou ao menos {{ r.minimo_votos }} vezes. Votar "Não" pode ser contra o texto principal, uma emenda, um pedido de urgência ou um pedido para adiar a votação. Toque em "ver os votos" para saber em quais projetos foi.</p>
     <ol class="rk-lista">
     {% for i in r.mais_nao %}
       <li>{{ pessoa(loop.index, i.p) }}
-        <span class="rk-valor"><span class="rk-num">{{ i.pct|pct }}</span><small>{{ i.nao|num }} "Não" em {{ i.votos|num }} votos</small></span></li>
+        <span class="rk-valor"><span class="rk-num">{{ i.pct|pct }}</span><small>{{ i.nao|num }} "Não" em {{ i.votos|num }} votos</small>
+          <a class="rk-ver" href="{{ raiz }}votos.html?p={{ i.p.slug }}&amp;voto=nao">ver os votos "Não"</a></span></li>
     {% endfor %}
     </ol>
     {% if r.media_nao %}<p class="secundario">Na Câmara inteira, {{ r.media_nao|pct }} dos votos Sim/Não foram "Não".</p>{% endif %}
     {{ c.carimbo("Fonte: votações nominais, Câmara", "https://dadosabertos.camara.leg.br/swagger/api.html") }}
+  </div>
+</section>
+
+<section class="secao" id="rk-sim" aria-labelledby="t-rk-sim">
+  <div class="ladrilho pilha">
+    <h2 id="t-rk-sim">Quem mais vota "Sim"</h2>
+    <p class="secundario">Parte dos votos "Sim" entre os votos Sim e Não nas mesmas votações, com o mesmo mínimo de {{ r.minimo_votos }} votos. Votar "Sim" pode ser a favor do texto principal, de uma emenda, de um pedido de urgência ou de um pedido para adiar a votação.</p>
+    <ol class="rk-lista">
+    {% for i in r.mais_sim %}
+      <li>{{ pessoa(loop.index, i.p) }}
+        <span class="rk-valor"><span class="rk-num">{{ i.pct|pct }}</span><small>{{ i.sim|num }} "Sim" em {{ i.votos|num }} votos</small>
+          <a class="rk-ver" href="{{ raiz }}votos.html?p={{ i.p.slug }}&amp;voto=sim">ver os votos "Sim"</a></span></li>
+    {% endfor %}
+    </ol>
+    {% if r.media_sim %}<p class="secundario">Na Câmara inteira, {{ r.media_sim|pct }} dos votos Sim/Não foram "Sim".</p>{% endif %}
+    <a class="carimbo" href="{{ raiz }}votos.html">Ver os votos de qualquer deputado<svg aria-hidden="true"><use href="#i-seta"/></svg></a>
   </div>
 </section>
 {% endblock %}

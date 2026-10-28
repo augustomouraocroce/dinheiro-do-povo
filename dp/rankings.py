@@ -2,8 +2,8 @@
 
 - Projetos: PL, PLP, PDL e PRC em que o deputado é autor ou coautor, desde o início
   do mandato. PEC fica de fora: precisa de 171 assinaturas, e assinar não é ser autor.
-- Votos: Sim, Não e outros em todas as votações nominais do Plenário desde o início
-  do mandato (arquivos anuais de votações da Câmara).
+- Votos: cada voto nominal do Plenário desde o início do mandato, com o projeto votado,
+  e o total de Sim, Não e outros (arquivos anuais de votações da Câmara).
 """
 import re
 from collections import Counter, defaultdict
@@ -49,25 +49,54 @@ def coletar_projetos(conn, deputados) -> dict:
     return {"deputados": len(deputados) - len(falhas), "falhas": falhas}
 
 
-def coletar_resumo_votos(conn, anos) -> dict:
-    """Soma Sim / Não / outros por deputado nas votações nominais do Plenário."""
+def proposicao_principal(vid: str, props: list):
+    """O projeto em votação. O código da votação começa pelo id da proposição votada, mas
+    nos pedidos de urgência esse id é o do requerimento: aí vale o projeto ligado a ele."""
+    prefixo = vid.split("-")[0]
+    ordem = sorted(props, key=lambda p: p["proposicao_id"] != prefixo)
+    return next((p for p in ordem if p.get("proposicao_siglaTipo") != "REQ"), ordem[0] if ordem else None)
+
+
+def coletar_votos_plenario(conn, anos) -> dict:
+    """Guarda cada voto nominal do Plenário com o projeto votado e soma Sim / Não / outros
+    por deputado."""
     atual = date.today().year
-    plenario = set()
+    plenario, props, votos = {}, defaultdict(list), []
     for ano in anos:
         for r in trabalho._ler(trabalho.baixar_arquivo_ano("votacoes", ano, atual)):
             if r["siglaOrgao"] == "PLEN":
-                plenario.add(r["id"])
-    contagem = defaultdict(Counter)
-    votacoes = set()
-    for ano in anos:
+                plenario[r["id"]] = r
         for r in trabalho._ler(trabalho.baixar_arquivo_ano("votacoesVotos", ano, atual)):
             if r["idVotacao"] in plenario:
-                votacoes.add(r["idVotacao"])
-                cat = "sim" if r["voto"] == "Sim" else "nao" if r["voto"] == "Não" else "outros"
-                contagem[r["deputado_id"]][cat] += 1
+                votos.append((f"camara:{r['idVotacao']}", f"camara:{r['deputado_id']}", r["voto"],
+                              r["deputado_siglaPartido"] or None))
+        for r in trabalho._ler(trabalho.baixar_arquivo_ano("votacoesProposicoes", ano, atual)):
+            if r["idVotacao"] in plenario:
+                props[r["idVotacao"]].append(r)
+
+    nominais = {v[0].split(":", 1)[1] for v in votos}
+    votacoes, proposicoes = [], {}
+    for vid in nominais:
+        v, p = plenario[vid], proposicao_principal(vid, props[vid])
+        if p:
+            proposicoes[p["proposicao_id"]] = (p["proposicao_id"], p["proposicao_titulo"], p["proposicao_ementa"])
+        votacoes.append((f"camara:{vid}", v["data"], v["descricao"],
+                         int(v["aprovacao"]) if v["aprovacao"] not in ("", None) else None,
+                         p["proposicao_id"] if p else None, v["uri"]))
+
+    contagem = defaultdict(Counter)
+    for _, dep, voto, _ in votos:
+        contagem[dep]["sim" if voto == "Sim" else "nao" if voto == "Não" else "outros"] += 1
+
+    for tabela in ("plenario_voto", "plenario_votacao", "plenario_proposicao"):
+        conn.execute(f"DELETE FROM {tabela}")
+    conn.executemany("INSERT INTO plenario_votacao VALUES (?, ?, ?, ?, ?, ?)", votacoes)
+    conn.executemany("INSERT INTO plenario_proposicao VALUES (?, ?, ?)", proposicoes.values())
+    conn.executemany("INSERT OR REPLACE INTO plenario_voto VALUES (?, ?, ?, ?)", votos)
     conn.execute("DELETE FROM resumo_votos WHERE casa = 'camara'")
     conn.executemany("INSERT INTO resumo_votos VALUES (?, 'camara', ?, ?, ?, ?, ?)",
-                     [(f"camara:{dep}", INICIO_MANDATO, c["sim"], c["nao"], c["outros"], len(votacoes))
+                     [(dep, INICIO_MANDATO, c["sim"], c["nao"], c["outros"], len(nominais))
                       for dep, c in contagem.items()])
     conn.commit()
-    return {"votacoes_nominais": len(votacoes), "deputados": len(contagem)}
+    return {"votacoes_nominais": len(nominais), "votos": len(votos), "proposicoes": len(proposicoes),
+            "deputados": len(contagem)}

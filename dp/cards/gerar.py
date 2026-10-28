@@ -4,7 +4,6 @@ fotografada pelo Chrome sem interface; nenhuma imagem é gerada por IA.
 """
 import argparse
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -29,21 +28,16 @@ VOTACOES_POR_CARD = 2
 MAX_CARDS = 10
 
 
-def _sem_placar(descricao: str) -> str:
-    """A Câmara repete o placar no fim da descrição; o card mostra o placar à parte."""
-    return re.sub(r"\s*Sim:\s*\d+.*$", "", descricao or "", flags=re.I | re.S).strip()
-
-
 def votacoes_da_semana(semana) -> list:
     saida = []
     for v in semana["camara"]["votacoes"]:
         sim, nao = v["placar"].get("Sim", 0), v["placar"].get("Não", 0)
-        saida.append({"casa": "Câmara", "data": v["data"], "descricao": _sem_placar(v["descricao"]),
+        saida.append({"casa": "Câmara", "data": v["data"], "descricao": dados.sem_placar(v["descricao"]),
                       "aprovada": v["aprovada"], "sim": sim, "nao": nao,
                       "bancadas": [{"partido": b["partido"], "sim": b["sim"], "nao": b["nao"]} for b in v["bancadas"]]})
     for v in semana["senado"]["votacoes"]["votacoes"]:
         sim, nao = v["placar"].get("Sim", 0), v["placar"].get("Não", 0)
-        saida.append({"casa": "Senado", "data": v["data"], "descricao": _sem_placar(v["descricao"]),
+        saida.append({"casa": "Senado", "data": v["data"], "descricao": dados.sem_placar(v["descricao"]),
                       "aprovada": v["aprovada"], "sim": sim, "nao": nao,
                       "bancadas": [{"partido": b["partido"], "sim": b["sim"], "nao": b["nao"]} for b in v["bancadas"]]})
     return saida

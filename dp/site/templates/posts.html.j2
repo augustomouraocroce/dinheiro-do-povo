@@ -1,0 +1,32 @@
+{% extends "base.html.j2" %}
+{% import "componentes.html.j2" as c with context %}
+{% block titulo %}Posts da semana · Dinheiro do Povo{% endblock %}
+{% block descricao %}As imagens do relatório de sábado, prontas para Instagram, Kwai, TikTok, Reels e Stories, com a legenda e as fontes.{% endblock %}
+{% block conteudo %}
+<section class="ladrilho pilha" aria-labelledby="t-posts">
+  <h1 id="t-posts">Posts da semana</h1>
+  <p>As imagens do relatório de sábado, feitas com os mesmos dados do site. Pode baixar e compartilhar: cada número tem a fonte oficial na legenda e no site.</p>
+  <p class="secundario">Carrossel em 1080 × 1350 para Instagram e Kwai. Telas em pé, 1080 × 1920, para Stories, TikTok e Reels.</p>
+</section>
+
+{% for s in posts %}
+{% set rotulo = "Semana de " ~ s.inicio|data ~ " a " ~ s.fim|data %}
+<section class="secao" aria-labelledby="t-post-{{ s.sabado }}">
+  {% if loop.first %}
+  <div class="ladrilho pilha posts-semana" data-post>
+    <h2 id="t-post-{{ s.sabado }}">{{ rotulo }}</h2>
+    {% include "posts-semana.html.j2" %}
+  </div>
+  {% else %}
+  <details class="ladrilho posts-semana posts-antigo" data-post>
+    <summary><svg class="chev" aria-hidden="true"><use href="#i-seta"/></svg><h2 id="t-post-{{ s.sabado }}">{{ rotulo }}</h2></summary>
+    <div class="pilha">{% include "posts-semana.html.j2" %}</div>
+  </details>
+  {% endif %}
+</section>
+{% else %}
+<section class="ladrilho">
+  <p>Ainda não há imagens geradas. Elas saem todo sábado de manhã, depois da coleta.</p>
+</section>
+{% endfor %}
+{% endblock %}

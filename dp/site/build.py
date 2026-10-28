@@ -149,6 +149,46 @@ def copiar_fotos(saida: Path, d):
             alvo_mini.write_bytes(fotos.gravar_origem(alvo_mini.read_bytes(), texto))
 
 
+def escrever_votos(saida: Path, conn, d) -> str:
+    """Índice das votações do Plenário e um arquivo pequeno por deputado, lidos pela
+    página "Como votou". Devolve a data da votação mais recente."""
+    indice, por_pessoa = dados.votos_plenario(conn, d["parlamentares"])
+    pasta = saida / "dados" / "votos"
+    if pasta.exists():
+        shutil.rmtree(pasta)
+    pasta.mkdir(parents=True)
+    compacto = {"ensure_ascii": False, "separators": (",", ":")}
+    (saida / "dados" / "votacoes.json").write_text(json.dumps(indice, **compacto), encoding="utf-8")
+    for slug_pessoa, votos in por_pessoa.items():
+        (pasta / f"{slug_pessoa}.json").write_text(json.dumps(votos, **compacto), encoding="utf-8")
+    return indice["votacoes"][0][0] if indice["votacoes"] else None
+
+
+def copiar_posts(saida: Path) -> list:
+    """As imagens de cada sábado (cards/AAAA-MM-DD) e a legenda, da semana mais recente
+    para a mais antiga."""
+    from dp.cards import gerar  # importado aqui: os cards também usam este módulo
+    semanas = []
+    for pasta in sorted(gerar.SAIDA.glob("[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]"), reverse=True):
+        sabado = date.fromisoformat(pasta.name)
+        inicio, fim = config.semana_referencia(sabado)
+        semana = {"sabado": pasta.name, "inicio": inicio, "fim": fim, "legenda": ""}
+        for formato, (largura, altura) in gerar.FORMATOS.items():
+            semana[formato] = []
+            for png in sorted((pasta / formato).glob("*.png")):
+                alvo = saida / "posts" / pasta.name / formato / png.name
+                alvo.parent.mkdir(parents=True, exist_ok=True)
+                if not alvo.exists() or alvo.stat().st_mtime < png.stat().st_mtime:
+                    shutil.copy2(png, alvo)
+                semana[formato].append({"url": f"posts/{pasta.name}/{formato}/{png.name}", "largura": largura,
+                                        "altura": altura, "arquivo": f"dinheiro-do-povo-{pasta.name}-{formato}-{png.name}"})
+        if (pasta / "legenda.txt").exists():
+            semana["legenda"] = (pasta / "legenda.txt").read_text(encoding="utf-8")
+        if semana["carrossel"] or semana["vertical"]:
+            semanas.append(semana)
+    return semanas
+
+
 # --- Versão para artefato do claude.ai ------------------------------------------------
 # O artefato aceita no máximo 511 arquivos: as fotos das listas viram um mosaico único,
 # a foto do topo de cada parlamentar vai embutida na página e a fonte vem do Google Fonts.
@@ -245,6 +285,11 @@ def construir(conn, sabado: date, saida: Path = SAIDA, artefato: bool = False):
     escrever("partidos.html", "partidos.html.j2", "", "partidos")
     escrever("trabalho.html", "trabalho.html.j2", "", "trabalho")
     escrever("rankings.html", "rankings.html.j2", "", "rankings")
+    votos_deputados = sorted((p for p in d["parlamentares"] if p["casa"] == "camara"),
+                             key=lambda p: (p["partido"], normalizar(p["nome"])))
+    escrever("votos.html", "votos.html.j2", "", "votos", votos_deputados=votos_deputados,
+             tipos_votacao=dados.TIPOS_VOTACAO, votos_ate=escrever_votos(saida, conn, d) or "")
+    escrever("posts.html", "posts.html.j2", "", "posts", posts=copiar_posts(saida))
     escrever("metodologia.html", "metodologia.html.j2", "", "metodologia")
     escrever(f"semana/{sabado.isoformat()}.html", "semana.html.j2", "../", "semana",
              corpo=Markup(corpo_semana))

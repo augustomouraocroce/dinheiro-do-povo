@@ -411,8 +411,8 @@ a.prateleira:hover { background: var(--papel-2); }
 .voto .v-nao { background: var(--papel); }
 .votos-proposta > summary { font-stretch: 75%; font-weight: 800; font-size: 1.05rem; color: var(--tinta); }
 .votos-proposta .votos { margin-top: 6px; }
-.nav-baixo { grid-template-columns: repeat(5, 1fr); }
-.nav-baixo a { font-size: .75rem; }
+.nav-baixo { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.nav-baixo a { font-size: .72rem; font-stretch: 90%; }
 .votacao[open] > summary .vt-desc { display: none; }
 
 /* ---------- A cada R$ 100 ---------- */
@@ -478,3 +478,74 @@ span.rk-foto { background-size: var(--mosaico-tamanho, 2000% 1500%); }
   .rk-partido { grid-column: 2 / 4; }
   .rk-lista li:has(.rk-partido) .rk-valor { grid-column: 2 / 4; }
 }
+
+/* Botão de tinta (Mostrar mais, Compartilhar, Copiar legenda) */
+.botao { font: inherit; font-weight: 800; font-size: 1rem; background: var(--tinta); color: var(--papel); border: var(--borda);
+  border-radius: 9px; padding: 8px 16px; min-height: 46px; width: fit-content; cursor: pointer; }
+.botao:hover { background: var(--carimbo); border-color: var(--carimbo); }
+.botao:disabled { opacity: .6; cursor: progress; }
+.botao[hidden] { display: none; }
+
+/* Como votou: filtros em pílulas, barra Sim/Não e votos agrupados por proposta */
+.cv-filtros { display: grid; gap: 16px; }
+.cv-campo { display: grid; gap: 6px; font-weight: 800; }
+.cv-campo select { font: inherit; font-weight: 600; height: 48px; padding: 0 12px; border: var(--borda); border-radius: 9px;
+  background: var(--papel); color: var(--tinta); width: 100%; max-width: 420px; }
+.cv-chips { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.cv-chips legend { font-weight: 800; padding: 0; margin-bottom: 6px; }
+.cv-chips label { position: relative; }
+.cv-chips input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.cv-chips span { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 4px 14px; border: var(--borda);
+  border-radius: 999px; background: var(--papel); font-weight: 700; font-size: .95rem; cursor: pointer; }
+.cv-chips b { font-weight: 600; color: var(--tinta-2); font-variant-numeric: tabular-nums; }
+.cv-chips b:empty { display: none; }
+.cv-chips input:checked + span { background: var(--tinta); color: var(--amarelo); }
+.cv-chips input:checked + span b { color: var(--papel); }
+.cv-chips input:focus-visible + span { outline: 3px solid var(--carimbo); outline-offset: 2px; }
+.cv-pessoa { display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center; }
+.cv-pessoa img { width: 56px; height: 74px; object-fit: cover; border: 1.5px solid var(--tinta); border-radius: 5px; }
+.cv-pessoa .rk-nome { font-size: 1.15rem; }
+.cv-barra { display: flex; height: 22px; border: var(--borda); border-radius: 6px; overflow: hidden; background: var(--papel); }
+.cv-barra span + span { border-left: 2px solid var(--tinta); }
+.cv-b-sim { background: var(--tinta); }
+.cv-b-nao { background: repeating-linear-gradient(135deg, var(--papel) 0 5px, var(--tinta) 5px 7px); }
+.cv-b-outros { background: var(--s-referencia); }
+.cv-legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .95rem; }
+.cv-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.cv-legenda i { width: 14px; height: 14px; border: 1.5px solid var(--tinta); border-radius: 3px; }
+.cv-contagem { font-weight: 750; }
+.cv-prop h3 a { text-decoration-thickness: 2px; }
+.cv-prop .proposta-ementa { font-size: .95rem; }
+.cv-tipo { display: inline-block; font-stretch: 70%; font-weight: 850; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em;
+  border: 1.5px solid var(--tinta); border-radius: 4px; padding: 0 5px; margin-right: 2px; vertical-align: 1px; }
+.voto .v-outros { font-size: .85rem; font-weight: 800; border-color: var(--s-referencia); align-self: start; }
+.cv-glossario { display: grid; gap: 8px; margin: 0; }
+.cv-glossario div { display: grid; gap: 0; }
+.cv-glossario dt { font-weight: 800; }
+.cv-glossario dd { margin: 0; color: var(--tinta-2); }
+@media (min-width: 760px) {
+  .cv-glossario { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; }
+}
+
+/* Rankings: link para os votos filtrados */
+.rk-ver { font-size: .875rem; font-weight: 700; color: var(--carimbo); white-space: nowrap; }
+
+/* Posts da semana */
+.posts-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.posts-cab h3 small { display: block; font-size: .875rem; font-weight: 600; color: var(--tinta-2); }
+.posts-grade { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
+.posts-vertical { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+.posts-grade a { display: grid; gap: 4px; text-decoration: none; }
+.posts-grade img { width: 100%; height: auto; border: var(--borda); border-radius: 8px; background: var(--papel-2); }
+.posts-grade span { font-size: .85rem; font-weight: 700; color: var(--carimbo); }
+.posts-legenda textarea { width: 100%; font: inherit; font-size: .95rem; line-height: 1.45; border: var(--borda); border-radius: 9px;
+  padding: 12px; background: var(--papel-2); color: var(--tinta); resize: vertical; }
+.posts-antigo > summary { display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; }
+.posts-antigo > summary::-webkit-details-marker { display: none; }
+.posts-antigo > summary h2 { margin: 0; }
+.posts-antigo > summary .chev { width: 18px; height: 18px; flex: none; transition: transform .18s cubic-bezier(.16, 1, .3, 1); }
+.posts-antigo[open] > summary .chev { transform: rotate(90deg); }
+.posts-antigo[open] > .pilha { margin-top: 14px; }
+.posts-aviso { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+a.botao { display: inline-flex; align-items: center; text-decoration: none; }
+a.botao:hover { color: var(--papel); }

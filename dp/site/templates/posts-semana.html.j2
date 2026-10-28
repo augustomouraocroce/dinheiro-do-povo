@@ -1,0 +1,30 @@
+{% for formato, titulo, nota in [("carrossel", "Carrossel", "Instagram e Kwai"), ("vertical", "Telas em pé", "Stories, TikTok e Reels")] %}
+{% set imagens = s[formato] %}
+{% if imagens %}
+<div class="pilha posts-grupo" data-grupo>
+  <div class="posts-cab">
+    <h3>{{ titulo }} <small>{{ imagens|length }} {{ imagens|length|plural("imagem", "imagens") }} · {{ nota }}</small></h3>
+    <button type="button" class="botao" data-compartilhar hidden>Compartilhar as {{ imagens|length }}</button>
+  </div>
+  <ol class="posts-grade posts-{{ formato }}">
+    {% for img in imagens %}
+    <li>
+      <a href="{{ raiz }}{{ img.url }}" download="{{ img.arquivo }}" data-imagem>
+        <img src="{{ raiz }}{{ img.url }}" alt="{{ titulo }}, imagem {{ loop.index }} de {{ imagens|length }}" loading="lazy" width="{{ img.largura }}" height="{{ img.altura }}">
+        <span>{{ loop.index }} · baixar</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+{% endif %}
+{% endfor %}
+{% if s.legenda %}
+<div class="pilha posts-legenda">
+  <div class="posts-cab">
+    <h3>Legenda</h3>
+    <button type="button" class="botao" data-copiar="legenda-{{ s.sabado }}">Copiar legenda</button>
+  </div>
+  <textarea id="legenda-{{ s.sabado }}" readonly rows="10" aria-label="Legenda da semana de {{ s.inicio|data }} a {{ s.fim|data }}">{{ s.legenda }}</textarea>
+</div>
+{% endif %}

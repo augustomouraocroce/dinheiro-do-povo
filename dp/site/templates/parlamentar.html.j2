@@ -142,6 +142,7 @@
     {% else %}
     <p>Não houve votação nominal no Plenário nesta semana.</p>
     {% endif %}
+    {% if p.casa == "camara" %}<a class="carimbo" href="{{ raiz }}votos.html?p={{ p.slug }}">Ver todos os votos desde 2023, projeto por projeto<svg aria-hidden="true"><use href="#i-seta"/></svg></a>{% endif %}
   </div>
 </section>
 
