@@ -470,7 +470,9 @@ def tipo_votacao(descricao: str) -> str:
     """O que foi votado, pela descrição oficial: texto principal, mudança no texto,
     urgência ou pedido de andamento."""
     d = sem_placar(descricao).lower()
-    d = re.sub(r"proposta de emenda à constituição|(sub)?emenda (aglutinativa )?substitutiva( global)?|ressalvad[oa]s? (os |o |as |a )?destaques?",
+    if re.search(r"(primeiro|segundo) turno", d):  # PEC votada no todo, em cada turno
+        return "principal"
+    d = re.sub(r"proposta de emenda (à constituição|constitucional)|(sub)?emenda (aglutinativa )?substitutiva( global)?|ressalvad[oa]s? (os |o |as |a )?destaques?",
                "", d)
     if "urgência" in d:
         return "urgencia"
@@ -486,6 +488,8 @@ def tipo_votacao(descricao: str) -> str:
 # item, quando existe, diz o resultado com palavras próprias (aprovado, rejeitado).
 EXPLICACOES_VOTO = [
     (r"urgência", "Pedido de urgência: votar o projeto mais rápido, sem esperar as comissões.", "a favor da urgência"),
+    (r"(primeiro|segundo) turno", "O texto principal da mudança na Constituição (PEC). Uma PEC é votada duas vezes "
+     "em cada Casa e precisa de pelo menos 308 votos na Câmara.", "aprovar a PEC"),
     (r"redação final", "A versão final do texto, já com as mudanças aprovadas.", "aprovar a versão final"),
     (r"emenda de redação", "Ajuste de redação: corrige palavras do texto, sem mudar o conteúdo.", "aprovar o ajuste"),
     (r"(dispositivo|emenda)[^.]*senado.*parecer pela rejeição",
@@ -523,7 +527,7 @@ def explicar_votacao(descricao: str):
     """{"o_que", "sim", "resultado", "placar"} em linguagem simples, ou None quando a descrição
     não segue o padrão da Câmara (o Senado descreve de outro jeito)."""
     d = sem_placar(descricao).lower()
-    placar = re.search(r"Sim:\s*(\d+).*?Não:\s*(\d+)", descricao or "", re.S)
+    placar = re.search(r"Sim:\s*(\d+).*?Não:\s*(\d+)", descricao or "", re.S | re.I)
     for padrao, o_que, sim, *palavras in EXPLICACOES_VOTO:
         if re.search(padrao, d):
             aprovado, rejeitado = palavras[0] if palavras else ("aprovado", "rejeitado")
@@ -543,6 +547,50 @@ def documentos_votacao(conn) -> dict:
     """{id da votação: página oficial do parecer ou da emenda que estava em votação}."""
     return {vid: trabalho.URL_PROPOSICAO_CAMARA.format(id=doc) for vid, doc in conn.execute(
         "SELECT id, documento_id FROM plenario_votacao WHERE documento_id IS NOT NULL")}
+
+
+# Siglas que aparecem nas notas da Câmara com o nome do bloco ou da federação.
+FEDERACOES = {"fe brasil": "PT, PCdoB e PV", "brasil da esperança": "PT, PCdoB e PV", "pt-pcdob-pv": "PT, PCdoB e PV",
+              "psol-rede": "PSOL e Rede", "psol/rede": "PSOL e Rede", "psdb cidadania": "PSDB e Cidadania",
+              "psdb-cidadania": "PSDB e Cidadania", "psol rede": "PSOL e Rede", "solidari": "Solidariedade"}
+
+
+def quem_pediu(abertura: str):
+    """Quem pediu o destaque e o que queria, pela nota oficial que abre a votação
+    ("Votação do DTQ 13: PL: Emenda de Plenário 766"). None se não for destaque."""
+    m = re.match(r"Votação do DTQ\s*\d+\s*(\(([^)]*)\))?\s*:?\s*([^:]*?)\s*:?\s*(Destaque|Emenda|DVS|Dest\.|Art\.)(.*)",
+                 abertura or "", re.I | re.S)
+    if not m:
+        return None
+    lista, autor, resto = m.group(2), m.group(3), m.group(4) + m.group(5)
+    if lista and ("," in lista or "líderes" in lista.lower()):
+        nome, varios = "vários partidos", True
+    else:
+        texto = lista or autor
+        dentro = re.search(r"\(([^)]*)\)", texto)
+        if dentro and re.fullmatch(r"[A-ZÀ-Ú][A-ZÀ-Ú ]*", dentro.group(1).strip()):
+            texto = dentro.group(1)          # "Bloco UNIÃO (PP)" -> PP
+        texto = re.sub(r"\(.*?\)", "", texto).strip()
+        if "líderes" in texto.lower():
+            nome, varios = "vários partidos", True
+        else:
+            texto = re.sub(r"^(bloco\s+)?(fdr\.?\s+)?", "", texto, flags=re.I).strip()
+            nome = next((v for k, v in FEDERACOES.items() if k in texto.lower()), texto)
+            varios = False
+            if not nome or nome.upper() == "EMS":  # nota sem autor (emenda do Senado)
+                return None
+    emenda = bool(re.search(r"emenda", resto, re.I)) and not re.search(r"substitutivo", resto, re.I)
+    return {"autor": nome, "varios": varios, "quer": "aprovar a emenda" if emenda else "tirar o trecho do texto"}
+
+
+def destaques_votacao(conn) -> dict:
+    """{id da votação: quem pediu o destaque e o que queria}."""
+    saida = {}
+    for vid, abertura in conn.execute("SELECT id, abertura FROM plenario_votacao WHERE abertura LIKE 'Votação do DTQ%'"):
+        q = quem_pediu(abertura)
+        if q:
+            saida[vid] = q
+    return saida
 
 
 def votos_plenario(conn, pessoas) -> tuple:
@@ -574,7 +622,8 @@ def votos_plenario(conn, pessoas) -> tuple:
               "proposicoes": proposicoes, "votacoes": votacoes,
               # documento votado e "o que mudou" revisado, pela posição da votação
               "documentos": {pos[vid]: url for vid, url in documentos_votacao(conn).items() if vid in pos},
-              "mudou": {pos[vid]: e for vid, e in carregar_votacoes_explicadas().items() if vid in pos}}
+              "mudou": {pos[vid]: e for vid, e in carregar_votacoes_explicadas().items() if vid in pos},
+              "pedidos": {pos[vid]: q for vid, q in destaques_votacao(conn).items() if vid in pos}}
 
     por_pessoa = {}
     deputados = {p["id"]: p for p in pessoas if p["casa"] == "camara"}
@@ -707,6 +756,7 @@ def montar(conn, sabado: date) -> dict:
         "casos": casos,
         "votacoes_explicadas": carregar_votacoes_explicadas(),
         "documentos_votacao": documentos_votacao(conn),
+        "destaques_votacao": destaques_votacao(conn),
         "pauta": pauta,
         "rankings": montar_rankings(conn, dep, custos, parlamentares),
         "dias": dias_de_trabalho(conn, ano, fim),

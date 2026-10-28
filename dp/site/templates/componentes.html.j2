@@ -217,12 +217,18 @@
 </div>
 {%- endmacro %}
 
+{# Quem pediu o destaque, pela nota oficial da Câmara #}
+{% macro pedido_texto(q) -%}
+{{ "Pedido de vários partidos, que queriam" if q.varios else ("Pedido da federação " if " e " in q.autor else "Pedido do ") ~ q.autor ~ ", que queria" }} {{ q.quer }}.
+{%- endmacro %}
+
 {# Um voto explicado: o que foi votado e o que o "Sim" quer dizer; o texto oficial vem embaixo #}
 {% macro voto_explicado(descricao, data, url=None, casa="camara", extra="", vid=None) -%}
 {%- set e = descricao|explica_voto if casa == "camara" else None -%}
 {%- set mudou = votacoes_explicadas.get(vid) if vid else None -%}
 {%- set documento = documentos_votacao.get(vid) if vid else None -%}
-<p>{% if e %}<b>{{ e.o_que }}</b> {{ e.sim }}{% if e.resultado %} Resultado: {{ e.resultado }}{% if e.placar %}, {{ e.placar[0] }} a {{ e.placar[1] }}{% endif %}.{% endif %}
+{%- set pedido = destaques_votacao.get(vid) if vid else None -%}
+<p>{% if e %}<b>{{ e.o_que }}</b>{% if pedido %} {{ pedido_texto(pedido) }}{% endif %} {{ e.sim }}{% if e.resultado %} Resultado: {{ e.resultado }}{% if e.placar %}, {{ e.placar[0] }} a {{ e.placar[1] }}{% endif %}.{% endif %}
   {% if mudou %}<span class="voto-mudou"><b>O que mudou:</b> {{ mudou.texto }} {% for f in mudou.fontes %}<a href="{{ f.url }}" target="_blank" rel="noopener">{{ f.veiculo }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</span>{% endif %}
   <span class="voto-oficial">Texto oficial: {{ descricao|sem_placar }} ({{ data|data }}{{ extra }}){% if url %} · <a href="{{ url }}" target="_blank" rel="noopener">fonte</a>{% endif %}{% if documento %} · <a href="{{ documento }}" target="_blank" rel="noopener">documento do relator</a>{% endif %}</span>
 {%- else %}{{ descricao }} <span class="secundario">({{ data|data }}{{ extra }})</span>{% if url %} · <a href="{{ url }}" target="_blank" rel="noopener">fonte</a>{% endif %}{% endif %}</p>

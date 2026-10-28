@@ -4,14 +4,114 @@
     "camara:2430143-140": {
       "texto": "A Câmara ficou com parte das mudanças do Senado, as que o relator recomendou manter. Entre elas: os benefícios para empresas da Zona Franca de Manaus, a devolução de imposto (cashback) para famílias de baixa renda nos serviços de internet e telefone, e a exportação de minérios fora do Imposto Seletivo.",
       "fontes": [
-        {"veiculo": "Gazeta do Povo", "data": "2024-12-17", "url": "https://www.gazetadopovo.com.br/economia/camara-aprova-regulamentacao-de-reforma-tributaria-e-rejeita-parte-das-mudancas-do-senado/"}
+        {
+          "veiculo": "Gazeta do Povo",
+          "data": "2024-12-17",
+          "url": "https://www.gazetadopovo.com.br/economia/camara-aprova-regulamentacao-de-reforma-tributaria-e-rejeita-parte-das-mudancas-do-senado/"
+        }
       ]
     },
     "camara:2430143-142": {
       "texto": "Aqui foram votadas as mudanças do Senado que o relator recomendou derrubar, e elas caíram. Entre elas: desconto de 60% no imposto para saneamento e água, para segurança da informação e para atividades como esporte e cursos de idiomas; imposto menor para água mineral e para biscoitos e bolachas populares; desconto de 60% para serviços veterinários (ficou 30%); e a retirada dos refrigerantes e outras bebidas açucaradas do Imposto Seletivo, que voltaram a pagar esse imposto. Também voltou a lista de remédios com imposto zero ou reduzido aprovada antes pela Câmara.",
       "fontes": [
-        {"veiculo": "Agência Brasil", "data": "2024-12-17", "url": "https://agenciabrasil.ebc.com.br/politica/noticia/2024-12/camara-rejeita-mudancas-do-senado-e-aprova-reforma-tributaria"},
-        {"veiculo": "Gazeta do Povo", "data": "2024-12-17", "url": "https://www.gazetadopovo.com.br/economia/camara-aprova-regulamentacao-de-reforma-tributaria-e-rejeita-parte-das-mudancas-do-senado/"}
+        {
+          "veiculo": "Agência Brasil",
+          "data": "2024-12-17",
+          "url": "https://agenciabrasil.ebc.com.br/politica/noticia/2024-12/camara-rejeita-mudancas-do-senado-e-aprova-reforma-tributaria"
+        },
+        {
+          "veiculo": "Gazeta do Povo",
+          "data": "2024-12-17",
+          "url": "https://www.gazetadopovo.com.br/economia/camara-aprova-regulamentacao-de-reforma-tributaria-e-rejeita-parte-das-mudancas-do-senado/"
+        }
+      ]
+    },
+    "camara:2430143-98": {
+      "texto": "Incluiu as carnes na lista de alimentos da cesta básica com imposto zero. A emenda foi apresentada pelo PL e aprovada por 477 a 3; depois da votação, o relator anunciou que também incluiria queijos, peixes e sal.",
+      "fontes": [
+        {
+          "veiculo": "O Povo",
+          "data": "2024-07-10",
+          "url": "https://mais.opovo.com.br/jornal/economia/2024/07/10/camara-aprova-inclusao-da-carne-na-isencao-da-cesta-basica.html"
+        },
+        {
+          "veiculo": "SBT News",
+          "url": "https://sbtnews.sbt.com.br/noticia/politica/reforma-tributaria-deputado-apresenta-emenda-para-incluir-carnes-na-cesta-basica"
+        }
+      ]
+    },
+    "camara:2430143-95": {
+      "texto": "Incluía armas e munições no Imposto Seletivo, o imposto mais alto, cobrado de produtos que fazem mal à saúde ou ao meio ambiente. A emenda, do PSOL, foi rejeitada por 316 a 155, e as armas ficaram fora desse imposto.",
+      "fontes": [
+        {
+          "veiculo": "Congresso em Foco",
+          "url": "https://congressoemfoco.com.br/noticia/6840/camara-rejeita-sugestao-do-psol-e-deixa-armas-fora-do-imposto-seletivo-na-tributaria"
+        },
+        {
+          "veiculo": "O Povo",
+          "data": "2024-07-10",
+          "url": "https://mais.opovo.com.br/jornal/economia/2024/07/10/camara-aprova-inclusao-da-carne-na-isencao-da-cesta-basica.html"
+        }
+      ]
+    },
+    "camara:2196833-386": {
+      "texto": "O PL queria tirar do texto um trecho sobre o Imposto Seletivo, o imposto mais alto, para produtos que fazem mal à saúde, como cigarro e bebida alcoólica. A Câmara manteve o trecho, por 336 a 132.",
+      "fontes": [
+        {
+          "veiculo": "IstoÉ",
+          "data": "2023-07-07",
+          "url": "https://istoe.com.br/camara-conclui-votacao-da-reforma-tributaria"
+        },
+        {
+          "veiculo": "Brasil de Fato",
+          "data": "2023-07-07",
+          "url": "https://www.brasildefato.com.br/2023/07/07/reforma-tributaria-camara-nega-tres-destaques-do-pl-de-bolsonaro-e-aprova-apenas-um"
+        }
+      ]
+    },
+    "camara:2196833-390": {
+      "texto": "O texto permite que a prefeitura atualize por decreto o valor usado para calcular o IPTU, seguindo critérios de uma lei municipal. O PL queria tirar essa permissão. A Câmara manteve o trecho, por 349 a 84.",
+      "fontes": [
+        {
+          "veiculo": "IstoÉ",
+          "data": "2023-07-07",
+          "url": "https://istoe.com.br/camara-conclui-votacao-da-reforma-tributaria"
+        },
+        {
+          "veiculo": "Brasil de Fato",
+          "data": "2023-07-07",
+          "url": "https://www.brasildefato.com.br/2023/07/07/reforma-tributaria-camara-nega-tres-destaques-do-pl-de-bolsonaro-e-aprova-apenas-um"
+        }
+      ]
+    },
+    "camara:2196833-392": {
+      "texto": "O texto cria um regime especial de imposto para os planos de saúde. O PL queria tirar os planos de saúde desse regime. A Câmara manteve o trecho, por 370 a 28.",
+      "fontes": [
+        {
+          "veiculo": "IstoÉ",
+          "data": "2023-07-07",
+          "url": "https://istoe.com.br/camara-conclui-votacao-da-reforma-tributaria"
+        },
+        {
+          "veiculo": "Brasil de Fato",
+          "data": "2023-07-07",
+          "url": "https://www.brasildefato.com.br/2023/07/07/reforma-tributaria-camara-nega-tres-destaques-do-pl-de-bolsonaro-e-aprova-apenas-um"
+        }
+      ]
+    },
+    "camara:2196833-395": {
+      "texto": "O trecho prorrogava até 2032 benefícios do IPI para empresas do Norte e do Nordeste e para fábricas de veículos no Norte, Nordeste e Centro-Oeste. Numa PEC, o trecho precisava de 308 votos para ficar; teve 307 e saiu do texto aprovado pela Câmara.",
+      "fontes": [
+        {
+          "veiculo": "IstoÉ",
+          "data": "2023-07-07",
+          "url": "https://istoe.com.br/camara-conclui-votacao-da-reforma-tributaria"
+        },
+        {
+          "veiculo": "Brasil de Fato",
+          "data": "2023-07-07",
+          "url": "https://www.brasildefato.com.br/2023/07/07/reforma-tributaria-camara-nega-tres-destaques-do-pl-de-bolsonaro-e-aprova-apenas-um"
+        }
       ]
     }
   }

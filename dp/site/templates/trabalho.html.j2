@@ -41,7 +41,8 @@
             <span class="vt-desc">{% if e %}{{ e.o_que }}{% else %}{{ v.descricao|truncate(140) }}{% endif %}</span>
           </summary>
           {% set mudou = votacoes_explicadas.get(v.id) %}
-          {% if e %}<p><b>{{ e.sim }}</b> {% if e.resultado %}Resultado: {{ e.resultado }}.{% endif %}</p>
+          {% set pedido = destaques_votacao.get(v.id) %}
+          {% if e %}<p>{% if pedido %}{{ c.pedido_texto(pedido) }} {% endif %}<b>{{ e.sim }}</b> {% if e.resultado %}Resultado: {{ e.resultado }}.{% endif %}</p>
           {% if mudou %}<p class="voto-mudou"><b>O que mudou:</b> {{ mudou.texto }} {% for f in mudou.fontes %}<a href="{{ f.url }}" target="_blank" rel="noopener">{{ f.veiculo }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
           <p class="voto-oficial">Texto oficial: {{ v.descricao|sem_placar }}{% if documentos_votacao.get(v.id) %} · <a href="{{ documentos_votacao[v.id] }}" target="_blank" rel="noopener">documento do relator</a>{% endif %}</p>{% else %}<p>{{ v.descricao }}</p>{% endif %}
           {% if v.por_partido %}

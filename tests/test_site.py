@@ -174,9 +174,9 @@ def test_proposicao_principal_prefere_o_codigo_da_votacao():
 def test_votos_plenario_indice_e_arquivo_por_deputado(tmp_path):
     from dp import db
     conn = db.conectar(tmp_path / "t.db")
-    conn.executemany("INSERT INTO plenario_votacao VALUES (?, ?, ?, ?, ?, ?, ?)", [
-        ("camara:1-1", "2025-03-01", "Rejeitado o Requerimento. Sim: 1; Não: 2", 0, "1", "u1", None),
-        ("camara:1-2", "2025-05-01", "Aprovado o Projeto de Lei nº 1, de 2025.", 1, "1", "u2", "77"),
+    conn.executemany("INSERT INTO plenario_votacao VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
+        ("camara:1-1", "2025-03-01", "Rejeitado o Requerimento. Sim: 1; Não: 2", 0, "1", "u1", None, None),
+        ("camara:1-2", "2025-05-01", "Aprovado o Projeto de Lei nº 1, de 2025.", 1, "1", "u2", "77", None),
     ])
     conn.execute("INSERT INTO plenario_proposicao VALUES ('1', 'PL 1/2025', 'Ementa')")
     conn.executemany("INSERT INTO plenario_voto VALUES (?, ?, ?, ?)", [
@@ -236,4 +236,38 @@ def test_explicar_votacao_resultado_e_placar():
     e = dados.explicar_votacao("Rejeitado o Requerimento. Sim: 110; Não: 159; Total: 269.")
     assert e["resultado"] == "rejeitado" and e["placar"] == (110, 159)
     assert dados.explicar_votacao("Resultado.") is None
+    assert dados.explicar_votacao("Aprovada a Emenda de Plenário nº 766. Sim: 477; não: 3")["placar"] == (477, 3)
     assert dados.explicar_votacao("Suprimido o texto. Sim: 200; Não: 250.")["resultado"] == "o trecho saiu"
+
+
+def test_pec_em_turno_e_texto_principal():
+    d = "Aprovado, em primeiro turno, o Substitutivo adotado pelo relator da Comissão Especial à Proposta de Emenda Constitucional nº 66."
+    assert dados.tipo_votacao(d) == "principal"
+    assert "PEC" in dados.explicar_votacao(d)["o_que"]
+
+
+@pytest.mark.parametrize("abertura,autor,varios,quer", [
+    ("Votação do DTQ 13 : PL: Emenda de Plenário 766 (art. 161, II).", "PL", False, "aprovar a emenda"),
+    ("Votação do DTQ 23: Bloco UNIÃO (PP): Destaque para Votação em Separado do inciso VI, do § 1º, do art. 155", "PP", False,
+     "tirar o trecho do texto"),
+    ("Votação do DTQ 6 (NOVO): Destaque de Emenda n. 5, apresentada à PEC 66/2023 (Fase 1 - CD). (161, II)", "NOVO", False,
+     "aprovar a emenda"),
+    ("Votação do DTQ 5: Bloco Fdr. PSOL/REDE: Emenda de Plenário n. 104 (art. 161, II).", "PSOL e Rede", False, "aprovar a emenda"),
+    ("Votação do DTQ 3 (PL, Federação Brasil da Esperança - Fe Brasil, UNIÃO, PP): Destaque para Votação em Separado do(a) "
+     "PRLP 2- art. 6º", "vários partidos", True, "tirar o trecho do texto"),
+    ("Votação do DTQ 27: PL (2 turno): Destaque para Votação em Separado do Artigo 19 do Substitutivo do Relator", "PL", False,
+     "tirar o trecho do texto"),
+])
+def test_quem_pediu(abertura, autor, varios, quer):
+    q = dados.quem_pediu(abertura)
+    assert (q["autor"], q["varios"], q["quer"]) == (autor, varios, quer)
+    assert dados.quem_pediu("Votação nominal do requerimento") is None
+
+
+def test_votacoes_explicadas_tem_fonte():
+    import json
+    import re
+    bruto = json.loads(dados.ARQUIVO_VOTACOES_EXPLICADAS.read_text(encoding="utf-8"))["votacoes"]
+    for vid, e in bruto.items():
+        assert re.fullmatch(r"camara:\d+-\d+", vid)
+        assert e["texto"] and e["fontes"] and all(f["url"].startswith("https://") and f["veiculo"] for f in e["fontes"])

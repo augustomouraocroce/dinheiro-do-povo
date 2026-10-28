@@ -304,7 +304,10 @@
           if (ex) {
             p.appendChild(document.createTextNode(" "));
             p.appendChild(el("b", null, ex[0]));
-            p.appendChild(document.createTextNode(" " + ex[1] + (vt[2] ? " Resultado: " + vt[2] + ", " + vt[6] + " a " + vt[7] + "." : "")));
+            var ped = indice.pedidos && indice.pedidos[v[0]];
+            var pedTexto = ped ? (ped.varios ? " Pedido de vários partidos, que queriam "
+              : (ped.autor.indexOf(" e ") > -1 ? " Pedido da federação " : " Pedido do ") + ped.autor + ", que queria ") + ped.quer + "." : "";
+            p.appendChild(document.createTextNode(pedTexto + " " + ex[1] + (vt[2] ? " Resultado: " + vt[2] + ", " + vt[6] + " a " + vt[7] + "." : "")));
             var mudou = indice.mudou && indice.mudou[v[0]];
             if (mudou) {
               var m = el("span", "voto-mudou");
